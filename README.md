@@ -7,12 +7,15 @@ No hay que instalar nada ni crear flujos nuevos: todo usa el flujo que ya funcio
 
 | Archivo | Pantalla |
 |---|---|
-| `1_Inicio.txt` | scrInicio (menú + 4 tarjetas) |
-| `2_Descarte_1a1.txt` | scrDescarteB |
-| `3_Descarte_Masiva.txt` | scrDescarteMasiva |
-| `4_Prestamo.txt` | scrPrestamo (en construcción) |
-| `5_Devolucion.txt` | scrDevolucion (en construcción) |
-| `6_Panel.txt` | scrPanel (en construcción) |
+| `1_Inicio.txt` | Inicio (menú + 4 tarjetas) |
+| `2_Descarte.txt` | Descarte (libro a libro) |
+| `3_Descarte_masiva.txt` | Descarte masiva |
+| `4_Prestamo.txt` | Préstamo (usuario desde FOLIO por RUT) |
+| `5_Devolucion.txt` | Devolución |
+| `6_Morosos.txt` | Morosos (lista real de FOLIO) |
+
+Flujos: `Copiade:BuscarLibroFOLIO`, `BuscarUsuarioFOLIO`, `ListaMorososFOLIO` (ver `prestamo/folio/`).
+Conectores: Excel (`tblFichaDescarte`, `tblPrestamos`, `tblUsuarios`, `tblPlazos`) y Office 365 Outlook.
 
 Todas llevan el menú lateral. Datos: `tblFichaDescarte` y las tablas de
 `prestamo/Prestamos_Ficticios.xlsx` (`tblPrestamos`, `tblUsuarios`, `tblPlazos`).
