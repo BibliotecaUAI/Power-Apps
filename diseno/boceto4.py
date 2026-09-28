@@ -3,10 +3,10 @@ def tema(oscuro):
     if oscuro:
         return dict(bg="radial-gradient(1200px 600px at 85% -10%,#3F4247 0%,transparent 60%),radial-gradient(900px 500px at 10% 110%,#2a2c30 0%,transparent 60%),#0B0B0C",
                     glass="rgba(40,42,46,0.55)", gb="rgba(191,195,200,0.22)", hi="rgba(255,255,255,0.10)",
-                    tx="#F2F2F3", sub="#BFC3C8", mut="#8A8D91", line="rgba(191,195,200,0.18)", inp="rgba(255,255,255,0.06)", pos="#8FA3C7")
+                    tx="#F2F2F3", sub="#BFC3C8", mut="#8A8D91", line="rgba(191,195,200,0.18)", inp="rgba(255,255,255,0.06)", pos="#E6E7E9")
     return dict(bg="radial-gradient(1100px 560px at 88% -12%,#DADCDF 0%,transparent 62%),radial-gradient(900px 520px at 6% 112%,#E3E5E8 0%,transparent 60%),#F4F4F5",
                 glass="rgba(255,255,255,0.62)", gb="rgba(255,255,255,0.9)", hi="rgba(255,255,255,0.9)",
-                tx="#111111", sub="#3F4247", mut="#8A8D91", line="rgba(17,17,17,0.08)", inp="rgba(255,255,255,0.85)", pos="#1B2A4A")
+                tx="#111111", sub="#3F4247", mut="#8A8D91", line="rgba(17,17,17,0.08)", inp="rgba(255,255,255,0.85)", pos="#111111")
 F = "font-family:Carlito,Calibri,sans-serif"
 DARK = "background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%)"
 SHINE = ("<div style='position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.55) 45%,transparent 60%);"
@@ -25,7 +25,7 @@ def css(t):
     .in{{position:absolute;box-sizing:border-box;height:34px;border-radius:10px;background:{t['inp']};border:1px solid {t['line']};{F};font-size:12px;color:{t['tx']};
          display:flex;align-items:center;padding:0 12px;box-shadow:inset 0 1px 2px rgba(17,17,17,0.06)}}
     .pill{{display:inline-block;padding:2px 9px;border-radius:999px;{F};font-size:10px;font-weight:700;letter-spacing:.4px}}
-    .pos{{background:{t['pos']};color:#fff}}
+    .pos{{background:{'linear-gradient(115deg,#35373B,#111111)' if t['pos']=='#111111' else 'linear-gradient(115deg,#BFC3C8,#FFFFFF 50%,#8A8D91)'};color:{'#fff' if t['pos']=='#111111' else '#111'};border:1px solid #3F4247}}
     .pl{{background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);color:#111;border:1px solid #8A8D91}}
     table{{width:100%;border-collapse:collapse;{F};font-size:12px;color:{t['tx']}}}
     th{{text-align:left;font-size:10px;letter-spacing:1.2px;color:{t['mut']};font-weight:700;padding:7px 8px;border-bottom:1px solid {t['line']}}}
@@ -77,7 +77,7 @@ def inicio(oscuro):
     b+=(f"<div class='g' style='left:84px;top:506px;width:1264px;height:246px'><div style='padding:16px 22px'><div class='h1'>Actividad reciente</div><div class='h2'>Últimos movimientos de hoy</div>"
         "<table style='margin-top:8px'><tr><th>HORA</th><th>MÓDULO</th><th>DETALLE</th><th>ESTADO</th></tr>"
         f"<tr><td>10:42</td><td>Préstamo</td><td>2 libros a Tomás Fuentes</td><td><span class='pill pos'>REGISTRADO</span></td></tr>"
-        f"<tr><td>10:31</td><td>Devolución</td><td>Manual de derecho civil — Martina Rojas</td><td><span class='pill pl'>MOROSO · 5 DÍAS</span></td></tr>"
+        f"<tr><td>10:31</td><td>Devolución</td><td>Manual de derecho civil — Martina Rojas</td><td><span class='pill' style='background:#B3261E;color:#fff'>MOROSO · 5 DÍAS</span></td></tr>"
         f"<tr><td>10:12</td><td>Descarte</td><td>Tanda de 45 libros · Biblioteca Viña</td><td><span class='pill pos'>GUARDADO</span></td></tr></table></div></div>")
     return screen(b,t,'v4_inicio_'+('oscuro' if oscuro else 'claro'),oscuro)
 
@@ -98,10 +98,7 @@ def prestamo():
         f"<div style='flex:1'><div class='cap'>Correo al usuario</div><div class='in' style='position:relative;margin-top:4px'>Enviar resumen<span style='margin-left:auto'>⌄</span></div></div></div>"
         f"<div class='cap' style='margin-top:12px'>Observaciones</div><div class='in' style='position:relative;margin-top:4px'></div>"
         f"<div class='p' style='margin-top:14px;font-style:italic;color:{t['mut']}'>Libro 28 días · iPad 14 · Kindle 28 · calculadora, test y mapa 1 día · colección histórica solo sala</div></div></div>")
-    b+=(f"<div class='g' style='left:570px;top:104px;width:778px;height:150px;border:1.5px solid #B3261E;box-shadow:0 0 0 3px rgba(179,38,30,.12),0 18px 40px rgba(17,17,17,.10)'><div style='padding:18px 22px'>"
-        f"<div class='cap' style='color:{t['pos']}'>● Usuario encontrado en FOLIO</div><div class='h1' style='font-size:19px;margin-top:4px'>Tomás Fuentes Díaz</div>"
-        f"<div class='h2'>RUT 19.874.302-5 · Pregrado · Facultad de Derecho · Derecho</div>"
-        f"<div style='display:flex;gap:26px;margin-top:10px;align-items:center' class='p'><span><b style='color:{t['tx']}'>2</b> préstamos activos</span><span><b style='color:{t['tx']}'>1</b> vencido hace 10 días</span><span style='margin-left:auto' class='pill pl'>MOROSO</span></div></div></div>")
+    b+=carne(570,104,778,150,'Tomás Fuentes Díaz','TF','19.874.302-5','Pregrado','Facultad de Derecho','Derecho',2,1,True)
     rows=[('000101','Imposición fiscal en los países en desarrollo','Libro','28 DÍAS','26-10-2026',1),('IP-014','iPad 10ª gen. N° 14','iPad','14 DÍAS','12-10-2026',1),
           ('CA-203','Calculadora Casio fx-991','Calculadora','1 DÍA','29-09-2026',1),('H-00931','Crónica del Reino de Chile (1865)','Col. histórica','SOLO SALA','—',0)]
     tr=''.join(f"<tr><td><b>{a}</b></td><td>{b_}</td><td>{c}</td><td><span class='pill {'pos' if ok else 'pl'}'>{d}</span></td><td>{e}</td><td style='color:{t['mut']}'>✕</td></tr>" for a,b_,c,d,e,ok in rows)
@@ -112,6 +109,25 @@ def prestamo():
         f"<div class='g' style='left:1174px;top:680px;width:174px;height:48px;display:flex;align-items:center;justify-content:center'><span class='p' style='color:{t['tx']}'>Cancelar</span></div>")
     return screen(b,t,'v4_prestamo',False)
 
+def carne(x,y,w,h,nombre,ini,rut,tipo,unidad,prog,act,venc,moroso):
+    borde = "border:1.5px solid #B3261E;box-shadow:0 0 0 4px rgba(179,38,30,.16),0 0 22px rgba(179,38,30,.35),0 18px 40px rgba(17,17,17,.25)" if moroso else "border:1px solid #3F4247;box-shadow:0 18px 40px rgba(17,17,17,.25)"
+    chip = lambda t_: f"<span style='display:inline-block;padding:3px 10px;margin-right:6px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(191,195,200,.35);{F};font-size:11px;color:#E6E7E9'>{t_}</span>"
+    stat = lambda v,l,rojo=False: (f"<div style='width:92px;height:62px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(191,195,200,.25);display:flex;flex-direction:column;align-items:center;justify-content:center'>"
+                                   f"<div style='{F};font-size:22px;font-weight:700;color:{'#FF6B5E' if rojo else '#fff'}'>{v}</div><div style='{F};font-size:10px;font-style:italic;color:#BFC3C8'>{l}</div></div>")
+    sello = ("<div style='width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;"
+             + ("border:2px solid #B3261E;box-shadow:0 0 14px rgba(179,38,30,.6),inset 0 0 10px rgba(179,38,30,.35);color:#FF8A80'" if moroso else "border:2px solid #BFC3C8;box-shadow:inset 0 0 10px rgba(255,255,255,.15);color:#fff'")
+             + f"><div style='{F};font-size:11px;font-weight:700;letter-spacing:1.5px;line-height:1.2'>{'MOROSO' if moroso else 'AL DÍA'}</div></div>")
+    return (f"<div style='position:absolute;left:{x}px;top:{y}px;width:{w}px;height:{h}px;border-radius:18px;{DARK};{borde};overflow:hidden'>{SHINE}"
+            # banda de código de barras decorativa
+            f"<div style='position:absolute;right:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,rgba(191,195,200,.5) 0 2px,transparent 2px 5px,rgba(191,195,200,.3) 5px 6px,transparent 6px 9px)'></div>"
+            f"<div style='position:absolute;left:22px;top:24px;width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#8A8D91,#FFFFFF 45%,#BFC3C8);padding:3px;box-sizing:border-box'>"
+            f"<div style='width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#35373B,#111111);display:flex;align-items:center;justify-content:center;{F};font-size:30px;font-weight:700;color:#fff;letter-spacing:1px'>{ini}</div></div>"
+            f"<div style='position:absolute;left:138px;top:22px'><div style='{F};font-size:10px;letter-spacing:2px;font-weight:700;color:#BFC3C8'>CARNÉ DE BIBLIOTECA · FOLIO</div>"
+            f"<div style='{F};font-size:24px;font-weight:700;color:#fff;margin-top:2px'>{nombre}</div>"
+            f"<div style='{F};font-size:12px;font-style:italic;color:#BFC3C8;margin-bottom:10px'>{unidad} · {prog}</div>{chip('RUT '+rut)}{chip(tipo)}</div>"
+            f"<div style='position:absolute;right:30px;top:38px;display:flex;gap:10px;align-items:center'>{stat(act,'activos')}{stat(venc,'vencidos',venc>0)}{sello}</div></div>")
+
+ROJO = 'color:#E5534B;font-weight:700'
 def morosos():
     t=tema(True)
     b=header(t,'Morosos','Datos reales de FOLIO · consultado 10:42')+rail(t,'Morosos')
@@ -125,7 +141,7 @@ def morosos():
     rows=[('10891774-1','Tomás Fuentes Díaz','Pregrado','Biblioteca Viña',3,'2.110','NIVEL 3'),('17654321-K','Camila Soto Vera','Postgrado','Biblioteca Postgrado',1,'940','NIVEL 2'),
           ('19874302-5','Diego Rojas Muñoz','Pregrado','Pregrado Edif. A',2,'412','NIVEL 1'),('20456789-K','Martina Pérez León','Pregrado','Pregrado Edif. F',1,'35','NIVEL 0'),
           ('15234876-2','Andrés Silva Toro','Académico','Biblioteca Viña',4,'28','NIVEL 0')]
-    tr=''.join(f"<tr style='{'box-shadow:inset 3px 0 0 #B3261E' if n in ('NIVEL 3','NIVEL 2') else ''}'><td><b>{a}</b></td><td>{b_}</td><td>{c}</td><td>{d}</td><td>{e}</td><td>{f_}</td><td><span class='pill {'pos' if n=='NIVEL 0' else 'pl'}'>{n}</span></td></tr>" for a,b_,c,d,e,f_,n in rows)
+    tr=''.join(f"<tr style='{'box-shadow:inset 3px 0 0 #B3261E' if n in ('NIVEL 3','NIVEL 2') else ''}'><td><b>{a}</b></td><td>{b_}</td><td>{c}</td><td>{d}</td><td>{e}</td><td style='{ROJO if n in ('NIVEL 3','NIVEL 2') else ''}'>{f_}</td><td><span class='pill {'pos' if n=='NIVEL 0' else 'pl'}'>{n}</span></td></tr>" for a,b_,c,d,e,f_,n in rows)
     b+=(f"<div class='g' style='left:84px;top:250px;width:1264px;height:430px'><div style='padding:18px 22px'><div class='h1'>Usuarios morosos</div><div class='h2'>Ordenados por días de atraso · la línea roja marca más de 2 años</div>"
         f"<table style='margin-top:10px'><tr><th>RUT</th><th>NOMBRE</th><th>TIPO</th><th>BIBLIOTECA</th><th>LIBROS</th><th>DÍAS</th><th>NIVEL</th></tr>{tr}</table></div></div>")
     b+=(f"<div style='position:absolute;left:84px;top:694px;width:320px;height:44px;border-radius:14px;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91;display:flex;align-items:center;justify-content:center;{F};font-size:12px;font-weight:700;letter-spacing:2px;color:#111'>↻  ACTUALIZAR DESDE FOLIO</div>")
