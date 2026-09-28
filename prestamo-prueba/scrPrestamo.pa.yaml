@@ -204,9 +204,9 @@ Screens:
             Height: =64
             HtmlText: |-
               ="<div style='height:64px;box-sizing:border-box;background:#FFFFFF;border-radius:12px;padding:12px 14px;font-family:Segoe UI,Arial,sans-serif'>" &
-              "<div style='font-size:10px;color:#3F4247'>Usuario leído desde FOLIO</div>" &
+              "<div style='font-size:10px;color:#3F4247'>Carné leído</div>" &
               "<div style='font-size:13px;font-weight:700;color:#111111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px'>" & varUsuario.nombre & "</div>" &
-              "<div style='font-size:11px;font-weight:600;color:" & If(varUsuario.activo, "#1B2A4A", "#B3261E") & "'>" & If(varUsuario.activo, "Activo", "Inactivo: no puede recibir préstamos") & "</div>" &
+              "<div style='font-size:11px;font-weight:600;color:" & If(varUsuario.activo, "#1B2A4A", "#B3261E") & "'>" & "Listo, ahora escanee el ejemplar" & "</div>" &
               "</div>"
             PaddingBottom: =0
             PaddingLeft: =0
@@ -250,11 +250,11 @@ Screens:
             HtmlText: |-
               ="<div style='font-family:Segoe UI,Arial,sans-serif;color:#111111'>" &
               "<div style='background:#FFFFFF;border-radius:14px;padding:16px'>" &
-              "<div style='font-size:10px;font-weight:600;color:#3F4247'>USUARIO (FOLIO /users)</div>" &
+              "<div style='font-size:10px;font-weight:600;color:#3F4247'>USUARIO</div>" &
               "<div style='font-size:14px;font-weight:700;margin-top:8px'>" & varUsuario.nombre & "</div>" &
-              "<div style='font-size:12px;color:#3F4247;margin-top:6px'>" & varUsuario.grupo & ", código " & varUsuario.codigo & "</div></div>" &
+              "<div style='font-size:12px;color:#3F4247;margin-top:6px'>" & "Código " & varUsuario.codigo & "</div></div>" &
               "<div style='background:#FFFFFF;border-radius:14px;padding:16px;margin-top:12px'>" &
-              "<div style='font-size:10px;font-weight:600;color:#3F4247'>EJEMPLAR (FOLIO /inventory/items)</div>" &
+              "<div style='font-size:10px;font-weight:600;color:#3F4247'>EJEMPLAR (FOLIO)</div>" &
               "<div style='font-size:14px;font-weight:700;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varEjemplar.titulo & "</div>" &
               "<div style='font-size:12px;color:#3F4247;margin-top:6px'>" & varEjemplar.ubicacion & ", código " & varEjemplar.codigo & "</div>" &
               "<div style='font-size:12px;font-weight:600;color:#1B2A4A;margin-top:6px'>" & varEjemplar.estadoTexto & "</div></div>" &
@@ -462,7 +462,7 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =7
-            Text: ="Modo prueba. Datos leídos desde FOLIO vía Power Automate; se guardan solo en Excel."
+            Text: ="Modo prueba. El ejemplar se busca en FOLIO; se guarda solo en Excel."
             Width: =350
             X: =20
             Y: =812
@@ -480,44 +480,15 @@ Screens:
                   If(
                       IsBlank(cod),
                           Notify("Escanee o digite un código.", NotificationType.Warning),
-
-                      // ---------- PASO 1: USUARIO ----------
                       varPaso = "usuario",
-                          Set(varBuscando, true);
-                          Set(varRes, IfError(Text(BuscarUsuarioFOLIO.Run(cod).datos), Blank()));
-                          Set(varBuscando, false);
-                          With(
-                              {j: ParseJSON(If(IsBlank(varRes), "{}", varRes))},
-                              If(
-                                  IsBlank(varRes),
-                                      Notify("No se pudo consultar FOLIO. Intente nuevamente.", NotificationType.Error),
-                                  Text(j.encontrado) <> "SI",
-                                      Set(varUsuario, Blank());
-                                      Notify("El carné " & cod & " no existe en FOLIO.", NotificationType.Warning),
-                                  Set(varUsuario,
-                                      {
-                                          id: Text(j.id),
-                                          nombre: Text(j.nombre),
-                                          codigo: cod,
-                                          grupo: Text(j.grupo),
-                                          activo: Text(j.activo) = "SI"
-                                      }
-                                  );
-                                  If(
-                                      varUsuario.activo,
-                                          Set(varPaso, "ejemplar"),
-                                      Notify(varUsuario.nombre & " está inactivo en FOLIO.", NotificationType.Warning)
-                                  )
-                              )
-                          ),
-
-                      // ---------- PASO 2: EJEMPLAR ----------
+                          Set(varUsuario, {codigo: cod, nombre: "Carné " & cod, grupo: "", activo: true});
+                          Set(varPaso, "ejemplar"),
                       varPaso = "ejemplar",
                           If(
                               !IsBlank(LookUp(colPrestamos, itemBarcode = cod && status = "Open")),
                                   Notify("El ejemplar " & cod & " ya tiene un préstamo de prueba abierto.", NotificationType.Warning),
                               Set(varBuscando, true);
-                              Set(varRes, IfError(Text(BuscarEjemplarFOLIO.Run(cod).datos), Blank()));
+                              Set(varRes, IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), Blank()));
                               Set(varBuscando, false);
                               With(
                                   {j: ParseJSON(If(IsBlank(varRes), "{}", varRes))},
@@ -531,29 +502,15 @@ Screens:
                                               codigo: cod,
                                               hrid: Text(j.hrid),
                                               titulo: Text(j.titulo),
+                                              autor: Text(j.autor),
                                               ubicacion: Text(j.ubicacion),
-                                              biblioteca: Text(j.biblioteca),
-                                              estado: Text(j.estado),
-                                              estadoTexto: Switch(
-                                                  Text(j.estado),
-                                                  "Available", "Disponible",
-                                                  "Checked out", "Prestado",
-                                                  "In transit", "En tránsito",
-                                                  "Awaiting pickup", "En espera de retiro",
-                                                  "Paged", "Solicitado",
-                                                  "Missing", "Extraviado",
-                                                  "Withdrawn", "Retirado",
-                                                  Text(j.estado)
-                                              )
+                                              biblioteca: Trim(First(Split(Text(j.ubicacion), " - ")).Value),
+                                              estadoTexto: "Encontrado en FOLIO"
                                           }
                                       );
-                                      If(
-                                          varEjemplar.estado = "Available",
-                                              Set(varFechaPrestamo, Today());
-                                              Set(varFechaDevolucion, DateAdd(Today(), 14, TimeUnit.Days));
-                                              Set(varPaso, "confirmar"),
-                                          Notify("El ejemplar figura como '" & varEjemplar.estadoTexto & "' en FOLIO.", NotificationType.Warning)
-                                      )
+                                      Set(varFechaPrestamo, Today());
+                                      Set(varFechaDevolucion, DateAdd(Today(), 14, TimeUnit.Days));
+                                      Set(varPaso, "confirmar")
                                   )
                               )
                           )
