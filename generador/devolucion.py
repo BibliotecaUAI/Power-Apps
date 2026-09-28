@@ -81,6 +81,7 @@ If(
 )'''
 
 VACIAR = '''
+Set(varDevolTexto, "");
 Clear(colDevol);
 Clear(colCodDevol);
 Reset(txtDevol_5);

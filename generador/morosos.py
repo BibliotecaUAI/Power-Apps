@@ -232,7 +232,7 @@ ctrls = [
           'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)',
           displaymode='If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)', dark=False, size=9),
     boton('btnLimpiarDet_6', 1222, 348, 94, 30, '"✕  Limpiar"',
-          'Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)',
+          'Set(varBuscarMor, ""); Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)',
           displaymode='If(varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)', dark=False, size=9),
     label('lblDestino_6', '="ENVIAR A"', 666, 628, 80, h=30, size=7),
     lista('drpDestino_6', 740, 628, 300, '["A mi correo (prueba)", "Al correo del usuario"]', '"A mi correo (prueba)"'),

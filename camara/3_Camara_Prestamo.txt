@@ -1,0 +1,24 @@
+- barCamaraUsuario_4:
+    Control: BarcodeReader@0.0.30
+    Properties:
+      Color: =ColorValue("#FFFFFF")
+      Fill: =ColorValue("#111111")
+      Height: =44
+      OnScan: |-
+        =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaUsuario, Trim(First(Self.Barcodes).Value)); Select(btnBuscarUsuario_4))
+      Text: ="📷"
+      Width: =48
+      X: =528
+      Y: =204
+- barCamaraLibro_4:
+    Control: BarcodeReader@0.0.30
+    Properties:
+      Color: =ColorValue("#FFFFFF")
+      Fill: =ColorValue("#111111")
+      Height: =44
+      OnScan: |-
+        =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaLibro, Trim(First(Self.Barcodes).Value)); Select(btnAgregarLibro_4))
+      Text: ="📷"
+      Width: =48
+      X: =528
+      Y: =318

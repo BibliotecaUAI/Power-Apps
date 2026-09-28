@@ -40,7 +40,7 @@ Screens:
             BorderColor: =varT.line
             BorderThickness: =1
             Color: =varT.tx
-            Default: =""
+            Default: =varBuscarMor
             Fill: =varT.inp
             Font: ="Calibri"
             Height: =30
@@ -219,7 +219,7 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =ColorValue("#111111")
             OnSelect: |-
-              =Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)
+              =Set(varBuscarMor, ""); Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)
             PressedFill: =ColorValue("#3F4247")
             RadiusBottomLeft: =12
             RadiusBottomRight: =12

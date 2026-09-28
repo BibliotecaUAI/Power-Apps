@@ -44,6 +44,17 @@ for arch, sfx in [('1_Inicio.txt', '0'), ('2_Descarte.txt', '1'), ('3_Descarte_m
                   ('5_Devolucion.txt', '5'), ('6_Morosos.txt', '6'), ('7_Inventario.txt', '7')]:
     tema.aplicar(R + '/pantallas/' + arch, sfx)
 
+# Buscadores que la cámara rellena (Default = variable)
+def set_default(arch, ctrl, expr):
+    p = R + '/pantallas/' + arch
+    t = open(p).read()
+    i = t.index('- ' + ctrl + ':')
+    j = t.index('Default: =""', i)
+    assert j - i < 600, ctrl
+    open(p, 'w').write(t[:j] + 'Default: =' + expr + t[j + len('Default: =""'):])
+set_default('5_Devolucion.txt', 'txtDevol_5', 'varDevolTexto')
+set_default('6_Morosos.txt', 'txtBuscarMor_6', 'varBuscarMor')
+
 # Un solo archivo con toda la app (pegar de una vez)
 out = ['Screens:']
 for f in ['1_Inicio.txt', '2_Descarte.txt', '3_Descarte_masiva.txt', '4_Prestamo.txt', '5_Devolucion.txt', '6_Morosos.txt', '7_Inventario.txt']:

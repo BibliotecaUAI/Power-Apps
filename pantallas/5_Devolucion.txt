@@ -88,7 +88,7 @@ Screens:
             BorderColor: =varT.lineStrong
             BorderThickness: =2
             Color: =varT.tx
-            Default: =""
+            Default: =varDevolTexto
             Fill: =varT.inp
             FocusedBorderColor: =varT.lineStrong
             FocusedBorderThickness: =2
@@ -304,6 +304,7 @@ Screens:
             HoverFill: =ColorValue("#111111")
             OnSelect: |-
               =
+              Set(varDevolTexto, "");
               Clear(colDevol);
               Clear(colCodDevol);
               Reset(txtDevol_5);

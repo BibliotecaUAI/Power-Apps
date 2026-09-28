@@ -9,5 +9,5 @@
         =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesarEscaneo))
       Text: ="📷"
       Width: =48
-      X: =390
+      X: =388
       Y: =366
