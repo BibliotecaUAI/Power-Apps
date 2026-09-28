@@ -8,9 +8,9 @@ BASE = __file__.replace('generador/consulta_ficha.py', 'descarte/revistas/Ficha2
 def norm(c):
     c = c.strip()
     return c.zfill(6) if re.fullmatch(r'\d{1,5}', c) else c
-def generar(fila0, codigos):
+def generar(fila0, codigos, previos=()):
     t = open(BASE).read()
-    vistos, filas = set(), []
+    vistos, filas = set(norm(c) for c in previos), []
     for k, c in enumerate(codigos):
         n = norm(c)
         filas.append('{ %d, "%s", "%s" }' % (fila0 + k, '' if n in vistos else n, n))
