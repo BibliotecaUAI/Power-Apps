@@ -15,12 +15,22 @@ DEFINE
             VAR _tit = MAXX ( _ins, f_instances[title] )
             VAR _idi = SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( _ins, f_instances[languages] ), "[", "" ), "]", "" ), "'", "" )
             VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i )
+            VAR _tipoK = f_items[f_mtypes_script.name]
+            VAR _inK = _i
+            VAR _idiK = MAXX ( FILTER ( f_instances, f_instances[id] = _inK ), f_instances[languages] )
+            VAR _morK = COUNTROWS ( FILTER ( f_loans, f_loans[items.barcode] = f_items[barcode] && f_loans[pre_Sub_estado] = "MOROSO" ) ) > 0
+            VAR _ultK = MAXX ( FILTER ( f_loans, f_loans[items.barcode] = f_items[barcode] ), f_loans[loanDateTime] )
+            VAR _okK = _idiK = "" || CONTAINSSTRING ( _idiK, "spa" ) || CONTAINSSTRING ( _idiK, "eng" ) || CONTAINSSTRING ( _idiK, "ger" ) || CONTAINSSTRING ( _idiK, "fre" ) || CONTAINSSTRING ( _idiK, "ita" ) || CONTAINSSTRING ( _idiK, "por" ) || CONTAINSSTRING ( _idiK, "lat" ) || CONTAINSSTRING ( _idiK, "grc" ) || CONTAINSSTRING ( _idiK, "ara" )
+            VAR _exK = COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _inK ) )
+            VAR _crit = SWITCH ( TRUE (), ISBLANK ( _inK ), "", _tipoK = "Issue", "Contenido|Vigencia", _morK, "Limpieza y depuración|Morosidad", NOT _okK, "Contenido|Idioma", ISBLANK ( _ultK ) || _ultK < TODAY () - 1826, "Contexto|Demanda real y demanda potencial", _exK > 2, "Contexto|Duplicidad (redundancia)", "" )
             RETURN
                 "{" & q & "codigo" & q & ":" & q & f_items[barcode] & q
                 & "," & q & "hrid" & q & ":" & q & f_items[f_instances_script.hrid] & q
                 & "," & q & "copia" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( f_items[copyNumber], "\", "/" ), q, "'" ) & q
                 & "," & q & "tipo" & q & ":" & q & f_items[f_mtypes_script.name] & q
                 & "," & q & "ubicacion" & q & ":" & q & TRIM ( f_items[f_locations_script.biblioteca] ) & " " & TRIM ( f_items[f_locations_script.ubicación] ) & q
+                & "," & q & "bib" & q & ":" & q & TRIM ( f_items[f_locations_script.biblioteca] ) & q
+                & "," & q & "crit" & q & ":" & q & _crit & q
                 & "," & q & "titulo" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( _tit, "\", "/" ), q, "'" ), UNICHAR ( 10 ), " " ), UNICHAR ( 13 ), " " ) & q
                 & "," & q & "autor" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( _autor, "\", "/" ), q, "'" ) & q
                 & "," & q & "idioma" & q & ":" & q & _idi & q

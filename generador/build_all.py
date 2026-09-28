@@ -44,9 +44,84 @@ for arch, sfx in [('1_Inicio.txt', '0'), ('2_Descarte.txt', '1'), ('3_Descarte_m
                   ('5_Devolucion.txt', '5'), ('6_Morosos.txt', '6'), ('7_Inventario.txt', '7')]:
     tema.aplicar(R + '/pantallas/' + arch, sfx)
 
+
+# ---------- Ficha de Descarte PP 2026: nombres de columnas, formatos y valores automáticos ----------
+def ficha2026(path):
+    t = open(path).read()
+    R = [
+        ("'Pregrado  A - Existencia'", "'Pregrado A - Existencia'"),
+        ("'Pregrado  F - Existencia'", "'Pregrado F - Existencia'"),
+        ("'Año de edición'", "'Año de edicion'"),
+        ('["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]',
+         '["(automático)", "Biblioteca Viña del Mar", "Biblioteca Postgrado", "Biblioteca Pregrado Edif. A", "Biblioteca Pregrado Edif. F"]'),
+        ('["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]',
+         '["No", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]'),
+        ('["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]',
+         '["(automático)", "Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]'),
+        ('Justificacion: "Duplicidad"}', 'Justificacion: "Duplicidad (redundancia)"}'),
+    ]
+    for a, b in R:
+        t = t.replace(a, b)
+    import re as _re
+    t = _re.sub(r'\n( +)(\{Criterio: "Contenido", Justificacion: "Disponibilidad de ediciones anteriores"\},)',
+                lambda m: '\n' + m.group(1) + '{Criterio: "(automático)", Justificacion: "(automático)"},\n' + m.group(1) + m.group(2), t)
+    open(path, 'w').write(t)
+
+def ficha2026_1a1(path):
+    t = open(path).read()
+    R = [
+        # varItem: biblioteca y criterio automático desde FOLIO
+        ("'Año de edicion': Text(j.anio)\n", "'Año de edicion': Text(j.anio),\n                                      Bib: IfError(Text(j.bib), \"\"),\n                                      Crit: IfError(Text(j.crit), \"\")\n"),
+        # si el código ya está en la ficha pero sin datos, se completa esa fila
+        ("                              tblFichaDescarte,\n                              Defaults(tblFichaDescarte),",
+         "                              tblFichaDescarte,\n                              If(IsBlank(LookUp(colFicha, Text('Codigo de Barra') = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, Text('Codigo de Barra') = varCodigo)),"),
+        ("                                  Número: Text(Coalesce(Max(colFicha, Value(Número)), 0) + 1),\n", ""),
+        ("HRID: hrid,", "HRID: IfError(Text(Value(hrid)), hrid),"),
+        ("copia: If(enc, varItem.copia, txtCopia_1.Text),", "Copia: If(enc, varItem.copia, txtCopia_1.Text),"),
+        ("'Biblioteca-Ubicacion-Colección': If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text),",
+         "'Biblioteca-Ubicacion-Colección': Substitute(If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text), \" - \", \" \"),"),
+        ("'Fecha registro (ingresado en la base)': If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text),",
+         "'Fecha registro (ingresado en la base)': Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), \"-\", \"/\"),"),
+        ("'Número de POL *': txtPOL_1.Text,", "'Número de POL *': Coalesce(txtPOL_1.Text, \"-1\"),"),
+        ("'Diferenciador de título por ficha descarte': If(IsBlank(hrid), If(titulo in colFicha.Título, 0, 1), If(hrid in colFicha.HRID, 0, 1)),",
+         "'Diferenciador de título por ficha descarte': If(IsBlank(hrid), If(titulo in colFicha.Título, 0, 1), If(IfError(Text(Value(hrid)), hrid) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text(HRID)).Value, 0, 1)),"),
+        ("'Unidad de descarte': drpUnidadDescarte_1.Selected.Value,",
+         "'Unidad de descarte': If(drpUnidadDescarte_1.Selected.Value = \"(automático)\", Coalesce(varItem.Bib, \"\"), drpUnidadDescarte_1.Selected.Value),"),
+        ("'Criterios de Descarte': drpCriterio_1.Selected.Value,",
+         "'Criterios de Descarte': If(drpCriterio_1.Selected.Value = \"(automático)\", If(IsBlank(varItem.Crit), \"\", First(Split(varItem.Crit, \"|\")).Value), drpCriterio_1.Selected.Value),"),
+        ("'Justificaciones para aplicar Descarte': drpJustificacion_1.Selected.Value,",
+         "'Justificaciones para aplicar Descarte': If(drpJustificacion_1.Selected.Value = \"(automático)\", If(IsBlank(varItem.Crit), \"\", Last(Split(varItem.Crit, \"|\")).Value), drpJustificacion_1.Selected.Value),"),
+        ("'Decisión Final Descarte SI/NO': Blank()", "'Decisión Final Descarte SI/NO': \"SI\""),
+        ("Collect(colFicha, varNuevo);", "ClearCollect(colFicha, tblFichaDescarte);"),
+        ("Set(varUltimo, varNuevo.Número & \" — \" & titulo);", "Set(varUltimo, varNuevo.'Codigo de Barra' & \" — \" & titulo);"),
+        ("Notify(\"Guardado N° \" & varNuevo.Número, NotificationType.Success, 2000);", "Notify(\"Guardado \" & varNuevo.'Codigo de Barra', NotificationType.Success, 2000);"),
+        ("Set(varDuplicado, cod in colFicha.'Codigo de Barra');",
+         "Set(varDuplicado, cod in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text('Codigo de Barra')).Value);"),
+        # valores por defecto de la ficha 2026
+        ('Items: =["Esta en archivo", "No esta en archivo"]', 'Items: =["Si", "No"]'),
+        ('Default: ="Esta en archivo"', 'Default: =If(varItem.\'Tipo de Material\' = "Issue", "No", "Si")'),
+        ('Default: =If(drpFormaAdq_1.Selected.Value = "Compra" || drpCruce_1.Selected.Value = "Esta en archivo", "SI", "NO")', 'Default: =If(drpFormaAdq_1.Selected.Value = "Compra", "SI", "NO")'),
+        ('Default: ="Por confirmar"', 'Default: ="NO"'),
+    ]
+    for a, b in R:
+        n = t.count(a)
+        assert n >= 1, a[:70]
+        t = t.replace(a, b)
+    # Unidad académica: None por defecto
+    t = t.replace('Default: ="Desconocida"\n', 'Default: ="None"\n', 1)
+    t = t.replace('Items: =["Facultad de Artes Liberales",', 'Items: =["None", "Facultad de Artes Liberales",', 1)
+    # Obra en volúmenes: SI en revistas
+    i = t.index('- drpVolumenes_1:'); j = t.index('Default: ="NO"', i)
+    t = t[:j] + 'Default: =If(varItem.\'Tipo de Material\' = "Issue", "SI", "NO")' + t[j + len('Default: ="NO"'):]
+    open(path, 'w').write(t)
+
+ficha2026(R + '/pantallas/2_Descarte.txt')
+ficha2026(R + '/pantallas/3_Descarte_masiva.txt')
+ficha2026_1a1(R + '/pantallas/2_Descarte.txt')
+
 # Descarte 1 a 1: enviar todos los ejemplares del título (misma biblioteca) a Lectura masiva
 from comun import boton as _boton
-TODOS = 'Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in colFicha.\'Codigo de Barra\'))'
+TODOS = 'Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank(\'Item ingresado en la base de biblioteca\')), Text(\'Codigo de Barra\')).Value))'
 _b = _boton('btnTodos_1', 640, 728, 686, 32,
             '"＋  AGREGAR LOS " & CountRows(' + TODOS + ') & " EJEMPLARES DE ESTE TÍTULO (MISMA BIBLIOTECA) A LECTURA MASIVA   →"',
             'Set(varTandaTexto, Concat(' + TODOS + ', Trim(Value) & Char(10))); Navigate(\'Descarte masiva\', ScreenTransition.Fade)',

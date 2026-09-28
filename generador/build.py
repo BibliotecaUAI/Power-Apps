@@ -2,7 +2,7 @@ import re, sys
 sys.path.insert(0, '.')
 from tabs import tabs, label, switch
 
-SRC = 'base.txt'
+SRC = '/tmp/claude-0/-home-user-Power-Apps/eda428c3-38ab-5fcb-9f5f-cbcdda5371e8/scratchpad/base.txt'
 OUT1 = '/home/user/Power-Apps/descarte/Pantalla_1_Lectura_1a1.txt'
 OUT2 = '/home/user/Power-Apps/descarte/Pantalla_2_Lectura_Masiva.txt'
 S1, S2 = 'scrDescarteB', 'scrDescarteMasiva'
@@ -81,7 +81,7 @@ lote = [
 
 CODIGOS = 'Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))'
 LOTE_OK = '!IsBlank(drpUnidadDescarte_2.Selected.Value) && !IsBlank(drpJustificacion_2.Selected.Value) && !IsBlank(drpInventario_2.Selected.Value)'
-NLISTOS = 'CountIf(colTanda, Estado = "Listo")'
+NLISTOS = 'CountIf(colTanda, Estado = "Listo" || Estado = "Completar")'
 SILVER_ON = "<div style='height:%dpx;background:linear-gradient(115deg,#0B0B0C 0%%,#111111 38%%,#35373B 50%%,#111111 62%%,#0B0B0C 100%%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>"
 SILVER_OFF = "<div style='height:%dpx;background:linear-gradient(115deg,#BFC3C8 0%%,#DADCDF 50%%,#BFC3C8 100%%)'></div>"
 
@@ -129,135 +129,174 @@ def boton_negro(n, text, displaymode, onselect, x, y, w, h, size=12):
             X: ={x}
             Y: ={y}'''
 
+REC = '''{
+                'Item ingresado en la base de biblioteca': "SI",
+                HRID: IfError(Text(Value(t.HRID)), t.HRID),
+                'Codigo de Barra': t.Codigo,
+                'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),
+                Copia: t.Copia,
+                'Tipo de Material': t.Tipo,
+                'Biblioteca-Ubicacion-Colección': t.Ubicacion,
+                Título: t.Titulo,
+                Autor: t.Autor,
+                Idioma: t.Idioma,
+                'Vinculado UAI (SI/NO)': "NO",
+                'Fecha registro (ingresado en la base)': Substitute(t.Fecha, "-", "/"),
+                'Número de POL *': "-1",
+                'Unidad Academica o Centro de Costo *': "None",
+                'Año de edicion': t.Anio,
+                'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || IfError(Text(Value(t.HRID)), t.HRID) in colHrFicha.Hr || CountRows(Filter(colL, HRID = t.HRID && Orden < t.Orden)) > 0, 0, 1),
+                'Unidad de descarte': If(drpUnidadDescarte_2.Selected.Value = "(automático)", t.Bib, drpUnidadDescarte_2.Selected.Value),
+                'Pregrado A - Existencia': t.PA,
+                'Pregrado F - Existencia': t.PF,
+                'Posgrado - Existencia': t.Pos,
+                'Viña - Existencia': t.Vina,
+                'Informar a Finanzas (SI/NO)': "NO",
+                'Forma de Adquisición': "",
+                'Bibliografía de programas académicos (SI/NO)': "NO",
+                'Obra en Volúmenes - Parte de una Colección (SI/NO)': If(t.Tipo = "Issue", "SI", "NO"),
+                'Criterios de Descarte': If(drpCriterio_2.Selected.Value = "(automático)", If(IsBlank(t.Crit), "", First(Split(t.Crit, "|")).Value), drpCriterio_2.Selected.Value),
+                'Justificaciones para aplicar Descarte': If(drpJustificacion_2.Selected.Value = "(automático)", If(IsBlank(t.Crit), "", Last(Split(t.Crit, "|")).Value), drpJustificacion_2.Selected.Value),
+                'Relación Inventario': drpInventario_2.Selected.Value,
+                'Observaciones respecto de la justificación al Descarte': txtObsTanda_2.Text,
+                'Información para no Descartar': "",
+                'Decisión Final Descarte SI/NO': "SI"
+            }'''
+
 BUSCAR = f'''
 Set(varNTanda, CountRows({CODIGOS}));
-ClearCollect(colCodigos, FirstN({CODIGOS}, 200));
+ClearCollect(colCodigos, FirstN({CODIGOS}, 2000));
 If(
     IsEmpty(colCodigos),
         Notify("Escanee o pegue al menos un código.", NotificationType.Warning),
-    If(varNTanda > 200, Notify("Se buscan solo los primeros 200 códigos. Guarde y luego siga con el resto.", NotificationType.Warning));
+    If(varNTanda > 2000, Notify("Se buscan solo los primeros 2.000 códigos. Guarde y luego siga con el resto.", NotificationType.Warning));
     Set(varBuscandoTanda, true);
     Set(varT0, Now());
     Clear(colTanda);
+    Clear(colRes);
+    Clear(colErrLote);
     ClearCollect(colFicha, tblFichaDescarte);
+    ClearCollect(colFichaCod, ForAll(colFicha, {{Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}}));
     ForAll(
-        Sequence(CountRows(colCodigos)) As i,
+        Sequence(RoundUp(CountRows(colCodigos) / 200, 0)) As k,
         With(
-            {{cod: Index(colCodigos, i.Value).Value}},
+            {{txt: Concat(FirstN(LastN(colCodigos, CountRows(colCodigos) - (k.Value - 1) * 200), 200), Value, ",")}},
             With(
-                {{r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), "")}},
-                With(
-                    {{j: ParseJSON(If(IsBlank(r), "{{}}", r))}},
+                {{r: IfError(Text(BuscarLoteFOLIO.Run(txt).datos), "")}},
+                If(
+                    IsBlank(r),
+                        Collect(colErrLote, {{Lote: k.Value}}),
                     Collect(
-                        colTanda,
-                        {{
-                            Orden: i.Value,
-                            Codigo: cod,
-                            Estado: If(cod in colFicha.'Codigo de Barra', "Ya en ficha", IsBlank(r), "Error", Text(j.encontrado) = "SI", "Listo", "No en FOLIO"),
-                            HRID: Text(j.hrid),
-                            copia: Text(j.copia),
-                            Tipo: Text(j.tipo),
-                            Ubicacion: Text(j.ubicacion),
-                            Titulo: Text(j.titulo),
-                            Autor: Text(j.autor),
-                            Idioma: Text(j.idioma),
-                            Fecha: Text(j.fecha),
-                            Anio: Text(j.anio),
-                            PA: Coalesce(Value(j.exA), 0),
-                            PF: Coalesce(Value(j.exF), 0),
-                            Pos: Coalesce(Value(j.exP), 0),
-                            Vina: Coalesce(Value(j.exV), 0)
-                        }}
+                        colRes,
+                        ForAll(
+                            IfError(Table(ParseJSON(Text(ParseJSON(r).datos))), IfError(Table(ParseJSON(r)), Table(ParseJSON("[]")))) As x,
+                            {{
+                                Codigo: Text(x.Value.codigo),
+                                HRID: Text(x.Value.hrid),
+                                Copia: Text(x.Value.copia),
+                                Tipo: Text(x.Value.tipo),
+                                Ubicacion: Text(x.Value.ubicacion),
+                                Bib: Text(x.Value.bib),
+                                Crit: Text(x.Value.crit),
+                                Titulo: Text(x.Value.titulo),
+                                Autor: Text(x.Value.autor),
+                                Idioma: Text(x.Value.idioma),
+                                Fecha: Text(x.Value.fecha),
+                                Anio: Text(x.Value.anio),
+                                PA: Coalesce(Value(Text(x.Value.exA)), 0),
+                                PF: Coalesce(Value(Text(x.Value.exF)), 0),
+                                Pos: Coalesce(Value(Text(x.Value.exP)), 0),
+                                Vina: Coalesce(Value(Text(x.Value.exV)), 0)
+                            }}
+                        )
                     )
                 )
             )
         )
     );
+    ForAll(
+        Sequence(CountRows(colCodigos)) As i,
+        With(
+            {{cod: Index(colCodigos, i.Value).Value}},
+            With(
+                {{f: LookUp(colRes, Codigo = cod), en: LookUp(colFichaCod, Cod = cod)}},
+                Collect(
+                    colTanda,
+                    {{
+                        Orden: i.Value,
+                        Codigo: cod,
+                        Estado: If(!IsBlank(en) && en.Completo, "Ya en ficha", IsBlank(f), If(IsEmpty(colErrLote), "No en FOLIO", "Error"), !IsBlank(en), "Completar", "Listo"),
+                        HRID: f.HRID,
+                        Copia: f.Copia,
+                        Tipo: f.Tipo,
+                        Ubicacion: f.Ubicacion,
+                        Bib: f.Bib,
+                        Crit: f.Crit,
+                        Titulo: f.Titulo,
+                        Autor: f.Autor,
+                        Idioma: f.Idioma,
+                        Fecha: f.Fecha,
+                        Anio: f.Anio,
+                        PA: Coalesce(f.PA, 0),
+                        PF: Coalesce(f.PF, 0),
+                        Pos: Coalesce(f.Pos, 0),
+                        Vina: Coalesce(f.Vina, 0)
+                    }}
+                )
+            )
+        )
+    );
     Set(varSegTanda, DateDiff(varT0, Now(), TimeUnit.Seconds));
-    Set(varBuscandoTanda, false)
+    Set(varBuscandoTanda, false);
+    If(!IsEmpty(colErrLote), Notify("FOLIO no respondió en " & CountRows(colErrLote) & " parte(s) del lote. Presione BUSCAR de nuevo.", NotificationType.Error))
 )'''
 
 GUARDAR = '''
 Set(varGuardandoTanda, true);
-Clear(colGuardados);
-Clear(colFallidos);
-With(
-    {
-        base: Coalesce(Max(colFicha, Value(Número)), 0),
-        L: Sort(Filter(colTanda, Estado = "Listo"), Orden)
-    },
-    ForAll(
-        Sequence(CountRows(L)) As i,
-        With(
-            {t: Index(L, i.Value)},
-            IfError(
-                Collect(
-                    colGuardados,
-                    Patch(
-                        tblFichaDescarte,
-                        Defaults(tblFichaDescarte),
-                        {
-                            Número: Text(base + i.Value),
-                            'Item ingresado en la base de biblioteca': "SI",
-                            HRID: t.HRID,
-                            'Codigo de Barra': t.Codigo,
-                            'Cruce Archivo activo Fijo (Finanzas)': "Esta en archivo",
-                            'Valor Neto': "",
-                            copia: t.copia,
-                            'Tipo de Material': t.Tipo,
-                            'Biblioteca-Ubicacion-Colección': t.Ubicacion,
-                            Título: t.Titulo,
-                            Autor: t.Autor,
-                            Idioma: t.Idioma,
-                            'Vinculado UAI (SI/NO)': "NO",
-                            'Fecha registro (ingresado en la base)': t.Fecha,
-                            'Número de POL *': "",
-                            'Unidad Academica o Centro de Costo *': "Desconocida",
-                            'Año de edición': t.Anio,
-                            'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || t.HRID in colFicha.HRID || (i.Value > 1 && t.HRID in FirstN(L, i.Value - 1).HRID), 0, 1),
-                            'Unidad de descarte': drpUnidadDescarte_2.Selected.Value,
-                            'Pregrado  A - Existencia': t.PA,
-                            'Pregrado  F - Existencia': t.PF,
-                            'Posgrado - Existencia': t.Pos,
-                            'Viña - Existencia': t.Vina,
-                            'Informar a Finanzas (SI/NO)': "SI",
-                            'Forma de Adquisición': "Desconocida",
-                            'Bibliografía de programas académicos (SI/NO)': "Por confirmar",
-                            'Obra en Volúmenes - Parte de una Colección (SI/NO)': "NO",
-                            'Criterios de Descarte': drpCriterio_2.Selected.Value,
-                            'Justificaciones para aplicar Descarte': drpJustificacion_2.Selected.Value,
-                            'Relación Inventario': drpInventario_2.Selected.Value,
-                            'Observaciones respecto de la justificación al Descarte': txtObsTanda_2.Text,
-                            'Información para no Descartar': "",
-                            'Decisión Final Descarte SI/NO': Blank()
-                        }
-                    )
-                );
-                true,
-                Collect(colFallidos, {Codigo: t.Codigo});
-                false
-            )
+Set(varT0, Now());
+ClearCollect(colFicha, tblFichaDescarte);
+ClearCollect(colHrFicha, ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), {Hr: Text(HRID)}));
+ClearCollect(colL, Sort(Filter(colTanda, Estado = "Listo" || Estado = "Completar"), Orden));
+IfError(
+    If(
+        CountRows(Filter(colL, Estado = "Listo")) > 0,
+        Collect(tblFichaDescarte, ForAll(Filter(colL, Estado = "Listo") As t, ''' + REC + '''))
+    );
+    true,
+    Notify("No se pudieron agregar filas nuevas: " & FirstError.Message, NotificationType.Error)
+);
+IfError(
+    If(
+        CountRows(Filter(colL, Estado = "Completar")) > 0,
+        Patch(
+            tblFichaDescarte,
+            ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
+            ForAll(Filter(colL, Estado = "Completar") As t, ''' + REC + ''')
         )
-    )
+    );
+    true,
+    Notify("No se pudieron completar filas existentes: " & FirstError.Message, NotificationType.Error)
 );
 ClearCollect(colFicha, tblFichaDescarte);
-UpdateIf(colTanda, Codigo in colGuardados.'Codigo de Barra', {Estado: "Guardado"});
-UpdateIf(colTanda, Codigo in colFallidos.Codigo, {Estado: "Error"});
-If(CountRows(colGuardados) > 0,
+ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+UpdateIf(colTanda, (Estado = "Listo" || Estado = "Completar") && !IsBlank(LookUp(colFichaCod, Cod = Codigo && Completo)), {Estado: "Guardado"});
+UpdateIf(colTanda, Estado = "Listo" || Estado = "Completar", {Estado: "Error"});
+Set(varSegGuardado, DateDiff(varT0, Now(), TimeUnit.Seconds));
+If(CountIf(colTanda, Estado = "Guardado") > 0,
     If(IsBlank(varInicio), Set(varInicio, Now()));
-    Set(varContador, Coalesce(varContador, 0) + CountRows(colGuardados));
-    Set(varUltimo, Last(colGuardados).Número & " — tanda de " & CountRows(colGuardados) & " libros")
+    Set(varContador, Coalesce(varContador, 0) + CountIf(colTanda, Estado = "Guardado"));
+    Set(varUltimo, "Lote de " & CountIf(colTanda, Estado = "Guardado") & " ítems · " & varSegGuardado & " s")
 );
 Set(varGuardandoTanda, false);
 If(
-    IsEmpty(colFallidos),
-        Notify("Guardados " & CountRows(colGuardados) & " libros en la ficha.", NotificationType.Success, 3000),
-    Notify("Guardados " & CountRows(colGuardados) & ". No se pudieron guardar " & CountRows(colFallidos) & " (quedan en rojo; presione guardar de nuevo para reintentar).", NotificationType.Error)
+    CountIf(colTanda, Estado = "Error") = 0,
+        Notify("Guardados " & CountIf(colTanda, Estado = "Guardado") & " ítems en la ficha (" & varSegGuardado & " s).", NotificationType.Success, 3000),
+    Notify("Guardados " & CountIf(colTanda, Estado = "Guardado") & ". Quedaron " & CountIf(colTanda, Estado = "Error") & " con error: presione 1 · BUSCAR y guarde de nuevo.", NotificationType.Error)
 )'''
 # reintento: los "Error" de guardado vuelven a "Listo" antes de guardar
-GUARDAR = GUARDAR.replace('Set(varGuardandoTanda, true);', 'Set(varGuardandoTanda, true);\nUpdateIf(colTanda, Estado = "Error" && Codigo in colFallidos.Codigo, {Estado: "Listo"});', 1)
+
 # mover Clear(colFallidos) después del UpdateIf de reintento
-GUARDAR = GUARDAR.replace('Clear(colGuardados);\nClear(colFallidos);', 'Clear(colGuardados);\nClear(colFallidos);')
+
 
 VACIAR = '''
 Clear(colTanda);
@@ -271,7 +310,7 @@ SetFocus(txtTanda_2)'''
 def badge(color, txt):
     return f"<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:{color}'>{txt}</span>"
 
-COLOR_ESTADO = 'Switch(Estado, "Listo", "#1B2A4A", "Ya en ficha", "#8A8D91", "Guardado", "#111111", "#B3261E")'
+COLOR_ESTADO = 'Switch(Estado, "Listo", "#1B2A4A", "Completar", "#3F4247", "Ya en ficha", "#8A8D91", "Guardado", "#111111", "#B3261E")'
 PREVIA = f'''=With(
     {{T: Sort(colTanda, Orden)}},
     "<div style='margin:10px 12px;height:448px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column'>" &
@@ -282,6 +321,7 @@ PREVIA = f'''=With(
     "<div style='white-space:nowrap'>" &
     If(CountIf(T, Estado = "Listo") > 0, "{badge('#1B2A4A', '" & CountIf(T, Estado = "Listo") & " LISTOS')}", "") &
     If(CountIf(T, Estado = "Guardado") > 0, "{badge('#111111', '" & CountIf(T, Estado = "Guardado") & " GUARDADOS')}", "") &
+    If(CountIf(T, Estado = "Completar") > 0, "{badge('#3F4247', '" & CountIf(T, Estado = "Completar") & " COMPLETAR FILA')}", "") &
     If(CountIf(T, Estado = "Ya en ficha") > 0, "{badge('#8A8D91', '" & CountIf(T, Estado = "Ya en ficha") & " YA EN FICHA')}", "") &
     If(CountIf(T, Estado = "No en FOLIO") > 0, "{badge('#B3261E', '" & CountIf(T, Estado = "No en FOLIO") & " NO EN FOLIO')}", "") &
     If(CountIf(T, Estado = "Error") > 0, "{badge('#B3261E', '" & CountIf(T, Estado = "Error") & " CON ERROR')}", "") &
@@ -314,7 +354,7 @@ controles2 = [
     switch('2', True, S1, 'Pegue o escanee muchos códigos'),
     *lote,
     label('lblPasoCodigos_2', '="Códigos de la tanda"', 80, 324, 250, h=20, size=11, color='#111111'),
-    label('lblConteo_2', f'=CountRows({CODIGOS}) & " CÓDIGOS · MÁX. 200"', 340, 328, 240, color='#8A8D91', align='Right'),
+    label('lblConteo_2', f'=CountRows({CODIGOS}) & " CÓDIGOS · MÁX. 2.000"', 340, 328, 240, color='#8A8D91', align='Right'),
     f'''      - txtTanda_2:
           Control: Classic/TextInput@2.3.2
           Properties:
