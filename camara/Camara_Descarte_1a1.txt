@@ -1,0 +1,13 @@
+- barCamara_1:
+    Control: BarcodeReader@0.0.30
+    Properties:
+      Color: =ColorValue("#FFFFFF")
+      DisplayMode: =If(varBuscando, DisplayMode.Disabled, DisplayMode.Edit)
+      Fill: =ColorValue("#111111")
+      Height: =44
+      OnScan: |-
+        =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesarEscaneo))
+      Text: ="📷"
+      Width: =48
+      X: =390
+      Y: =366
