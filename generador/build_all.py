@@ -16,10 +16,10 @@ descarte(R + '/descarte/Pantalla_1_Lectura_1a1.txt', R + '/pantallas/2_Descarte_
 descarte(R + '/descarte/Pantalla_2_Lectura_Masiva.txt', R + '/pantallas/3_Descarte_Masiva.txt', '2',
          'OnVisible: =ClearCollect(colFicha, tblFichaDescarte); SetFocus(txtTanda_2)')
 open(R + '/pantallas/1_Inicio.txt', 'w').write(inicio())
-open(R + '/pantallas/7_Inventario.txt', 'w').write(en_construccion('scrInventario', '7', 'Inventario', 'Aquí irá la toma de inventario de la colección.'))
 
 subprocess.run(['python3', 'prestamo.py'], check=True)
 subprocess.run(['python3', 'devolucion.py'], check=True)
+subprocess.run(['python3', 'inventario.py'], check=True)
 
 subprocess.run(['python3', 'morosos.py'], check=True)
 
@@ -43,3 +43,9 @@ import tema
 for arch, sfx in [('1_Inicio.txt', '0'), ('2_Descarte.txt', '1'), ('3_Descarte_masiva.txt', '2'), ('4_Prestamo.txt', '4'),
                   ('5_Devolucion.txt', '5'), ('6_Morosos.txt', '6'), ('7_Inventario.txt', '7')]:
     tema.aplicar(R + '/pantallas/' + arch, sfx)
+
+# Un solo archivo con toda la app (pegar de una vez)
+out = ['Screens:']
+for f in ['1_Inicio.txt', '2_Descarte.txt', '3_Descarte_masiva.txt', '4_Prestamo.txt', '5_Devolucion.txt', '6_Morosos.txt', '7_Inventario.txt']:
+    out += open(R + '/pantallas/' + f).read().rstrip('\n').split('\n')[1:]
+open(R + '/pantallas/0_APP_COMPLETA.txt', 'w').write('\n'.join(out) + '\n')
