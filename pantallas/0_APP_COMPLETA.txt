@@ -2077,6 +2077,32 @@ Screens:
             Width: =686
             X: =640
             Y: =704
+      - btnTodos_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            Visible: =!IsBlank(varRes) && CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in colFicha.'Codigo de Barra'))) > 1
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            DisplayMode: =DisplayMode.Edit
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Normal
+            Height: =32
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varTandaTexto, Concat(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in colFicha.'Codigo de Barra')), Trim(Value) & Char(10))); Navigate('Descarte masiva', ScreenTransition.Fade)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: ="＋  AGREGAR LOS " & CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in colFicha.'Codigo de Barra'))) & " EJEMPLARES DE ESTE TÍTULO (MISMA BIBLIOTECA) A LECTURA MASIVA   →"
+            Width: =686
+            X: =640
+            Y: =728
       - btnProcesarEscaneo:
           Control: Classic/Button@2.2.0
           Properties:

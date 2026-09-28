@@ -44,6 +44,19 @@ for arch, sfx in [('1_Inicio.txt', '0'), ('2_Descarte.txt', '1'), ('3_Descarte_m
                   ('5_Devolucion.txt', '5'), ('6_Morosos.txt', '6'), ('7_Inventario.txt', '7')]:
     tema.aplicar(R + '/pantallas/' + arch, sfx)
 
+# Descarte 1 a 1: enviar todos los ejemplares del título (misma biblioteca) a Lectura masiva
+from comun import boton as _boton
+TODOS = 'Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in colFicha.\'Codigo de Barra\'))'
+_b = _boton('btnTodos_1', 640, 728, 686, 32,
+            '"＋  AGREGAR LOS " & CountRows(' + TODOS + ') & " EJEMPLARES DE ESTE TÍTULO (MISMA BIBLIOTECA) A LECTURA MASIVA   →"',
+            'Set(varTandaTexto, Concat(' + TODOS + ', Trim(Value) & Char(10))); Navigate(\'Descarte masiva\', ScreenTransition.Fade)',
+            dark=False, size=9)
+_b = _b.replace('          Properties:\n', '          Properties:\n            Visible: =!IsBlank(varRes) && CountRows(' + TODOS + ') > 1\n', 1)
+_p = R + '/pantallas/2_Descarte.txt'
+_t = open(_p).read()
+_i = _t.index('      - btnProcesarEscaneo:')
+open(_p, 'w').write(_t[:_i] + _b.rstrip('\n') + '\n' + _t[_i:])
+
 # Buscadores que la cámara rellena (Default = variable)
 def set_default(arch, ctrl, expr):
     p = R + '/pantallas/' + arch

@@ -1,0 +1,29 @@
+DEFINE
+    VAR _bc = "CODIGO_AQUI"
+    VAR _it = TOPN ( 1, FILTER ( f_items, f_items[barcode] = _bc ) )
+    VAR _inst = MAXX ( _it, f_items[f_holdings_script.instanceId] )
+    VAR _ins = FILTER ( f_instances, f_instances[id] = _inst )
+    VAR _c = MAXX ( _ins, f_instances[contributors] )
+    VAR _p = SEARCH ( "'name': '", _c, 1, 0 )
+    VAR _autor = IF ( _p = 0, "", MID ( _c, _p + 9, SEARCH ( "'", _c, _p + 9, LEN ( _c ) + 1 ) - _p - 9 ) )
+    VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _inst )
+    VAR _bib = MAXX ( _it, f_items[f_locations_script.biblioteca] )
+    VAR _hay = NOT ISEMPTY ( _it )
+EVALUATE
+ROW (
+    "encontrado", IF ( _hay, "SI", "NO" ),
+    "hrid", MAXX ( _it, f_items[f_instances_script.hrid] ),
+    "copia", MAXX ( _it, f_items[copyNumber] ),
+    "tipo", MAXX ( _it, f_items[f_mtypes_script.name] ),
+    "ubicacion", MAXX ( _it, TRIM ( f_items[f_locations_script.biblioteca] ) & " - " & TRIM ( f_items[f_locations_script.ubicación] ) ),
+    "fecha", FORMAT ( MAXX ( _it, f_items[CreationDate] ), "dd-mm-yyyy" ),
+    "anio", MAXX ( _it, f_items[f_intancesPublication.dateOfPublication] ),
+    "titulo", MAXX ( _ins, f_instances[title] ),
+    "autor", _autor,
+    "idioma", SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( _ins, f_instances[languages] ), "[", "" ), "]", "" ), "'", "" ),
+    "exA", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. A" ) ) ) + 0, 0 ),
+    "exF", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. F" ) ) ) + 0, 0 ),
+    "exP", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Postgrado" ) ) ) + 0, 0 ),
+    "exV", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Viña" ) ) ) + 0, 0 ),
+    "todos", IF ( _hay, CONCATENATEX ( FILTER ( _todos, f_items[f_locations_script.biblioteca] = _bib && NOT ISBLANK ( f_items[barcode] ) ), f_items[barcode], ",", f_items[barcode], ASC ), "" )
+)
