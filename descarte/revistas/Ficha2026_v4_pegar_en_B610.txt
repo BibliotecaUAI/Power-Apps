@@ -1,5 +1,5 @@
 DEFINE
-    VAR _codes = DATATABLE ( "fila", INTEGER, "cod", STRING, { { 610, "38749" }, { 611, "48159" }, { 612, "48582" }, { 613, "49708" } } )
+    VAR _codes = DATATABLE ( "fila", INTEGER, "cod", STRING, { { 610, "038749" }, { 611, "048159" }, { 612, "048582" }, { 613, "049708" } } )
     VAR _b0 =
         ADDCOLUMNS (
             _codes,
