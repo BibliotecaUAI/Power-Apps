@@ -7,6 +7,23 @@ ITEMS = [('⌂', 'Inicio', 'scrInicio'), ('▤', 'Descarte', 'scrDescarteB'), ('
          ('↙', 'Devolución', 'scrDevolucion'), ('▦', 'Morosos', 'scrPanel'), ('▣', 'Inventario', 'scrInventario')]
 SCREENS = [s for _, _, s in ITEMS]
 
+
+ICON_PATHS = {
+    'Inicio': '<path d=%22M3 11l9-7 9 7%22/><path d=%22M5 10v10h14V10%22/><path d=%22M10 20v-6h4v6%22/>',
+    'Descarte': '<path d=%22M4 7h16%22/><path d=%22M9 7V4h6v3%22/><path d=%22M6 7l1 13h10l1-13%22/><path d=%22M10 11v6M14 11v6%22/>',
+    'Préstamo': '<path d=%22M4 5h9a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2z%22/><path d=%22M15 12h6M18 9l3 3-3 3%22/>',
+    'Devolución': '<path d=%22M11 5h9v14h-9a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z%22/><path d=%22M9 12H3M6 9l-3 3 3 3%22/>',
+    'Morosos': '<circle cx=%2212%22 cy=%2213%22 r=%227%22/><path d=%22M12 9v4l2.5 2%22/><path d=%22M5 4l-2 2M19 4l2 2%22/>',
+    'Inventario': '<path d=%22M4 6v12M7 6v12M10 6v12M14 6v12M17 6v12M20 6v12%22/><path d=%22M2 3h4M18 3h4M2 21h4M18 21h4%22/>',
+}
+
+def icono(nombre, color, px=20):
+    """Ícono de línea (SVG como imagen, igual que los destellos)."""
+    c = color.replace('#', '%23')
+    return (f"<img style='display:block' width='{px}' height='{px}' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 "
+            f"width=%22{px}%22 height=%22{px}%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22{c}%22 stroke-width=%221.6%22 "
+            f"stroke-linecap=%22round%22 stroke-linejoin=%22round%22>{ICON_PATHS[nombre]}</svg>'/>")
+
 def q(s):  # texto HTML dentro de un literal Power Fx
     return s.replace('"', '""')
 
@@ -19,7 +36,7 @@ def rail_html(active, abierto):
                 if on else "color:#8A8D91;")
         nombre = (f"<span style='margin-left:14px;font-size:12px;font-weight:{700 if on else 400};letter-spacing:1px'>{t}</span>" if abierto else '')
         items += (f"<div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;{'width:200px;' if abierto else 'width:44px;'}border-radius:12px;display:flex;align-items:center;"
-                  f"{'padding-left:12px;box-sizing:border-box;' if abierto else 'justify-content:center;'}{caja}'><span style='font-size:18px;width:20px;text-align:center'>{ic}</span>{nombre}</div></div>")
+                  f"{'padding-left:12px;box-sizing:border-box;' if abierto else 'justify-content:center;'}{caja}'><span style='width:20px;display:flex;justify-content:center'>{icono(t, '#FFFFFF' if on else '#8A8D91')}</span>{nombre}</div></div>")
     menu = "<span style='margin-left:14px;font-size:10px;letter-spacing:2px'>MENÚ</span>" if abierto else ''
     return (f"<div style='margin:14px 0 0 14px;width:{w}px;height:740px;border-radius:18px;{SILVER_V};border:1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.28);"
             f"font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden;box-sizing:border-box'>"
@@ -187,6 +204,7 @@ def inicio():
              label('lblSaludo_0', '="Hola, " & First(Split(User().FullName, " ")).Value & ". ¿Qué quieres hacer hoy?"', 96, 112, 700, h=22, size=12, color='#111111'),
              label('lblFecha_0', '=Text(Today(), "dddd d ""de"" mmmm ""de"" yyyy", "es-CL") & " · elige un módulo o usa el menú"', 96, 134, 700, h=18, size=10, color='#3F4247', bold=False)]
     for i, (p, t) in enumerate(zip(pos, tarjetas)):
+        t = ("<div style='display:flex;justify-content:center'>" + icono(t[1], '#FFFFFF', 22) + '</div>',) + tuple(t[1:])
         ctrls.append(tarjeta('0', i, *p, *t))
     fila = ('"<tr><td style=\'padding:8px;border-bottom:1px solid " & varT.hLin & "\'>" & Text(DateValue(FechaPrestamo), "dd-mm") & "</td>'
             '<td style=\'padding:8px;border-bottom:1px solid " & varT.hLin & "\'>" & Nombre & " " & Apellido & "</td>'
