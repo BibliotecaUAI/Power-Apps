@@ -2,6 +2,8 @@
 # Genera pantallas/6_Panel.txt → pantalla de MOROSOS (datos reales de FOLIO vía flujo ListaMorososFOLIO)
 from comun import (label, header, rail, pantalla, CARD, ESC, html, boton, fondo, oculto, lista, badge, validar)
 
+SIN_TILDES = ('Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Substitute({x}, "á", "a"), "é", "e"), "í", "i"), '
+              '"ó", "o"), "ú", "u"), "ü", "u"), "ñ", "n")')
 NIVEL = 'If(Dias < 61, "Nivel 0", Dias < 731, "Nivel 1", Dias < 1825, "Nivel 2", "Nivel 3")'
 
 CARGAR = '''
@@ -44,7 +46,7 @@ ClearCollect(
     Sort(
         Filter(
             AddColumns(colMorosos, Nivel, ''' + NIVEL + '''),
-            (IsBlank(Trim(txtBuscarMor_6.Text)) || Lower(Trim(txtBuscarMor_6.Text)) in Lower(Nombre)
+            (IsBlank(Trim(txtBuscarMor_6.Text)) || ''' + SIN_TILDES.format(x='Lower(Trim(txtBuscarMor_6.Text))') + ''' in ''' + SIN_TILDES.format(x='Lower(Nombre)') + '''
                 || Upper(Substitute(Substitute(Substitute(Trim(txtBuscarMor_6.Text), ".", ""), "-", ""), " ", "")) in Upper(Substitute(Substitute(RUT, ".", ""), "-", ""))),
             (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
             (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)

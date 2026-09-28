@@ -247,7 +247,7 @@ Screens:
                   Sort(
                       Filter(
                           AddColumns(colMorosos, Nivel, If(Dias < 61, "Nivel 0", Dias < 731, "Nivel 1", Dias < 1825, "Nivel 2", "Nivel 3")),
-                          (IsBlank(Trim(txtBuscarMor_6.Text)) || Lower(Trim(txtBuscarMor_6.Text)) in Lower(Nombre)
+                          (IsBlank(Trim(txtBuscarMor_6.Text)) || Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Lower(Trim(txtBuscarMor_6.Text)), "á", "a"), "é", "e"), "í", "i"), "ó", "o"), "ú", "u"), "ü", "u"), "ñ", "n") in Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Lower(Nombre), "á", "a"), "é", "e"), "í", "i"), "ó", "o"), "ú", "u"), "ü", "u"), "ñ", "n")
                               || Upper(Substitute(Substitute(Substitute(Trim(txtBuscarMor_6.Text), ".", ""), "-", ""), " ", "")) in Upper(Substitute(Substitute(RUT, ".", ""), "-", ""))),
                           (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
                           (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
