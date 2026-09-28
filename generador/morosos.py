@@ -12,13 +12,15 @@ If(
     IsBlank(varResMor),
         Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
     With(
-        {j: With({o: ParseJSON(If(IsBlank(varResMor), "{}", varResMor))}, If(IsBlank(Text(o.datos)), o, ParseJSON(Text(o.datos))))},
-        Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));
-        Set(varMorLibros, Coalesce(Value(Text(j.libros)), 0));
+        {j: IfError(ParseJSON(Text(ParseJSON(varResMor).datos)), ParseJSON(varResMor))},
+        With(
+            {filas: IfError(Table(j.lista), Table(j))},
+            Set(varMorTotal, Coalesce(IfError(Value(Text(j.total)), Blank()), IfError(Value(Text(First(filas).Value.total)), Blank()), CountRows(filas)));
+            Set(varMorLibros, Coalesce(IfError(Value(Text(j.libros)), Blank()), IfError(Value(Text(First(filas).Value.libros)), Blank()), 0));
         ClearCollect(
             colMorosos,
             ForAll(
-                Table(j.lista),
+                filas,
                 {
                     RUT: Text(ThisRecord.Value.rut),
                     Nombre: Text(ThisRecord.Value.nombre),
@@ -31,6 +33,7 @@ If(
             )
         );
         Set(varMorFecha, Now())
+        )
     )
 );
 Select(btnFiltrar_6)'''

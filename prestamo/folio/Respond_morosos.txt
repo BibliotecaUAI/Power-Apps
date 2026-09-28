@@ -1,0 +1,1 @@
+replace(replace(string(outputs('ConsultaPBI')?['body/firstTableRows']),'"[','"'),']":','":')
