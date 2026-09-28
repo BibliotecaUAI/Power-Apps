@@ -427,7 +427,8 @@ Screens:
                                       Observaciones: txtObs_4.Text
                                   }
                               )
-                          ),
+                          );
+                          true,
                           Notify("No se pudo registrar " & x.Codigo & ": " & FirstError.Message, NotificationType.Error)
                       )
                   )
@@ -439,7 +440,8 @@ Screens:
                           Coalesce(varCorreoPrueba, varUsuario.Correo),
                           "Resumen de tu préstamo · Bibliotecas UAI",
                           "<div style='font-family:Segoe UI,Arial,sans-serif;color:#111111'><div style='background:#111111;color:#FFFFFF;padding:18px 22px'><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8'>BIBLIOTECAS UAI</div><div style='font-size:20px;font-weight:700'>Resumen de tu préstamo</div></div><div style='padding:18px 22px'><p>Hola " & Coalesce(varUsuario.NombreSugerido, varUsuario.Nombre) & ", registramos este préstamo a tu nombre (prueba):</p><table style='border-collapse:collapse;font-size:13px'><tr style='border-bottom:1px solid #111111;text-align:left'><th style='padding:6px 10px'>Título</th><th style='padding:6px 10px'>Código</th><th style='padding:6px 10px'>Devolver antes del</th></tr>" & Concat(colRegistrados, "<tr style='border-bottom:1px solid #DADCDF'><td style='padding:6px 10px'>" & Titulo & "</td><td style='padding:6px 10px'>" & CodigoBarra & "</td><td style='padding:6px 10px'><b>" & Text(DateValue(FechaVencimiento), "dd-mm-yyyy") & "</b></td></tr>") & "</table><p style='color:#3F4247;font-size:12px'>" & drpBiblioteca_4.Selected.Value & " · " & Text(Now(), "dd-mm-yyyy hh:mm") & "</p></div></div>"
-                      ),
+                      );
+                      true,
                       Notify("Préstamo guardado, pero no se pudo enviar el correo.", NotificationType.Warning)
                   )
               );

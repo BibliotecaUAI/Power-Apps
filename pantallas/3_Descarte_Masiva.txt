@@ -597,8 +597,10 @@ Screens:
                                           'Decisión Final Descarte SI/NO': Blank()
                                       }
                                   )
-                              ),
-                              Collect(colFallidos, {Codigo: t.Codigo})
+                              );
+                              true,
+                              Collect(colFallidos, {Codigo: t.Codigo});
+                              false
                           )
                       )
                   )

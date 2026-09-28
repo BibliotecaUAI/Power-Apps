@@ -238,7 +238,8 @@ Screens:
                                   DiasAtraso: Text(x.Atraso)
                               }
                           )
-                      ),
+                      );
+                      true,
                       Notify("No se pudo registrar " & x.Codigo & ": " & FirstError.Message, NotificationType.Error)
                   )
               );
