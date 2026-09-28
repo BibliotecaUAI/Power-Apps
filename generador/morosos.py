@@ -34,20 +34,6 @@ If(
                 }
             )
         );
-        ClearCollect(
-            colMorLibros,
-            ForAll(
-                IfError(Table(j.det), Table(ParseJSON("[]"))),
-                {
-                    RUT: Text(ThisRecord.Value.rut),
-                    Titulo: Text(ThisRecord.Value.titulo),
-                    Codigo: Text(ThisRecord.Value.codigo),
-                    Bib: Text(ThisRecord.Value.bib),
-                    Vence: Text(ThisRecord.Value.vence),
-                    Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
-                }
-            )
-        );
         Set(varMorFecha, Now())
         )
     )
@@ -70,16 +56,34 @@ ClearCollect(
     )
 )'''
 
+FILTRAR = FILTRAR + ''';
+If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))'''
 
 DETALLE = '''
-With(
-    {u: LookUp(colMorosos, RUT = varSelRut)},
-    Set(varDet, {RUT: u.RUT, Nombre: u.Nombre, Apellido: "", Correo: u.Correo, Tipo: u.Tipo})
-);
-ClearCollect(colDet, Sort(Filter(colMorLibros, RUT = varSelRut), Dias, SortOrder.Descending))'''
-
-FILTRAR = FILTRAR + ''';
-If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); ''' + DETALLE + ''')'''
+If(
+    !IsBlank(varSelRut),
+    Set(varCargandoDet, true);
+    Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+    Set(varCargandoDet, false);
+    With(
+        {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
+        Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
+                     Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
+        ClearCollect(
+            colDet,
+            ForAll(
+                IfError(Table(j.lista), Table(ParseJSON("[]"))),
+                {
+                    Titulo: Text(ThisRecord.Value.titulo),
+                    Codigo: Text(ThisRecord.Value.codigo),
+                    Bib: Text(ThisRecord.Value.bib),
+                    Vence: Text(ThisRecord.Value.vence),
+                    Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                }
+            )
+        )
+    )
+)'''
 
 TD = "padding:6px 8px;border-bottom:1px solid #DADCDF"
 CORREO_DET = (
@@ -225,13 +229,14 @@ ctrls = [
     html('htmlDetalle_6', 644, 290, 694, 428, DETALLE_HTML),
     lista('drpSelMor_6', 666, 348, 540, 'ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})', '""'),
     boton('btnVerDet_6', 1214, 348, 102, 30, 'If(varCargandoDet, "…", "Ver detalle")',
-          'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); ' + DETALLE,
+          'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)',
           displaymode='If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)', dark=False, size=9),
     label('lblDestino_6', '="ENVIAR A"', 666, 628, 80, h=30, size=7),
     lista('drpDestino_6', 740, 628, 300, '["A mi correo (prueba)", "Al correo del usuario"]', '"A mi correo (prueba)"'),
     fondo('htmlEnviarFondo_6', 'btnEnviarDet_6', 666, 666, 650, 40),
     boton('btnEnviarDet_6', 666, 666, 650, 40, '"✉  ENVIAR CORREO DE MOROSIDAD"', ENVIAR_DET,
           displaymode='If(IsEmpty(colDet), DisplayMode.Disabled, DisplayMode.Edit)', size=10),
+    oculto('btnDetalle_6', DETALLE),
     fondo('htmlActualizarFondo_6', 'btnActualizar_6', 104, 722, 400, 40),
     boton('btnActualizar_6', 104, 722, 400, 40, 'If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")', CARGAR,
           displaymode='If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)', size=10),

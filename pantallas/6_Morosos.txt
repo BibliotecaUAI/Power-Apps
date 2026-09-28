@@ -194,12 +194,7 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =ColorValue("#111111")
             OnSelect: |-
-              =Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); 
-              With(
-                  {u: LookUp(colMorosos, RUT = varSelRut)},
-                  Set(varDet, {RUT: u.RUT, Nombre: u.Nombre, Apellido: "", Correo: u.Correo, Tipo: u.Tipo})
-              );
-              ClearCollect(colDet, Sort(Filter(colMorLibros, RUT = varSelRut), Dias, SortOrder.Descending))
+              =Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)
             PressedFill: =ColorValue("#3F4247")
             RadiusBottomLeft: =12
             RadiusBottomRight: =12
@@ -300,6 +295,46 @@ Screens:
             Width: =650
             X: =666
             Y: =666
+      - btnDetalle_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              If(
+                  !IsBlank(varSelRut),
+                  Set(varCargandoDet, true);
+                  Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+                  Set(varCargandoDet, false);
+                  With(
+                      {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
+                      Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
+                                   Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
+                      ClearCollect(
+                          colDet,
+                          ForAll(
+                              IfError(Table(j.lista), Table(ParseJSON("[]"))),
+                              {
+                                  Titulo: Text(ThisRecord.Value.titulo),
+                                  Codigo: Text(ThisRecord.Value.codigo),
+                                  Bib: Text(ThisRecord.Value.bib),
+                                  Vence: Text(ThisRecord.Value.vence),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      )
+                  )
+              )
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
       - htmlActualizarFondo_6:
           Control: HtmlViewer@2.1.0
           Properties:
@@ -353,20 +388,6 @@ Screens:
                                   Tipo: Text(ThisRecord.Value.tipo),
                                   Biblioteca: Text(ThisRecord.Value.bib),
                                   Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
-                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
-                              }
-                          )
-                      );
-                      ClearCollect(
-                          colMorLibros,
-                          ForAll(
-                              IfError(Table(j.det), Table(ParseJSON("[]"))),
-                              {
-                                  RUT: Text(ThisRecord.Value.rut),
-                                  Titulo: Text(ThisRecord.Value.titulo),
-                                  Codigo: Text(ThisRecord.Value.codigo),
-                                  Bib: Text(ThisRecord.Value.bib),
-                                  Vence: Text(ThisRecord.Value.vence),
                                   Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
                               }
                           )
@@ -426,12 +447,7 @@ Screens:
                       SortOrder.Descending
                   )
               );
-              If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); 
-              With(
-                  {u: LookUp(colMorosos, RUT = varSelRut)},
-                  Set(varDet, {RUT: u.RUT, Nombre: u.Nombre, Apellido: "", Correo: u.Correo, Tipo: u.Tipo})
-              );
-              ClearCollect(colDet, Sort(Filter(colMorLibros, RUT = varSelRut), Dias, SortOrder.Descending)))
+              If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))
             PressedFill: =RGBA(0, 0, 0, 0)
             TabIndex: =-1
             Text: =""
@@ -471,20 +487,6 @@ Screens:
                                   Tipo: Text(ThisRecord.Value.tipo),
                                   Biblioteca: Text(ThisRecord.Value.bib),
                                   Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
-                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
-                              }
-                          )
-                      );
-                      ClearCollect(
-                          colMorLibros,
-                          ForAll(
-                              IfError(Table(j.det), Table(ParseJSON("[]"))),
-                              {
-                                  RUT: Text(ThisRecord.Value.rut),
-                                  Titulo: Text(ThisRecord.Value.titulo),
-                                  Codigo: Text(ThisRecord.Value.codigo),
-                                  Bib: Text(ThisRecord.Value.bib),
-                                  Vence: Text(ThisRecord.Value.vence),
                                   Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
                               }
                           )
