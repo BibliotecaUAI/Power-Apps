@@ -1,42 +1,54 @@
 # Propuesta — Menú, Préstamo y Devolución (ficticios)
 
-Todo dentro de la **misma app** "Descarte de Libros UAI", horizontal, estilo negro/plateado.
-Los préstamos y devoluciones son **ficticios**: se anotan en Excel, **no** en FOLIO.
-Sin reservas.
+Todo dentro de la misma app, horizontal, **negro y plateado** (sin rojos).
+El **moroso** se distingue con un **borde rojo destellante** (tarjeta del usuario y fila en devolución).
+Préstamos y devoluciones son **ficticios**: se anotan en Excel, no en FOLIO. Sin reservas.
 
-## Pantallas (bocetos en `prestamo/boceto/`)
+Bocetos: `prestamo/boceto/` (inicio, menú, préstamo, moroso, devolución).
 
-| Pantalla | Qué hace |
+## Plazos (hoja `Plazos` del Excel, se pueden editar)
+
+| Tipo de material | Días |
 |---|---|
-| **Menú lateral** | Barra negra a la izquierda con íconos. Al tocar ☰ se abre con los nombres. Marca con una línea plateada dónde estás. |
-| **Inicio** | 4 tarjetas: Descarte, Préstamo, Devolución, Panel, con sus números del día. |
-| **Préstamo** | 1) carné/RUT → busca al usuario en el Excel de usuarios · 2) escanear libros (se suman a la lista, datos de FOLIO) · 3) vencimiento automático según tipo de usuario → REGISTRAR. |
-| **Devolución** | Interruptor 1 a 1 / masiva. Escanear libros → cruza con los préstamos → marca a tiempo / atrasado / no estaba prestado → REGISTRAR. |
-| **Panel** | (después) préstamos activos, vencidos, ranking; desde Power BI o el mismo Excel. |
+| Libro | 28 |
+| iPad | 14 |
+| Kindle | 28 |
+| Calculadora / Test / Mapa | 1 |
+| Colección histórica | Solo sala (no se presta) |
 
-## Excel nuevo: `Prestamos_Ficticios.xlsx`
+El tipo se toma de FOLIO (tipo de material / ubicación). Hay que confirmar los nombres exactos que usa FOLIO.
 
-**Tabla `tblUsuarios`** (la llenas tú con usuarios de prueba)
+## Identificar al usuario
 
-| Carne | RUT | Nombre | Tipo | Carrera o Unidad | Correo | Habilitado |
-|---|---|---|---|---|---|---|
-| U-000123 | 20.456.789-K | Martina Rojas Pérez | Pregrado | Ingeniería Comercial | mrojas@alumnos.uai.cl | SI |
+- Digitar el **RUT**, o
+- **Escanear el QR de la cédula de identidad** con la cámara: el QR trae el RUN, la app lo extrae sola.
+- Datos del usuario (nombre, apellido, nombre sugerido, unidad académica, programa, correo):
+  desde **FOLIO** (hay que agregar la tabla de usuarios al Power BI) o, mientras tanto,
+  desde la hoja `Usuarios` del Excel.
 
-**Tabla `tblPrestamos`** (la llena la app)
+## Correos
 
-| IdPrestamo | Carne | Nombre | Codigo de Barra | HRID | Titulo | Biblioteca | Fecha Prestamo | Fecha Vencimiento | Fecha Devolucion | Estado | Dias Atraso | Registrado Por | Observaciones |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+- **Al prestar:** resumen del préstamo al correo del usuario (libros + fechas de vencimiento).
+- **Morosos:** flujo de Power Automate cada mañana → a cada moroso, un correo con el detalle
+  de lo vencido (como el del dashboard de servicios).
+- En pruebas, todos los correos van a una dirección de prueba.
 
-- Préstamo = fila nueva con Estado "Activo".
-- Devolución = la app busca la fila Activa de ese código y le pone Fecha Devolucion, Días Atraso y Estado "Devuelto".
+## Excel `prestamo/Prestamos_Ficticios.xlsx`
 
-**Plazos por tipo de usuario** (a confirmar): Pregrado 7 días · Postgrado 14 · Académico 30 · Funcionario 14.
+- `tblUsuarios`: RUT, Nombre, Apellido, NombreSugerido, TipoUsuario, UnidadAcademica, Programa, Correo
+- `tblPrestamos`: IdPrestamo, RUT, Nombre, Apellido, NombreSugerido, UnidadAcademica, Programa, Correo,
+  CodigoBarra, Titulo, TipoMaterial, Biblioteca, FechaPrestamo, FechaVencimiento, FechaDevolucion,
+  Estado, DiasAtraso, CorreoEnviado, RegistradoPor, Observaciones
+- `tblPlazos`: TipoMaterial, Dias, SoloSala
+
+Nombres de columnas sin espacios a propósito (lección aprendida con el conector Excel).
 
 ## Orden de trabajo
 
-1. Tú apruebas el boceto (o pides cambios).
-2. Te entrego el Excel listo (`Prestamos_Ficticios.xlsx`) → lo subes a SharePoint.
-3. Menú + Inicio (y se agrega el menú a las pantallas de Descarte).
-4. Préstamo.
-5. Devolución.
-6. Panel.
+1. Aprobar boceto.
+2. Subir el Excel a SharePoint y conectarlo a la app.
+3. Menú + Inicio (y el menú en Descarte).
+4. Préstamo (con QR de cédula y correo de resumen).
+5. Devolución (1 a 1 / masiva).
+6. Flujo de correo a morosos.
+7. Panel.
