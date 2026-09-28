@@ -71,7 +71,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =214
             HoverFill: =RGBA(191, 195, 200, 0.10)
-            OnSelect: =Navigate(scrDescarteB, ScreenTransition.Fade)
+            OnSelect: =Navigate(scrDescarteB, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -103,7 +103,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =214
             HoverFill: =RGBA(191, 195, 200, 0.10)
-            OnSelect: =Navigate(scrPrestamo, ScreenTransition.Fade)
+            OnSelect: =Navigate(scrPrestamo, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -135,7 +135,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =214
             HoverFill: =RGBA(191, 195, 200, 0.10)
-            OnSelect: =Navigate(scrDevolucion, ScreenTransition.Fade)
+            OnSelect: =Navigate(scrDevolucion, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -167,7 +167,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =214
             HoverFill: =RGBA(191, 195, 200, 0.10)
-            OnSelect: =Navigate(scrPanel, ScreenTransition.Fade)
+            OnSelect: =Navigate(scrPanel, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -178,6 +178,20 @@ Screens:
             Width: =588
             X: =716
             Y: =456
+      - htmlBrillo_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =112
+            HtmlText: |-
+              ="<img style='display:block' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%221366%22 height=%22112%22><defs><linearGradient id=%22g%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.16%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient></defs><rect y=%220%22 width=%22260%22 height=%22112%22 fill=%22url(%23g)%22><animate attributeName=%22x%22 values=%22-300;1700;1700%22 keyTimes=%220;0.55;1%22 dur=%227s%22 repeatCount=%22indefinite%22/></rect></svg>'/>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+            X: =0
+            Y: =0
       - btnCerrarMenu_0:
           Control: Classic/Button@2.2.0
           Properties:
@@ -238,7 +252,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.UnCover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -257,7 +271,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -276,7 +290,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -295,7 +309,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -314,7 +328,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
