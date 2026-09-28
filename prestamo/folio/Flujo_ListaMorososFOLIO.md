@@ -27,13 +27,12 @@ DEFINE
         "tipo", MAXX(CURRENTGROUP(), f_loans[Tipo de Usuario]),
         "bib", MAXX(CURRENTGROUP(), f_loans[bibloteca.prestamo])
     )
-    VAR top = TOPN(400, g, [dias], DESC)
+    VAR primeros = TOPN(200, g, [dias], DESC)
     VAR q = UNICHAR(34)
     VAR lista = CONCATENATEX(
-        top,
+        primeros,
         "{" & q & "rut" & q & ":" & q & f_loans[users.RUT] & q
         & "," & q & "nombre" & q & ":" & q & SUBSTITUTE([nombre], q, "'") & q
-        & "," & q & "correo" & q & ":" & q & MAXX(FILTER(f_users, f_users[us.barcode] = f_loans[users.RUT]), f_users[us.personal.email]) & q
         & "," & q & "tipo" & q & ":" & q & [tipo] & q
         & "," & q & "bib" & q & ":" & q & [bib] & q
         & "," & q & "n" & q & ":" & q & [n] & q
@@ -49,3 +48,6 @@ EVALUATE ROW("datos", j)
 ```
 
 Los correos a morosos los sigue enviando **tu flujo actual desde Power BI** (la tabla HTML). Esta pantalla es solo para ver y filtrar.
+
+
+Nota: no usar `top` como nombre de variable (es palabra reservada en DAX).
