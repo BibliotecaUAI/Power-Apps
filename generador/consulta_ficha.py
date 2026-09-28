@@ -4,7 +4,7 @@
 # - Códigos con guion (revistas, ej. 36729-10) quedan igual.
 # - Repetidos: la fila queda solo con el código y "REPETIDO: revisar" en Observaciones.
 import re, sys
-BASE = __file__.replace('generador/consulta_ficha.py', 'descarte/revistas/Ficha2026_v4_pegar_en_B610.txt')
+BASE = __file__.replace('consulta_ficha.py', 'plantilla_ficha2026.txt')
 def norm(c):
     c = c.strip()
     return c.zfill(6) if re.fullmatch(r'\d{1,5}', c) else c
