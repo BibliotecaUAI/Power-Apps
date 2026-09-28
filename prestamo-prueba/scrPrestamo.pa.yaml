@@ -1,0 +1,570 @@
+Screens:
+  scrPrestamo:
+    Properties:
+      Fill: =ColorValue("#EFEFF0")
+      OnVisible: |-
+        =Set(varPaso, "usuario");
+        Set(varEntrada, Blank());
+        Set(varUsuario, Blank());
+        Set(varEjemplar, Blank());
+        Set(varNuevo, Blank());
+        Set(varBuscando, false);
+        Set(varGuardando, false);
+        Set(varFechaPrestamo, Today());
+        Set(varFechaDevolucion, DateAdd(Today(), 14, TimeUnit.Days));
+        ClearCollect(colPrestamos, Prestamos_Prueba);
+        SetFocus(txtCodigo)
+    Children:
+      - htmlHeader:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =124
+            HtmlText: |-
+              =With(
+                  {idx: Switch(varPaso, "usuario", 0, "ejemplar", 1, 2)},
+                  "<div style='height:124px;box-sizing:border-box;padding:22px 20px 18px;background:#111111;font-family:Segoe UI,Arial,sans-serif;color:#FFFFFF'>" &
+                  "<div style='display:flex;justify-content:space-between;align-items:center'>" &
+                  "<div style='font-size:18px;font-weight:700'>Préstamo de prueba</div>" &
+                  "<div style='font-size:11px;color:#BFC3C8'>Bibliotecas UAI</div></div>" &
+                  "<div style='font-size:11px;color:#DADCDF;margin-top:6px'>Modo prueba: lee FOLIO, guarda solo en Excel</div>" &
+                  "<div style='display:flex;margin-top:12px'>" &
+                  Concat(
+                      Table({n: 0, l: "Usuario"}, {n: 1, l: "Ejemplar"}, {n: 2, l: "Registro"}),
+                      "<div style='flex:1;margin-right:" & If(n < 2, "6px", "0") & "'>" &
+                      "<div style='height:4px;border-radius:2px;background:" & If(n <= idx, "#FFFFFF", "#3F4247") & "'></div>" &
+                      "<div style='font-size:10px;margin-top:4px;color:" & If(n <= idx, "#FFFFFF", "#8A8D91") & "'>" & l & "</div></div>"
+                  ) &
+                  "</div></div>"
+              )
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =390
+      - lblTituloPaso:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =22
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: =Switch(varPaso, "usuario", "Escanea el carné del usuario", "ejemplar", "Escanea el ejemplar", "confirmar", "Confirma el préstamo ficticio", "")
+            Visible: =varPaso <> "listo"
+            Width: =350
+            X: =20
+            Y: =144
+      - htmlVisor:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =190
+            HtmlText: |-
+              ="<div style='height:190px;box-sizing:border-box;border-radius:16px;background:#FFFFFF;padding:28px 60px;display:flex;flex-direction:column;justify-content:space-between'>" &
+              "<div style='display:flex;justify-content:space-between'><div style='width:23px;height:23px;border-top:3px solid #111111;border-left:3px solid #111111'></div><div style='width:23px;height:23px;border-top:3px solid #111111;border-right:3px solid #111111'></div></div>" &
+              "<div style='display:flex;justify-content:center'><div style='display:flex;height:70px;background:linear-gradient(to bottom,transparent 49%,#B3261E 49%,#B3261E 52%,transparent 52%)'>" &
+              Concat(
+                  [4, 2, 6, 2, 4, 2, 6, 2, 4, 2, 6, 4, 2, 6, 2, 4, 2, 6, 2, 4],
+                  "<div style='width:" & Value & "px;margin-right:4px;background:linear-gradient(to bottom,#3F4247 49%,#B3261E 49%,#B3261E 52%,#3F4247 52%)'></div>"
+              ) &
+              "</div></div>" &
+              "<div style='display:flex;justify-content:space-between'><div style='width:23px;height:23px;border-bottom:3px solid #111111;border-left:3px solid #111111'></div><div style='width:23px;height:23px;border-bottom:3px solid #111111;border-right:3px solid #111111'></div></div>" &
+              "</div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =350
+            X: =20
+            Y: =176
+      - barCamara:
+          Control: BarcodeReader
+          Properties:
+            Height: =52
+            OnScan: |-
+              =Set(varEntrada, Trim(First(Self.Barcodes).Value));
+              Select(btnProcesar)
+            Text: ="📷  Escanear con cámara"
+            Visible: =(varPaso = "usuario" || varPaso = "ejemplar") && !varBuscando
+            Width: =350
+            X: =20
+            Y: =382
+      - htmlSeparador:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =16
+            HtmlText: |-
+              ="<div style='display:flex;align-items:center;font-family:Segoe UI,Arial,sans-serif;font-size:11px;color:#3F4247'><div style='flex:1;height:1px;background:#BFC3C8'></div><div style='padding:0 10px'>o con pistola lectora / digitando</div><div style='flex:1;height:1px;background:#BFC3C8'></div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =350
+            X: =20
+            Y: =446
+      - lblCodigoCap:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =16
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: ="Código de barras"
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =350
+            X: =20
+            Y: =474
+      - txtCodigo:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#111111")
+            BorderThickness: =2
+            Color: =ColorValue("#111111")
+            Default: =""
+            DisplayMode: =If(varBuscando, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#FFFFFF")
+            FocusedBorderColor: =ColorValue("#1B2A4A")
+            FocusedBorderThickness: =2
+            Font: =Font.'Segoe UI'
+            Height: =48
+            HintText: =If(varPaso = "usuario", "Ej. U-000123", "Ej. B-004567")
+            OnChange: |-
+              =If(
+                  !IsBlank(Trim(Self.Text)),
+                  Set(varEntrada, Trim(Self.Text));
+                  Select(btnProcesar)
+              )
+            PaddingLeft: =14
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =11
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =262
+            X: =20
+            Y: =494
+      - btnLeer:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#111111")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            DisplayMode: =If(varBuscando, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =48
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varEntrada, Trim(txtCodigo.Text));
+              Select(btnProcesar)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="Leer"
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =80
+            X: =290
+            Y: =494
+      - lblCampoListo:
+          Control: Label@2.5.1
+          Properties:
+            Color: =If(varBuscando, ColorValue("#8A8D91"), ColorValue("#1B2A4A"))
+            Font: =Font.'Segoe UI'
+            Height: =16
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: |-
+              =If(varBuscando, "◌  Buscando en FOLIO…", "●  Campo listo: la pistola escribe aquí y envía con Enter")
+            Visible: =varPaso = "usuario" || varPaso = "ejemplar"
+            Width: =350
+            X: =20
+            Y: =550
+      - htmlUsuarioLeido:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =64
+            HtmlText: |-
+              ="<div style='height:64px;box-sizing:border-box;background:#FFFFFF;border-radius:12px;padding:12px 14px;font-family:Segoe UI,Arial,sans-serif'>" &
+              "<div style='font-size:10px;color:#3F4247'>Usuario leído desde FOLIO</div>" &
+              "<div style='font-size:13px;font-weight:700;color:#111111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px'>" & varUsuario.nombre & "</div>" &
+              "<div style='font-size:11px;font-weight:600;color:" & If(varUsuario.activo, "#1B2A4A", "#B3261E") & "'>" & If(varUsuario.activo, "Activo", "Inactivo: no puede recibir préstamos") & "</div>" &
+              "</div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Visible: =(varPaso = "usuario" || varPaso = "ejemplar") && !IsBlank(varUsuario)
+            Width: =350
+            X: =20
+            Y: =580
+      - btnCambiarUsuario:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =32
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varPaso, "usuario");
+              Set(varUsuario, Blank());
+              Reset(txtCodigo);
+              SetFocus(txtCodigo)
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Size: =8
+            Text: ="Cambiar"
+            Visible: =varPaso = "ejemplar"
+            Width: =76
+            X: =282
+            Y: =596
+      - htmlConfirmar:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =318
+            HtmlText: |-
+              ="<div style='font-family:Segoe UI,Arial,sans-serif;color:#111111'>" &
+              "<div style='background:#FFFFFF;border-radius:14px;padding:16px'>" &
+              "<div style='font-size:10px;font-weight:600;color:#3F4247'>USUARIO (FOLIO /users)</div>" &
+              "<div style='font-size:14px;font-weight:700;margin-top:8px'>" & varUsuario.nombre & "</div>" &
+              "<div style='font-size:12px;color:#3F4247;margin-top:6px'>" & varUsuario.grupo & ", código " & varUsuario.codigo & "</div></div>" &
+              "<div style='background:#FFFFFF;border-radius:14px;padding:16px;margin-top:12px'>" &
+              "<div style='font-size:10px;font-weight:600;color:#3F4247'>EJEMPLAR (FOLIO /inventory/items)</div>" &
+              "<div style='font-size:14px;font-weight:700;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varEjemplar.titulo & "</div>" &
+              "<div style='font-size:12px;color:#3F4247;margin-top:6px'>" & varEjemplar.ubicacion & ", código " & varEjemplar.codigo & "</div>" &
+              "<div style='font-size:12px;font-weight:600;color:#1B2A4A;margin-top:6px'>" & varEjemplar.estadoTexto & "</div></div>" &
+              "<div style='display:flex;margin-top:12px'>" &
+              "<div style='flex:1;background:#FFFFFF;border-radius:12px;padding:12px;margin-right:10px'><div style='font-size:10px;color:#3F4247'>Fecha préstamo</div><div style='font-size:14px;font-weight:700'>" & Text(varFechaPrestamo, "dd-mm-yyyy") & "</div></div>" &
+              "<div style='flex:1;background:#FFFFFF;border-radius:12px;padding:12px'><div style='font-size:10px;color:#3F4247'>Devolución</div><div style='font-size:14px;font-weight:700'>" & Text(varFechaDevolucion, "dd-mm-yyyy") & "</div></div>" &
+              "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Visible: =varPaso = "confirmar"
+            Width: =350
+            X: =20
+            Y: =176
+      - btnRegistrar:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =ColorValue("#8A8D91")
+            DisplayMode: =If(varGuardando, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =52
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#3F4247")
+            OnSelect: |-
+              =Set(varGuardando, true);
+              Refresh(Prestamos_Prueba);
+              ClearCollect(colPrestamos, Prestamos_Prueba);
+              If(
+                  !IsBlank(LookUp(colPrestamos, itemBarcode = varEjemplar.codigo && status = "Open")),
+                      Notify("El ejemplar " & varEjemplar.codigo & " ya tiene un préstamo de prueba abierto.", NotificationType.Warning),
+                  With(
+                      {n: Coalesce(Max(colPrestamos, Value(Mid(id, 8))), 0) + 1},
+                      IfError(
+                          Set(varNuevo,
+                              Patch(
+                                  Prestamos_Prueba,
+                                  Defaults(Prestamos_Prueba),
+                                  {
+                                      id: "PRUEBA-" & Text(n, "0000"),
+                                      userBarcode: varUsuario.codigo,
+                                      userName: varUsuario.nombre,
+                                      userGroup: varUsuario.grupo,
+                                      itemBarcode: varEjemplar.codigo,
+                                      itemHrid: varEjemplar.hrid,
+                                      itemTitle: varEjemplar.titulo,
+                                      library: varEjemplar.biblioteca,
+                                      location: varEjemplar.ubicacion,
+                                      loanDate: Text(varFechaPrestamo, "yyyy-mm-dd"),
+                                      dueDate: Text(varFechaDevolucion, "yyyy-mm-dd"),
+                                      returnDate: "",
+                                      status: "Open",
+                                      action: "checkedout",
+                                      operator: User().Email,
+                                      createdAt: Text(Now(), "yyyy-mm-dd hh:mm:ss"),
+                                      source: "PowerApps-prueba"
+                                  }
+                              )
+                          );
+                          Collect(colPrestamos, varNuevo);
+                          Set(varPaso, "listo"),
+                          Notify("No se pudo guardar en Excel: " & FirstError.Message, NotificationType.Error)
+                      )
+                  )
+              );
+              Set(varGuardando, false)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =11
+            Text: =If(varGuardando, "Guardando…", "Registrar préstamo ficticio")
+            Visible: =varPaso = "confirmar"
+            Width: =350
+            X: =20
+            Y: =510
+      - btnCancelar:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =48
+            HoverColor: =ColorValue("#111111")
+            HoverFill: =ColorValue("#DADCDF")
+            OnSelect: |-
+              =Set(varPaso, "usuario");
+              Set(varUsuario, Blank());
+              Set(varEjemplar, Blank());
+              Reset(txtCodigo);
+              SetFocus(txtCodigo)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="Cancelar"
+            Visible: =varPaso = "confirmar"
+            Width: =350
+            X: =20
+            Y: =574
+      - htmlListo:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =420
+            HtmlText: |-
+              ="<div style='font-family:Segoe UI,Arial,sans-serif;color:#111111'>" &
+              "<div style='display:flex;flex-direction:column;align-items:center;padding:20px 0 6px'>" &
+              "<div style='width:64px;height:64px;border-radius:50%;background:#1B2A4A;color:#FFFFFF;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center'>✓</div>" &
+              "<div style='font-size:16px;font-weight:700;margin-top:10px'>Préstamo ficticio registrado</div>" &
+              "<div style='font-size:12px;color:#3F4247;text-align:center;margin-top:10px'>Se agregó una fila a la tabla Prestamos_Prueba del Excel en SharePoint. FOLIO no se modificó.</div></div>" &
+              "<div style='background:#FFFFFF;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:12px'>" &
+              Concat(
+                  Table(
+                      {k: "id", v: varNuevo.id},
+                      {k: "userBarcode", v: varNuevo.userBarcode},
+                      {k: "itemBarcode", v: varNuevo.itemBarcode},
+                      {k: "loanDate", v: varNuevo.loanDate},
+                      {k: "dueDate", v: varNuevo.dueDate},
+                      {k: "status", v: varNuevo.status},
+                      {k: "action", v: varNuevo.action}
+                  ),
+                  "<div style='display:flex;justify-content:space-between;padding:4px 0'><span style='color:#3F4247'>" & k & "</span><span style='font-weight:600'>" & v & "</span></div>"
+              ) &
+              "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Visible: =varPaso = "listo"
+            Width: =350
+            X: =20
+            Y: =140
+      - btnNuevo:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =52
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#3F4247")
+            OnSelect: |-
+              =Set(varPaso, "usuario");
+              Set(varUsuario, Blank());
+              Set(varEjemplar, Blank());
+              Set(varFechaPrestamo, Today());
+              Set(varFechaDevolucion, DateAdd(Today(), 14, TimeUnit.Days));
+              Reset(txtCodigo);
+              SetFocus(txtCodigo)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =11
+            Text: ="Nuevo préstamo"
+            Visible: =varPaso = "listo"
+            Width: =350
+            X: =20
+            Y: =576
+      - btnDashboard:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =48
+            HoverColor: =ColorValue("#111111")
+            HoverFill: =ColorValue("#DADCDF")
+            OnSelect: =Launch("https://app.powerbi.com/REEMPLAZAR-URL-DEL-INFORME")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="Ver en el dashboard"
+            Visible: =varPaso = "listo"
+            Width: =350
+            X: =20
+            Y: =640
+      - lblPie:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="Modo prueba. Datos leídos desde FOLIO vía Power Automate; se guardan solo en Excel."
+            Width: =350
+            X: =20
+            Y: =812
+      - btnProcesar:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =With(
+                  {cod: varEntrada},
+                  If(
+                      IsBlank(cod),
+                          Notify("Escanee o digite un código.", NotificationType.Warning),
+
+                      // ---------- PASO 1: USUARIO ----------
+                      varPaso = "usuario",
+                          Set(varBuscando, true);
+                          Set(varRes, IfError(Text(BuscarUsuarioFOLIO.Run(cod).datos), Blank()));
+                          Set(varBuscando, false);
+                          With(
+                              {j: ParseJSON(If(IsBlank(varRes), "{}", varRes))},
+                              If(
+                                  IsBlank(varRes),
+                                      Notify("No se pudo consultar FOLIO. Intente nuevamente.", NotificationType.Error),
+                                  Text(j.encontrado) <> "SI",
+                                      Set(varUsuario, Blank());
+                                      Notify("El carné " & cod & " no existe en FOLIO.", NotificationType.Warning),
+                                  Set(varUsuario,
+                                      {
+                                          id: Text(j.id),
+                                          nombre: Text(j.nombre),
+                                          codigo: cod,
+                                          grupo: Text(j.grupo),
+                                          activo: Text(j.activo) = "SI"
+                                      }
+                                  );
+                                  If(
+                                      varUsuario.activo,
+                                          Set(varPaso, "ejemplar"),
+                                      Notify(varUsuario.nombre & " está inactivo en FOLIO.", NotificationType.Warning)
+                                  )
+                              )
+                          ),
+
+                      // ---------- PASO 2: EJEMPLAR ----------
+                      varPaso = "ejemplar",
+                          If(
+                              !IsBlank(LookUp(colPrestamos, itemBarcode = cod && status = "Open")),
+                                  Notify("El ejemplar " & cod & " ya tiene un préstamo de prueba abierto.", NotificationType.Warning),
+                              Set(varBuscando, true);
+                              Set(varRes, IfError(Text(BuscarEjemplarFOLIO.Run(cod).datos), Blank()));
+                              Set(varBuscando, false);
+                              With(
+                                  {j: ParseJSON(If(IsBlank(varRes), "{}", varRes))},
+                                  If(
+                                      IsBlank(varRes),
+                                          Notify("No se pudo consultar FOLIO. Intente nuevamente.", NotificationType.Error),
+                                      Text(j.encontrado) <> "SI",
+                                          Notify("El ejemplar " & cod & " no existe en FOLIO.", NotificationType.Warning),
+                                      Set(varEjemplar,
+                                          {
+                                              codigo: cod,
+                                              hrid: Text(j.hrid),
+                                              titulo: Text(j.titulo),
+                                              ubicacion: Text(j.ubicacion),
+                                              biblioteca: Text(j.biblioteca),
+                                              estado: Text(j.estado),
+                                              estadoTexto: Switch(
+                                                  Text(j.estado),
+                                                  "Available", "Disponible",
+                                                  "Checked out", "Prestado",
+                                                  "In transit", "En tránsito",
+                                                  "Awaiting pickup", "En espera de retiro",
+                                                  "Paged", "Solicitado",
+                                                  "Missing", "Extraviado",
+                                                  "Withdrawn", "Retirado",
+                                                  Text(j.estado)
+                                              )
+                                          }
+                                      );
+                                      If(
+                                          varEjemplar.estado = "Available",
+                                              Set(varFechaPrestamo, Today());
+                                              Set(varFechaDevolucion, DateAdd(Today(), 14, TimeUnit.Days));
+                                              Set(varPaso, "confirmar"),
+                                          Notify("El ejemplar figura como '" & varEjemplar.estadoTexto & "' en FOLIO.", NotificationType.Warning)
+                                      )
+                                  )
+                              )
+                          )
+                  )
+              );
+              Set(varEntrada, Blank());
+              Reset(txtCodigo);
+              If(varPaso = "usuario" || varPaso = "ejemplar", SetFocus(txtCodigo))
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
