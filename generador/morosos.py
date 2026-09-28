@@ -44,7 +44,8 @@ ClearCollect(
     Sort(
         Filter(
             AddColumns(colMorosos, Nivel, ''' + NIVEL + '''),
-            (IsBlank(txtBuscarMor_6.Text) || Lower(txtBuscarMor_6.Text) in Lower(Nombre) || txtBuscarMor_6.Text in RUT),
+            (IsBlank(Trim(txtBuscarMor_6.Text)) || Lower(Trim(txtBuscarMor_6.Text)) in Lower(Nombre)
+                || Upper(Substitute(Substitute(Substitute(Trim(txtBuscarMor_6.Text), ".", ""), "-", ""), " ", "")) in Upper(Substitute(Substitute(RUT, ".", ""), "-", ""))),
             (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
             (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
         ),
