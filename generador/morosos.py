@@ -34,6 +34,20 @@ If(
                 }
             )
         );
+        ClearCollect(
+            colMorLibros,
+            ForAll(
+                IfError(Table(j.det), Table(ParseJSON("[]"))),
+                {
+                    RUT: Text(ThisRecord.Value.rut),
+                    Titulo: Text(ThisRecord.Value.titulo),
+                    Codigo: Text(ThisRecord.Value.codigo),
+                    Bib: Text(ThisRecord.Value.bib),
+                    Vence: Text(ThisRecord.Value.vence),
+                    Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                }
+            )
+        );
         Set(varMorFecha, Now())
         )
     )
@@ -56,34 +70,16 @@ ClearCollect(
     )
 )'''
 
-FILTRAR = FILTRAR + ''';
-If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))'''
 
 DETALLE = '''
-If(
-    !IsBlank(varSelRut),
-    Set(varCargandoDet, true);
-    Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
-    Set(varCargandoDet, false);
-    With(
-        {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
-        Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
-                     Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
-        ClearCollect(
-            colDet,
-            ForAll(
-                IfError(Table(j.lista), Table(ParseJSON("[]"))),
-                {
-                    Titulo: Text(ThisRecord.Value.titulo),
-                    Codigo: Text(ThisRecord.Value.codigo),
-                    Bib: Text(ThisRecord.Value.bib),
-                    Vence: Text(ThisRecord.Value.vence),
-                    Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
-                }
-            )
-        )
-    )
-)'''
+With(
+    {u: LookUp(colMorosos, RUT = varSelRut)},
+    Set(varDet, {RUT: u.RUT, Nombre: u.Nombre, Apellido: "", Correo: u.Correo, Tipo: u.Tipo})
+);
+ClearCollect(colDet, Sort(Filter(colMorLibros, RUT = varSelRut), Dias, SortOrder.Descending))'''
+
+FILTRAR = FILTRAR + ''';
+If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); ''' + DETALLE + ''')'''
 
 TD = "padding:6px 8px;border-bottom:1px solid #DADCDF"
 CORREO_DET = (
@@ -163,14 +159,14 @@ TABLA = ('"' + CARD % (416, '1px solid #DADCDF')
          + "<div style='font-size:10px;color:#8A8D91'>\" & CountRows(colMorVista) & \" en la vista · se muestran hasta 300 · use el buscador\" & If(IsBlank(varMorFecha), \"\", \" · consultado \" & Text(varMorFecha, \"hh:mm\")) & \"</div></div>\" & "
          + 'If(IsEmpty(colMorVista), If(varCargandoMor, "' + vacio % 'Consultando FOLIO…' + '", "' + vacio % 'Sin datos. Presione ACTUALIZAR DESDE FOLIO.' + '"), '
          + '"<div style=\'margin-top:10px;max-height:340px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#111111\'>'
-         + "<colgroup><col style='width:105px'><col><col style='width:120px'><col style='width:62px'><col style='width:62px'><col style='width:82px'></colgroup>"
+         + "<colgroup><col style='width:86px'><col><col style='width:92px'><col style='width:46px'><col style='width:50px'><col style='width:70px'></colgroup>"
          + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:6px;text-align:left'>RUT</th><th style='padding:6px;text-align:left'>NOMBRE</th>"
          + "<th style='padding:6px;text-align:left'>TIPO</th><th style='padding:6px;text-align:center'>LIBROS</th><th style='padding:6px;text-align:center'>DÍAS</th><th style='padding:6px;text-align:center'>NIVEL</th></tr>\" & "
          + 'Concat(FirstN(colMorVista, 300), ' + fila + ') & "</table></div>") & "</div></div>"')
 
 fila_det = ('"<tr style=\'border-bottom:1px solid #DADCDF\'><td style=\'padding:5px 4px;text-align:left\'>" & ' + ESC.format(x='Titulo')
-            + ' & "<div style=\'font-size:9px;color:#8A8D91\'>" & Codigo & " · " & ' + ESC.format(x='Bib') + ' & "</div></td>'
-            '<td style=\'padding:5px 4px;text-align:center;white-space:nowrap\'>" & Vence & "</td>'
+            + ' & "</td><td style=\'padding:5px 4px;text-align:center\'>" & Codigo & "</td><td style=\'padding:5px 4px;text-align:left\'>" & ' + ESC.format(x='Bib')
+            + ' & "</td><td style=\'padding:5px 4px;text-align:center;white-space:nowrap\'>" & Vence & "</td>'
             '<td style=\'padding:5px 4px;text-align:center;font-weight:700;color:#B3261E\'>" & Text(Dias, "#,##0") & "</td></tr>"')
 DETALLE_HTML = ('"' + CARD % (416, '1px solid #DADCDF')
     + "<div style='font-size:15px;font-weight:700;color:#111111'>Detalle de morosidad</div>"
@@ -182,9 +178,9 @@ DETALLE_HTML = ('"' + CARD % (416, '1px solid #DADCDF')
     + "<div style='font-size:11px;color:#3F4247'>RUT \" & varDet.RUT & \" · \" & Coalesce(varDet.Tipo, \"Usuario\") & \"</div>"
     + "<div style='font-size:11px;font-style:italic;color:#3F4247;margin-bottom:6px'>\" & Coalesce(varDet.Correo, \"sin correo registrado\") & \"</div>"
     + "<div style='max-height:160px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#111111'>"
-    + "<colgroup><col><col style='width:78px'><col style='width:52px'></colgroup>"
+    + "<colgroup><col><col style='width:88px'><col style='width:120px'><col style='width:84px'><col style='width:60px'></colgroup>"
     + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:5px 4px;text-align:left'>LIBRO</th>"
-    + "<th style='padding:5px 4px;text-align:center'>VENCIÓ</th><th style='padding:5px 4px;text-align:center'>DÍAS</th></tr>\" & "
+    + "<th style='padding:5px 4px;text-align:center'>CÓDIGO</th><th style='padding:5px 4px;text-align:left'>BIBLIOTECA</th><th style='padding:5px 4px;text-align:center'>VENCIÓ</th><th style='padding:5px 4px;text-align:center'>DÍAS</th></tr>\" & "
     + 'Concat(colDet, ' + fila_det + ') & "</table></div>") & "</div></div>"')
 
 texto_buscar = '''      - txtBuscarMor_6:
@@ -225,18 +221,17 @@ ctrls = [
     label('lblNiveles_6', '="Nivel 0: hasta 60 días · Nivel 1: hasta 2 años · Nivel 2: hasta 5 años · Nivel 3: más de 5 años"',
           900, 142, 430, h=30, size=7, color='#8A8D91', bold=False),
     html('htmlKpis_6', 98, 180, 1240, 108, KPIS),
-    html('htmlTabla_6', 98, 290, 800, 428, TABLA),
-    html('htmlDetalle_6', 904, 290, 434, 428, DETALLE_HTML),
-    lista('drpSelMor_6', 926, 348, 290, 'ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})', '""'),
-    boton('btnVerDet_6', 1224, 348, 92, 30, 'If(varCargandoDet, "…", "Ver detalle")',
-          'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)',
+    html('htmlTabla_6', 98, 290, 540, 428, TABLA),
+    html('htmlDetalle_6', 644, 290, 694, 428, DETALLE_HTML),
+    lista('drpSelMor_6', 666, 348, 540, 'ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})', '""'),
+    boton('btnVerDet_6', 1214, 348, 102, 30, 'If(varCargandoDet, "…", "Ver detalle")',
+          'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); ' + DETALLE,
           displaymode='If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)', dark=False, size=9),
-    label('lblDestino_6', '="ENVIAR A"', 926, 628, 80, h=30, size=7),
-    lista('drpDestino_6', 1000, 628, 316, '["A mi correo (prueba)", "Al correo del usuario"]', '"A mi correo (prueba)"'),
-    fondo('htmlEnviarFondo_6', 'btnEnviarDet_6', 926, 666, 390, 40),
-    boton('btnEnviarDet_6', 926, 666, 390, 40, '"✉  ENVIAR CORREO DE MOROSIDAD"', ENVIAR_DET,
+    label('lblDestino_6', '="ENVIAR A"', 666, 628, 80, h=30, size=7),
+    lista('drpDestino_6', 740, 628, 300, '["A mi correo (prueba)", "Al correo del usuario"]', '"A mi correo (prueba)"'),
+    fondo('htmlEnviarFondo_6', 'btnEnviarDet_6', 666, 666, 650, 40),
+    boton('btnEnviarDet_6', 666, 666, 650, 40, '"✉  ENVIAR CORREO DE MOROSIDAD"', ENVIAR_DET,
           displaymode='If(IsEmpty(colDet), DisplayMode.Disabled, DisplayMode.Edit)', size=10),
-    oculto('btnDetalle_6', DETALLE),
     fondo('htmlActualizarFondo_6', 'btnActualizar_6', 104, 722, 400, 40),
     boton('btnActualizar_6', 104, 722, 400, 40, 'If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")', CARGAR,
           displaymode='If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)', size=10),
