@@ -7,10 +7,10 @@ El RUT está en el **código de barras** del usuario (`f_users[us.barcode]`, ej.
 
 1. Power Automate → **Mis flujos** → abrir **FolioBuscar** → **…** → **Guardar como** → nombre `BuscarUsuarioFOLIO`.
 2. Abrir la copia → **Editar**. Cambiar solo 3 cosas:
-   1. **Trigger (Power Apps V2):** renombrar la entrada `codigo` → `rut`.
+   1. **Trigger (Power Apps V2):** no se toca (la entrada sigue llamándose `codigo`; la app le manda el RUT).
    2. **ConsultaPBI → Texto de la consulta:** borrar todo y pegar la consulta de abajo.
       Luego seleccionar las letras `RUT_AQUI` (sin borrar las comillas) y reemplazarlas por el
-      **contenido dinámico `rut`** del trigger.
+      **contenido dinámico `codigo`** del trigger.
    3. **Respond:** dejarlo igual que en FolioBuscar (salida de texto `datos`).
 3. **Guardar** y **Activar** el flujo.
 
