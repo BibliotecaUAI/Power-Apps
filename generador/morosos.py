@@ -80,7 +80,7 @@ KPIS = ('"' + CARD % (96, '1px solid #DADCDF') + "<div style='display:flex;align
         + kpi('Text(varMorTotal, "#,##0")', 'USUARIOS MOROSOS EN FOLIO')
         + kpi('Text(varMorLibros, "#,##0")', 'LIBROS VENCIDOS')
         + kpi('CountRows(Filter(colMorosos, Dias >= 731))', 'CON MÁS DE 2 AÑOS')
-        + kpi('CountRows(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()))', 'VENCIDOS DE PRUEBA (EXCEL)')
+        + kpi('CountRows(Filter(colMorosos, Dias >= 1825))', 'CON MÁS DE 5 AÑOS')
         + "</div></div></div>\"")
 
 fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "\'>'
@@ -142,6 +142,8 @@ ctrls = [
     fondo('htmlActualizarFondo_6', 'btnActualizar_6', 104, 722, 400, 40),
     boton('btnActualizar_6', 104, 722, 400, 40, 'If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")', CARGAR,
           displaymode='If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)', size=10),
+    label('lblDiag_6', '=If(!IsBlank(varResMor) && IsEmpty(colMorosos) && !varCargandoMor, "Diagnóstico · respuesta de FOLIO (" & Len(varResMor) & " caracteres): " & Left(varResMor, 300), "")',
+          520, 722, 820, h=40, size=8, color='#B3261E', bold=False),
     oculto('btnFiltrar_6', FILTRAR),
     oculto('btnCargar_6', CARGAR),
     rail('6', 'Morosos'),

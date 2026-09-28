@@ -19,7 +19,7 @@ With(
             Set(varResUsuario, IfError(Text(BuscarUsuarioFOLIO.Run(r).datos), Notify("Error del flujo BuscarUsuarioFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
             Set(varBuscandoUsuario, false);
             With(
-                {j: With({o: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario))}, If(IsBlank(Text(o.datos)), o, ParseJSON(Text(o.datos)))), u: LookUp(colUsuarios, ''' + NORM.format(x='RUT') + ''' = r)},
+                {j: With({o: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario))}, If(IsBlank(Text(o.datos)), o, ParseJSON(Text(o.datos))))},
                 Set(
                     varUsuario,
                     If(
@@ -34,20 +34,8 @@ With(
                                 Programa: Text(j.programa),
                                 Correo: Text(j.correo),
                                 MorososFolio: Coalesce(Value(Text(j.morososFolio)), 0),
+                                ActivosFolio: Coalesce(Value(Text(j.activosFolio)), 0),
                                 Origen: "FOLIO"
-                            },
-                        !IsBlank(u),
-                            {
-                                RUT: u.RUT,
-                                Nombre: u.Nombre,
-                                Apellido: u.Apellido,
-                                NombreSugerido: u.NombreSugerido,
-                                TipoUsuario: u.TipoUsuario,
-                                UnidadAcademica: u.UnidadAcademica,
-                                Programa: u.Programa,
-                                Correo: u.Correo,
-                                MorososFolio: 0,
-                                Origen: "EXCEL"
                             }
                     )
                 )
@@ -55,10 +43,10 @@ With(
             If(
                 IsBlank(varUsuario),
                     Set(varMoroso, false);
-                    Notify("El RUT " & r & " no se encontró en FOLIO ni en la hoja Usuarios.", NotificationType.Warning);
+                    Notify(If(IsBlank(varResUsuario), "FOLIO no respondió. Intente de nuevo.", "El RUT " & r & " no se encontró en FOLIO."), NotificationType.Warning);
                     Reset(txtUsuario_4);
                     SetFocus(txtUsuario_4),
-                Set(varMoroso, ''' + VENCIDOS_U + ''' + varUsuario.MorososFolio > 0);
+                Set(varMoroso, varUsuario.MorososFolio > 0);
                 If(varMoroso, Notify(varUsuario.Nombre & " tiene préstamos vencidos.", NotificationType.Warning));
                 SetFocus(txtLibro_4)
             )
@@ -208,7 +196,7 @@ chip = lambda expr: ("<span style='display:inline-block;padding:3px 10px;margin-
 stat = lambda expr, lab, rojo: ("<div style='width:86px;height:60px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(191,195,200,0.25);"
                                 "display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:20px;font-weight:700;color:\" & "
                                 + rojo + " & \"'>\" & " + expr + " & \"</div><div style='font-size:10px;font-style:italic;color:#BFC3C8'>" + lab + "</div></div>")
-VENC_TOTAL = '(' + VENCIDOS_U + ' + varUsuario.MorososFolio)'
+VENC_TOTAL = 'varUsuario.MorososFolio'
 llena = ("<div style='position:relative;margin:6px;height:150px;box-sizing:border-box;border-radius:18px;overflow:hidden;" + FNT + ";" + DARKG + ";"
          "border:\" & If(varMoroso, \"1.5px solid #B3261E;box-shadow:0 0 0 4px rgba(179,38,30,0.16),0 0 22px rgba(179,38,30,0.35)\", \"1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.25)\") & \"'>"
          "<div style='position:absolute;right:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,rgba(191,195,200,0.5) 0 2px,transparent 2px 5px,rgba(191,195,200,0.3) 5px 6px,transparent 6px 9px)'></div>"
@@ -220,7 +208,7 @@ llena = ("<div style='position:relative;margin:6px;height:150px;box-sizing:borde
          "<div style='font-size:12px;font-style:italic;color:#BFC3C8;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>\" & varUsuario.UnidadAcademica & If(IsBlank(varUsuario.Programa), \"\", \" · \" & varUsuario.Programa) & \"</div>"
          + chip('"RUT " & varUsuario.RUT') + chip('Coalesce(varUsuario.TipoUsuario, "Usuario")') + "</div>"
          "<div style='position:absolute;right:28px;top:38px;display:flex;gap:10px;align-items:center'>"
-         + stat(ACTIVOS_U, 'activos', '"#FFFFFF"') + stat(VENC_TOTAL, 'vencidos', 'If(' + VENC_TOTAL + ' > 0, "#FF6B5E", "#FFFFFF")')
+         + stat('varUsuario.ActivosFolio', 'en FOLIO', '"#FFFFFF"') + stat(VENC_TOTAL, 'vencidos', 'If(' + VENC_TOTAL + ' > 0, "#FF6B5E", "#FFFFFF")')
          + "<div style='width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;letter-spacing:1.5px;"
          "\" & If(varMoroso, \"border:2px solid #B3261E;box-shadow:0 0 14px rgba(179,38,30,0.6),inset 0 0 10px rgba(179,38,30,0.35);color:#FF8A80\", \"border:2px solid #BFC3C8;box-shadow:inset 0 0 10px rgba(255,255,255,0.15);color:#FFFFFF\") & \"'>"
          "\" & If(varMoroso, \"MOROSO\", \"AL DÍA\") & \"</div></div></div>")
@@ -250,7 +238,7 @@ LIBROS_CARD = (
 
 ctrls = [
     header('4', 'Préstamo'),
-    label('lblAviso_4', '="PRÉSTAMO FICTICIO · SE REGISTRA EN EXCEL, NO EN FOLIO"', 104, 128, 480, h=16, size=7),
+    label('lblAviso_4', '="USUARIO Y LIBROS DESDE FOLIO · EL PRÉSTAMO SE ANOTA EN EXCEL"', 104, 128, 480, h=16, size=7),
     label('lblPaso1_4', '="1 · Usuario"', 104, 158, 300, h=22, size=11, color='#111111'),
     label('lblCap1_4', '="ESCANEE EL QR DE LA CÉDULA O DIGITE EL RUT + ENTER"', 104, 184, 476),
     entrada('txtUsuario_4', 104, 200, 476, 'RUT o QR de la cédula…',
@@ -284,7 +272,7 @@ ctrls = [
     oculto('btnAgregarLibro_4', AGREGAR_LIBRO),
     rail('4', 'Préstamo'),
 ]
-ONV = ('ClearCollect(colPrestamos, tblPrestamos); ClearCollect(colUsuarios, tblUsuarios); ClearCollect(colPlazos, tblPlazos); '
+ONV = ('ClearCollect(colPrestamos, tblPrestamos); ClearCollect(colPlazos, tblPlazos); '
        'Set(varCorreoPrueba, "pablo.salas.marin@uai.cl"); Set(varMenu, false); SetFocus(txtUsuario_4)')
 OUT = '/home/user/Power-Apps/pantallas/4_Prestamo.txt'
 open(OUT, 'w').write(pantalla('scrPrestamo', ONV, ctrls))

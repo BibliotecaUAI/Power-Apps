@@ -23,6 +23,7 @@ DEFINE
     VAR bc = MAXX(u, f_users[us.barcode])
     VAR tipo = MAXX(TOPN(1, FILTER(f_loans, f_loans[users.RUT] = bc), f_loans[loanDateTime], DESC), f_loans[Tipo de Usuario])
     VAR mor = COUNTROWS(FILTER(f_loans, f_loans[users.RUT] = bc && f_loans[pre_Sub_estado] = "MOROSO"))
+    VAR act = COUNTROWS(FILTER(f_loans, f_loans[users.RUT] = bc && ISBLANK(f_loans[returnDate])))
     VAR q = UNICHAR(34)
     VAR j = IF(
         COUNTROWS(u) = 0,
@@ -36,6 +37,7 @@ DEFINE
         & "," & q & "unidadAcademica" & q & ":" & q & SUBSTITUTE(MAXX(u, f_users[f_usersUnidad.unidadAcademica]), q, "'") & q
         & "," & q & "programa" & q & ":" & q & SUBSTITUTE(MAXX(u, f_users[f_usersUnidad.Programa]), q, "'") & q
         & "," & q & "morososFolio" & q & ":" & q & (mor + 0) & q
+        & "," & q & "activosFolio" & q & ":" & q & (act + 0) & q
         & "}"
     )
 EVALUATE ROW("datos", j)
