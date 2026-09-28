@@ -56,6 +56,68 @@ ClearCollect(
     )
 )'''
 
+FILTRAR = FILTRAR + ''';
+If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))'''
+
+DETALLE = '''
+If(
+    !IsBlank(varSelRut),
+    Set(varCargandoDet, true);
+    Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+    Set(varCargandoDet, false);
+    With(
+        {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
+        Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
+                     Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
+        ClearCollect(
+            colDet,
+            ForAll(
+                IfError(Table(j.lista), Table(ParseJSON("[]"))),
+                {
+                    Titulo: Text(ThisRecord.Value.titulo),
+                    Codigo: Text(ThisRecord.Value.codigo),
+                    Bib: Text(ThisRecord.Value.bib),
+                    Vence: Text(ThisRecord.Value.vence),
+                    Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                }
+            )
+        )
+    )
+)'''
+
+TD = "padding:6px 8px;border-bottom:1px solid #DADCDF"
+CORREO_DET = (
+    '"<div style=\'font-family:Calibri,Segoe UI,Arial,sans-serif;color:#111111;max-width:720px\'>'
+    '<div style=\'background:#111111;color:#FFFFFF;padding:18px 24px;border-bottom:3px solid #BFC3C8\'>'
+    '<div style=\'font-size:11px;letter-spacing:3px;color:#BFC3C8\'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>'
+    '<div style=\'font-size:20px;font-weight:700;margin-top:4px\'>Aviso de material vencido</div></div>'
+    '<div style=\'padding:18px 24px;font-size:13px\'><p>Estimado/a " & varDet.Nombre & " " & varDet.Apellido & ":</p>'
+    '<p>Según nuestros registros, tienes el siguiente material con plazo de devolución vencido:</p>'
+    '<table style=\'border-collapse:collapse;font-size:12px;width:100%\'><tr style=\'background:#111111;color:#FFFFFF\'>'
+    '<th style=\'padding:7px 8px;text-align:left\'>Título</th><th style=\'padding:7px 8px;text-align:center\'>Código</th>'
+    '<th style=\'padding:7px 8px;text-align:left\'>Biblioteca</th><th style=\'padding:7px 8px;text-align:center\'>Venció</th>'
+    '<th style=\'padding:7px 8px;text-align:center\'>Días de atraso</th></tr>" & '
+    'Concat(colDet, "<tr><td style=\'' + TD + '\'>" & Titulo & "</td><td style=\'' + TD + ';text-align:center\'>" & Codigo & '
+    '"</td><td style=\'' + TD + '\'>" & Bib & "</td><td style=\'' + TD + ';text-align:center\'>" & Vence & '
+    '"</td><td style=\'' + TD + ';text-align:center;font-weight:700;color:#B3261E\'>" & Dias & "</td></tr>") & '
+    '"</table><p>Te pedimos devolverlo a la brevedad en cualquiera de nuestras bibliotecas.</p>'
+    '<p style=\'color:#3F4247\'>Bibliotecas UAI</p></div></div>"')
+
+ENVIAR_DET = '''
+With(
+    {dest: If(drpDestino_6.Selected.Value = "Al correo del usuario", Coalesce(varDet.Para, varDet.Correo), Coalesce(varCorreoPrueba, "pablo.salas.marin@uai.cl"))},
+    If(
+        IsEmpty(colDet) || IsBlank(dest),
+            Notify("Primero elija un usuario con libros vencidos.", NotificationType.Warning),
+        IfError(
+            Office365Outlook.SendEmailV2(dest, "Bibliotecas UAI: Solicitud de devolución de material", If(!IsBlank(varDet.Html), varDet.Html, ''' + CORREO_DET + '''), {Cc: "pablo.salas.marin@uai.cl", Importance: "Normal"});
+            Notify("Correo enviado a " & dest, NotificationType.Success, 3000);
+            true,
+            Notify("No se pudo enviar el correo: " & FirstError.Message, NotificationType.Error)
+        )
+    )
+)'''
+
 CORREO = ('"<div style=\'font-family:Segoe UI,Arial,sans-serif;color:#111111\'><div style=\'background:#111111;color:#FFFFFF;padding:18px 22px\'>'
           '<div style=\'font-size:10px;letter-spacing:3px;color:#BFC3C8\'>BIBLIOTECAS UAI</div><div style=\'font-size:20px;font-weight:700\'>Usuarios morosos en FOLIO</div></div>'
           '<div style=\'padding:18px 22px\'><p>" & CountRows(colMorVista) & " usuarios · filtro: " & drpNivelMor_6.Selected.Value & " · " & drpBibMor_6.Selected.Value & "</p>'
@@ -90,22 +152,41 @@ KPIS = ('"' + CARD % (96, '1px solid #DADCDF') + "<div style='display:flex;align
         + "</div></div></div>\"")
 
 fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "\'>'
-        '<td style=\'padding:6px;font-weight:700\'>" & ' + ESC.format(x='RUT')
-        + ' & "</td><td style=\'padding:6px\'>" & ' + ESC.format(x='Nombre')
-        + ' & "</td><td style=\'padding:6px\'>" & ' + ESC.format(x='Tipo')
-        + ' & "</td><td style=\'padding:6px\'>" & ' + ESC.format(x='Biblioteca')
+        '<td style=\'padding:6px;text-align:left;font-weight:700\'>" & ' + ESC.format(x='RUT')
+        + ' & "</td><td style=\'padding:6px;text-align:left\'>" & ' + ESC.format(x='Nombre')
+        + ' & "</td><td style=\'padding:6px;text-align:left\'>" & ' + ESC.format(x='Tipo')
         + ' & "</td><td style=\'padding:6px;text-align:center\'>" & Libros & "</td><td style=\'padding:6px;text-align:center\'>" & Text(Dias, "#,##0")'
-        + ' & "</td><td style=\'padding:6px\'><span style=\'display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;'
+        + ' & "</td><td style=\'padding:6px;text-align:center\'><span style=\'display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;'
           'border:1px solid #BFC3C8;box-shadow:0 0 6px rgba(191,195,200,0.55),inset 0 0 4px rgba(255,255,255,0.6)\'>" & Nivel & "</span></td></tr>"')
 vacio = "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>%s</div>"
 TABLA = ('"' + CARD % (416, '1px solid #DADCDF')
          + "<div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:15px;font-weight:700;color:#111111'>Usuarios morosos</div>"
          + "<div style='font-size:10px;color:#8A8D91'>\" & CountRows(colMorVista) & \" en la vista · se muestran hasta 300 · use el buscador\" & If(IsBlank(varMorFecha), \"\", \" · consultado \" & Text(varMorFecha, \"hh:mm\")) & \"</div></div>\" & "
          + 'If(IsEmpty(colMorVista), If(varCargandoMor, "' + vacio % 'Consultando FOLIO…' + '", "' + vacio % 'Sin datos. Presione ACTUALIZAR DESDE FOLIO.' + '"), '
-         + '"<div style=\'margin-top:10px;max-height:340px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;font-size:11px;color:#111111\'>'
-         + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>RUT</th><th style='padding:6px'>NOMBRE</th>"
-         + "<th style='padding:6px'>TIPO</th><th style='padding:6px'>BIBLIOTECA</th><th style='padding:6px'>LIBROS</th><th style='padding:6px'>DÍAS</th><th style='padding:6px'>NIVEL</th></tr>\" & "
+         + '"<div style=\'margin-top:10px;max-height:340px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#111111\'>'
+         + "<colgroup><col style='width:105px'><col><col style='width:120px'><col style='width:62px'><col style='width:62px'><col style='width:82px'></colgroup>"
+         + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:6px;text-align:left'>RUT</th><th style='padding:6px;text-align:left'>NOMBRE</th>"
+         + "<th style='padding:6px;text-align:left'>TIPO</th><th style='padding:6px;text-align:center'>LIBROS</th><th style='padding:6px;text-align:center'>DÍAS</th><th style='padding:6px;text-align:center'>NIVEL</th></tr>\" & "
          + 'Concat(FirstN(colMorVista, 300), ' + fila + ') & "</table></div>") & "</div></div>"')
+
+fila_det = ('"<tr style=\'border-bottom:1px solid #DADCDF\'><td style=\'padding:5px 4px;text-align:left\'>" & ' + ESC.format(x='Titulo')
+            + ' & "<div style=\'font-size:9px;color:#8A8D91\'>" & Codigo & " · " & ' + ESC.format(x='Bib') + ' & "</div></td>'
+            '<td style=\'padding:5px 4px;text-align:center;white-space:nowrap\'>" & Vence & "</td>'
+            '<td style=\'padding:5px 4px;text-align:center;font-weight:700;color:#B3261E\'>" & Text(Dias, "#,##0") & "</td></tr>"')
+DETALLE_HTML = ('"' + CARD % (416, '1px solid #DADCDF')
+    + "<div style='font-size:15px;font-weight:700;color:#111111'>Detalle de morosidad</div>"
+    + "<div style='font-size:11px;font-style:italic;color:#3F4247'>Elija un usuario (o búsquelo) y presione Ver detalle</div>"
+    + "<div style='height:44px'></div>\" & "
+    + 'If(varCargandoDet, "<div style=\'padding:40px 0;text-align:center;font-size:12px;color:#8A8D91\'>Consultando FOLIO…</div>", '
+    + 'IsBlank(varDet.Nombre), "<div style=\'padding:40px 0;text-align:center;font-size:12px;color:#8A8D91\'>Sin usuario seleccionado.</div>", '
+    + '"<div style=\'font-size:14px;font-weight:700;color:#111111\'>" & varDet.Nombre & " " & varDet.Apellido & "</div>'
+    + "<div style='font-size:11px;color:#3F4247'>RUT \" & varDet.RUT & \" · \" & Coalesce(varDet.Tipo, \"Usuario\") & \"</div>"
+    + "<div style='font-size:11px;font-style:italic;color:#3F4247;margin-bottom:6px'>\" & Coalesce(varDet.Correo, \"sin correo registrado\") & \"</div>"
+    + "<div style='max-height:160px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#111111'>"
+    + "<colgroup><col><col style='width:78px'><col style='width:52px'></colgroup>"
+    + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:5px 4px;text-align:left'>LIBRO</th>"
+    + "<th style='padding:5px 4px;text-align:center'>VENCIÓ</th><th style='padding:5px 4px;text-align:center'>DÍAS</th></tr>\" & "
+    + 'Concat(colDet, ' + fila_det + ') & "</table></div>") & "</div></div>"')
 
 texto_buscar = '''      - txtBuscarMor_6:
           Control: Classic/TextInput@2.3.2
@@ -145,7 +226,18 @@ ctrls = [
     label('lblNiveles_6', '="Nivel 0: hasta 60 días · Nivel 1: hasta 2 años · Nivel 2: hasta 5 años · Nivel 3: más de 5 años"',
           900, 142, 430, h=30, size=7, color='#8A8D91', bold=False),
     html('htmlKpis_6', 98, 180, 1240, 108, KPIS),
-    html('htmlTabla_6', 98, 290, 1240, 428, TABLA),
+    html('htmlTabla_6', 98, 290, 800, 428, TABLA),
+    html('htmlDetalle_6', 904, 290, 434, 428, DETALLE_HTML),
+    lista('drpSelMor_6', 926, 348, 290, 'ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})', '""'),
+    boton('btnVerDet_6', 1224, 348, 92, 30, 'If(varCargandoDet, "…", "Ver detalle")',
+          'Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)',
+          displaymode='If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)', dark=False, size=9),
+    label('lblDestino_6', '="ENVIAR A"', 926, 628, 80, h=30, size=7),
+    lista('drpDestino_6', 1000, 628, 316, '["A mi correo (prueba)", "Al correo del usuario"]', '"A mi correo (prueba)"'),
+    fondo('htmlEnviarFondo_6', 'btnEnviarDet_6', 926, 666, 390, 40),
+    boton('btnEnviarDet_6', 926, 666, 390, 40, '"✉  ENVIAR CORREO DE MOROSIDAD"', ENVIAR_DET,
+          displaymode='If(IsEmpty(colDet), DisplayMode.Disabled, DisplayMode.Edit)', size=10),
+    oculto('btnDetalle_6', DETALLE),
     fondo('htmlActualizarFondo_6', 'btnActualizar_6', 104, 722, 400, 40),
     boton('btnActualizar_6', 104, 722, 400, 40, 'If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")', CARGAR,
           displaymode='If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)', size=10),

@@ -136,14 +136,205 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =428
             HtmlText: |-
-              ="<div style='margin:6px;height:416px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Usuarios morosos</div><div style='font-size:10px;color:#8A8D91'>" & CountRows(colMorVista) & " en la vista · se muestran hasta 300 · use el buscador" & If(IsBlank(varMorFecha), "", " · consultado " & Text(varMorFecha, "hh:mm")) & "</div></div>" & If(IsEmpty(colMorVista), If(varCargandoMor, "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin datos. Presione ACTUALIZAR DESDE FOLIO.</div>"), "<div style='margin-top:10px;max-height:340px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:" & varT.hTx & "'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>RUT</th><th style='padding:6px'>NOMBRE</th><th style='padding:6px'>TIPO</th><th style='padding:6px'>BIBLIOTECA</th><th style='padding:6px'>LIBROS</th><th style='padding:6px'>DÍAS</th><th style='padding:6px'>NIVEL</th></tr>" & Concat(FirstN(colMorVista, 300), "<tr style='border-bottom:1px solid " & varT.hLin & ";" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "'><td style='padding:6px;font-weight:700'>" & Substitute(Substitute(RUT, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Nombre, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Biblioteca, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:center'>" & Libros & "</td><td style='padding:6px;text-align:center'>" & Text(Dias, "#,##0") & "</td><td style='padding:6px'><span style='display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;border:1px solid #BFC3C8;box-shadow:0 0 6px rgba(191,195,200,0.55),inset 0 0 4px rgba(255,255,255,0.6)'>" & Nivel & "</span></td></tr>") & "</table></div>") & "</div></div>"
+              ="<div style='margin:6px;height:416px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Usuarios morosos</div><div style='font-size:10px;color:#8A8D91'>" & CountRows(colMorVista) & " en la vista · se muestran hasta 300 · use el buscador" & If(IsBlank(varMorFecha), "", " · consultado " & Text(varMorFecha, "hh:mm")) & "</div></div>" & If(IsEmpty(colMorVista), If(varCargandoMor, "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin datos. Presione ACTUALIZAR DESDE FOLIO.</div>"), "<div style='margin-top:10px;max-height:340px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:" & varT.hTx & "'><colgroup><col style='width:105px'><col><col style='width:120px'><col style='width:62px'><col style='width:62px'><col style='width:82px'></colgroup><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:6px;text-align:left'>RUT</th><th style='padding:6px;text-align:left'>NOMBRE</th><th style='padding:6px;text-align:left'>TIPO</th><th style='padding:6px;text-align:center'>LIBROS</th><th style='padding:6px;text-align:center'>DÍAS</th><th style='padding:6px;text-align:center'>NIVEL</th></tr>" & Concat(FirstN(colMorVista, 300), "<tr style='border-bottom:1px solid " & varT.hLin & ";" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "'><td style='padding:6px;text-align:left;font-weight:700'>" & Substitute(Substitute(RUT, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:left'>" & Substitute(Substitute(Nombre, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:left'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:center'>" & Libros & "</td><td style='padding:6px;text-align:center'>" & Text(Dias, "#,##0") & "</td><td style='padding:6px;text-align:center'><span style='display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;border:1px solid #BFC3C8;box-shadow:0 0 6px rgba(191,195,200,0.55),inset 0 0 4px rgba(255,255,255,0.6)'>" & Nivel & "</span></td></tr>") & "</table></div>") & "</div></div>"
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Width: =1240
+            Width: =800
             X: =98
             Y: =290
+      - htmlDetalle_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =428
+            HtmlText: |-
+              ="<div style='margin:6px;height:416px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Detalle de morosidad</div><div style='font-size:11px;font-style:italic;color:" & varT.hSub & "'>Elija un usuario (o búsquelo) y presione Ver detalle</div><div style='height:44px'></div>" & If(varCargandoDet, "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", IsBlank(varDet.Nombre), "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin usuario seleccionado.</div>", "<div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>" & varDet.Nombre & " " & varDet.Apellido & "</div><div style='font-size:11px;color:" & varT.hSub & "'>RUT " & varDet.RUT & " · " & Coalesce(varDet.Tipo, "Usuario") & "</div><div style='font-size:11px;font-style:italic;color:" & varT.hSub & ";margin-bottom:6px'>" & Coalesce(varDet.Correo, "sin correo registrado") & "</div><div style='max-height:160px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:" & varT.hTx & "'><colgroup><col><col style='width:78px'><col style='width:52px'></colgroup><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:5px 4px;text-align:left'>LIBRO</th><th style='padding:5px 4px;text-align:center'>VENCIÓ</th><th style='padding:5px 4px;text-align:center'>DÍAS</th></tr>" & Concat(colDet, "<tr style='border-bottom:1px solid " & varT.hLin & "'><td style='padding:5px 4px;text-align:left'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "<div style='font-size:9px;color:#8A8D91'>" & Codigo & " · " & Substitute(Substitute(Bib, "&", "&amp;"), "<", "&lt;") & "</div></td><td style='padding:5px 4px;text-align:center;white-space:nowrap'>" & Vence & "</td><td style='padding:5px 4px;text-align:center;font-weight:700;color:#B3261E'>" & Text(Dias, "#,##0") & "</td></tr>") & "</table></div>") & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =434
+            X: =904
+            Y: =290
+      - drpSelMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: =""
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: |-
+              =ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =290
+            X: =926
+            Y: =348
+      - btnVerDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            Color: =varT.tx
+            DisplayMode: =If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =varT.inp
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Normal
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: =If(varCargandoDet, "…", "Ver detalle")
+            Width: =92
+            X: =1224
+            Y: =348
+      - lblDestino_6:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: ="ENVIAR A"
+            Width: =80
+            X: =926
+            Y: =628
+      - drpDestino_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: ="A mi correo (prueba)"
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: =["A mi correo (prueba)", "Al correo del usuario"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =316
+            X: =1000
+            Y: =628
+      - htmlEnviarFondo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =40
+            HtmlText: |-
+              =If(btnEnviarDet_6.DisplayMode = DisplayMode.Disabled, "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =390
+            X: =926
+            Y: =666
+      - btnEnviarDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(IsEmpty(colDet), DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Bold
+            Height: =40
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =
+              With(
+                  {dest: If(drpDestino_6.Selected.Value = "Al correo del usuario", Coalesce(varDet.Para, varDet.Correo), Coalesce(varCorreoPrueba, "pablo.salas.marin@uai.cl"))},
+                  If(
+                      IsEmpty(colDet) || IsBlank(dest),
+                          Notify("Primero elija un usuario con libros vencidos.", NotificationType.Warning),
+                      IfError(
+                          Office365Outlook.SendEmailV2(dest, "Bibliotecas UAI: Solicitud de devolución de material", If(!IsBlank(varDet.Html), varDet.Html, "<div style='font-family:Calibri,Segoe UI,Arial,sans-serif;color:#111111;max-width:720px'><div style='background:#111111;color:#FFFFFF;padding:18px 24px;border-bottom:3px solid #BFC3C8'><div style='font-size:11px;letter-spacing:3px;color:#BFC3C8'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div><div style='font-size:20px;font-weight:700;margin-top:4px'>Aviso de material vencido</div></div><div style='padding:18px 24px;font-size:13px'><p>Estimado/a " & varDet.Nombre & " " & varDet.Apellido & ":</p><p>Según nuestros registros, tienes el siguiente material con plazo de devolución vencido:</p><table style='border-collapse:collapse;font-size:12px;width:100%'><tr style='background:#111111;color:#FFFFFF'><th style='padding:7px 8px;text-align:left'>Título</th><th style='padding:7px 8px;text-align:center'>Código</th><th style='padding:7px 8px;text-align:left'>Biblioteca</th><th style='padding:7px 8px;text-align:center'>Venció</th><th style='padding:7px 8px;text-align:center'>Días de atraso</th></tr>" & Concat(colDet, "<tr><td style='padding:6px 8px;border-bottom:1px solid #DADCDF'>" & Titulo & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center'>" & Codigo & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF'>" & Bib & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center'>" & Vence & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center;font-weight:700;color:#B3261E'>" & Dias & "</td></tr>") & "</table><p>Te pedimos devolverlo a la brevedad en cualquiera de nuestras bibliotecas.</p><p style='color:#3F4247'>Bibliotecas UAI</p></div></div>"), {Cc: "pablo.salas.marin@uai.cl", Importance: "Normal"});
+                          Notify("Correo enviado a " & dest, NotificationType.Success, 3000);
+                          true,
+                          Notify("No se pudo enviar el correo: " & FirstError.Message, NotificationType.Error)
+                      )
+                  )
+              )
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="✉  ENVIAR CORREO DE MOROSIDAD"
+            Width: =390
+            X: =926
+            Y: =666
+      - btnDetalle_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              If(
+                  !IsBlank(varSelRut),
+                  Set(varCargandoDet, true);
+                  Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+                  Set(varCargandoDet, false);
+                  With(
+                      {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
+                      Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
+                                   Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
+                      ClearCollect(
+                          colDet,
+                          ForAll(
+                              IfError(Table(j.lista), Table(ParseJSON("[]"))),
+                              {
+                                  Titulo: Text(ThisRecord.Value.titulo),
+                                  Codigo: Text(ThisRecord.Value.codigo),
+                                  Bib: Text(ThisRecord.Value.bib),
+                                  Vence: Text(ThisRecord.Value.vence),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      )
+                  )
+              )
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
       - htmlActualizarFondo_6:
           Control: HtmlViewer@2.1.0
           Properties:
@@ -255,7 +446,8 @@ Screens:
                       Dias,
                       SortOrder.Descending
                   )
-              )
+              );
+              If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))
             PressedFill: =RGBA(0, 0, 0, 0)
             TabIndex: =-1
             Text: =""
