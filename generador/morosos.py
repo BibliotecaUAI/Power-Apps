@@ -97,12 +97,12 @@ fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;" & If(Dias >= 731, "box-s
 vacio = "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>%s</div>"
 TABLA = ('"' + CARD % (416, '1px solid #DADCDF')
          + "<div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:15px;font-weight:700;color:#111111'>Usuarios morosos</div>"
-         + "<div style='font-size:10px;color:#8A8D91'>\" & CountRows(colMorVista) & \" en la vista · se muestran los 150 con más días\" & If(IsBlank(varMorFecha), \"\", \" · consultado \" & Text(varMorFecha, \"hh:mm\")) & \"</div></div>\" & "
+         + "<div style='font-size:10px;color:#8A8D91'>\" & CountRows(colMorVista) & \" en la vista · se muestran hasta 300 · use el buscador\" & If(IsBlank(varMorFecha), \"\", \" · consultado \" & Text(varMorFecha, \"hh:mm\")) & \"</div></div>\" & "
          + 'If(IsEmpty(colMorVista), If(varCargandoMor, "' + vacio % 'Consultando FOLIO…' + '", "' + vacio % 'Sin datos. Presione ACTUALIZAR DESDE FOLIO.' + '"), '
          + '"<div style=\'margin-top:10px;max-height:340px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;font-size:11px;color:#111111\'>'
          + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>RUT</th><th style='padding:6px'>NOMBRE</th>"
          + "<th style='padding:6px'>TIPO</th><th style='padding:6px'>BIBLIOTECA</th><th style='padding:6px'>LIBROS</th><th style='padding:6px'>DÍAS</th><th style='padding:6px'>NIVEL</th></tr>\" & "
-         + 'Concat(FirstN(colMorVista, 150), ' + fila + ') & "</table></div>") & "</div></div>"')
+         + 'Concat(FirstN(colMorVista, 300), ' + fila + ') & "</table></div>") & "</div></div>"')
 
 texto_buscar = '''      - txtBuscarMor_6:
           Control: Classic/TextInput@2.3.2

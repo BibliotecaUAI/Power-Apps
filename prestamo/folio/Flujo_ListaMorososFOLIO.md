@@ -27,7 +27,7 @@ DEFINE
         "tipo", MAXX(CURRENTGROUP(), f_loans[Tipo de Usuario]),
         "bib", MAXX(CURRENTGROUP(), f_loans[bibloteca.prestamo])
     )
-    VAR primeros = TOPN(200, g, [dias], DESC)
+    VAR primeros = g
     VAR q = UNICHAR(34)
     VAR lista = CONCATENATEX(
         primeros,
