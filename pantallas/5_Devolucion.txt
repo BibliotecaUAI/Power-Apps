@@ -1,5 +1,5 @@
 Screens:
-  Devolución:
+  scrDevolucion:
     Properties:
       Fill: =ColorValue("#FFFFFF")
       OnVisible: =ClearCollect(colPrestamos, tblPrestamos); Set(varMenu, false); SetFocus(txtDevol_5)
@@ -143,7 +143,10 @@ Screens:
                                       Id: If(IsBlank(p), "", p.IdPrestamo),
                                       Titulo: If(IsBlank(p), "—", p.Titulo),
                                       Usuario: If(IsBlank(p), "—", p.Nombre & " " & p.Apellido),
+                                      RUT: If(IsBlank(p), "", p.RUT),
                                       Prestado: If(IsBlank(p), "", p.FechaPrestamo),
+                                      Vence: If(IsBlank(p), "", p.FechaVencimiento),
+                                      ObsPrevia: If(IsBlank(p), "", p.Observaciones),
                                       Atraso: atraso,
                                       Estado: If(IsBlank(p), "NO ESTABA PRESTADO", atraso > 0, "ATRASADO", "A TIEMPO")
                                   }
@@ -184,7 +187,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =486
             HtmlText: |-
-              ="<div style='margin:6px;height:474px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='font-size:15px;font-weight:700;color:#111111'>Libros devueltos</div><div>" & If(CountRows(Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountRows(Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO")) & " LISTOS</span>", "") & " " & If(CountRows(Filter(colDevol, Estado = "ATRASADO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & CountRows(Filter(colDevol, Estado = "ATRASADO")) & " ATRASADOS</span>", "") & " " & If(CountRows(Filter(colDevol, Estado = "DEVUELTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountRows(Filter(colDevol, Estado = "DEVUELTO")) & " DEVUELTOS</span>", "") & "</div></div><div style='font-size:11px;color:#3F4247;margin:2px 0 10px'>Se cruza con los préstamos registrados. Los atrasados quedan marcados con borde rojo.</div>" & If(IsEmpty(colDevol), "<div style='padding:60px 0;text-align:center;font-size:12px;color:#8A8D91'>Escanee o pegue los códigos y presione 1 · REVISAR.</div>", "<div style='max-height:380px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:#111111'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>CÓDIGO</th><th style='padding:6px'>TÍTULO</th><th style='padding:6px'>USUARIO</th><th style='padding:6px'>PRESTADO</th><th style='padding:6px'>ESTADO</th></tr>" & Concat(Sort(colDevol, Orden), "<tr style='border-bottom:1px solid #DADCDF;" & If(Estado = "ATRASADO", "outline:2px solid #B3261E;outline-offset:-2px;", "") & "'><td style='padding:7px 6px;font-weight:700'>" & Substitute(Substitute(Codigo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Usuario, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & If(IsBlank(Prestado), "—", Text(DateValue(Prestado), "dd-mm")) & "</td><td style='padding:7px 6px'>" & If(Estado = "A TIEMPO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>A TIEMPO</span>", Estado = "DEVUELTO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>DEVUELTO</span>", Estado = "ATRASADO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & Atraso & If(Atraso = 1, " DÍA", " DÍAS") & " DE ATRASO</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>NO ESTABA PRESTADO</span>") & "</td></tr>") & "</table></div>") & "</div></div>"
+              ="<div style='margin:6px;height:474px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='font-size:15px;font-weight:700;color:#111111'>Libros devueltos</div><div>" & If(CountRows(Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountRows(Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO")) & " LISTOS</span>", "") & " " & If(CountRows(Filter(colDevol, Estado = "ATRASADO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & CountRows(Filter(colDevol, Estado = "ATRASADO")) & " ATRASADOS</span>", "") & " " & If(CountRows(Filter(colDevol, Estado = "DEVUELTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountRows(Filter(colDevol, Estado = "DEVUELTO")) & " DEVUELTOS</span>", "") & "</div></div><div style='font-size:11px;color:#3F4247;margin:2px 0 10px'>Se cruza con los préstamos registrados. Se registra quién lo tenía, cuándo lo pidió y si lo devuelve moroso.</div>" & If(IsEmpty(colDevol), "<div style='padding:60px 0;text-align:center;font-size:12px;color:#8A8D91'>Escanee o pegue los códigos y presione 1 · REVISAR.</div>", "<div style='max-height:380px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:#111111'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>CÓDIGO</th><th style='padding:6px'>TÍTULO</th><th style='padding:6px'>USUARIO</th><th style='padding:6px'>PRESTADO</th><th style='padding:6px'>VENCÍA</th><th style='padding:6px'>ESTADO</th></tr>" & Concat(Sort(colDevol, Orden), "<tr style='border-bottom:1px solid #DADCDF;" & If(Estado = "ATRASADO", "outline:2px solid #B3261E;outline-offset:-2px;", "") & "'><td style='padding:7px 6px;font-weight:700'>" & Substitute(Substitute(Codigo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Usuario, "&", "&amp;"), "<", "&lt;") & If(IsBlank(RUT), "", "<div style='font-size:9px;color:#8A8D91'>RUT " & RUT & "</div>") & "</td><td style='padding:7px 6px'>" & If(IsBlank(Prestado), "—", Text(DateValue(Prestado), "dd-mm")) & "</td><td style='padding:7px 6px'>" & If(IsBlank(Vence), "—", Text(DateValue(Vence), "dd-mm")) & "</td><td style='padding:7px 6px'>" & If(Estado = "A TIEMPO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>A TIEMPO</span>", Estado = "DEVUELTO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>DEVUELTO</span>", Estado = "ATRASADO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>MOROSO · " & Atraso & If(Atraso = 1, " DÍA", " DÍAS") & "</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>NO ESTABA PRESTADO</span>") & "</td></tr>") & "</table></div>") & "</div></div>"
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
@@ -235,7 +238,8 @@ Screens:
                               {
                                   FechaDevolucion: Text(Today(), "yyyy-mm-dd"),
                                   Estado: "Devuelto",
-                                  DiasAtraso: Text(x.Atraso)
+                                  DiasAtraso: Text(x.Atraso),
+                                  Observaciones: x.ObsPrevia & If(IsBlank(x.ObsPrevia), "", " | ") & "Devuelto el " & Text(Today(), "dd-mm-yyyy") & " por " & x.Usuario & " (RUT " & x.RUT & ")" & If(x.Atraso > 0, " con " & x.Atraso & " días de atraso: MOROSO", " a tiempo")
                               }
                           )
                       );
@@ -380,7 +384,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Inicio', ScreenTransition.UnCover)
+            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.UnCover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -399,7 +403,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Descarte', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -418,7 +422,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Préstamo', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -437,7 +441,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Devolución', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -456,7 +460,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Morosos', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -475,7 +479,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Inventario', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrInventario, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
