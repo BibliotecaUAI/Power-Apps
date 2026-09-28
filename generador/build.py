@@ -79,7 +79,7 @@ lote = [
     copy('drpJustificacion_1'),
 ]
 
-CODIGOS = 'Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))'
+CODIGOS = 'Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value)))'
 LOTE_OK = '!IsBlank(drpUnidadDescarte_2.Selected.Value) && !IsBlank(drpJustificacion_2.Selected.Value) && !IsBlank(drpInventario_2.Selected.Value)'
 NLISTOS = 'CountIf(colTanda, Estado = "Listo" || Estado = "Completar")'
 SILVER_ON = "<div style='height:%dpx;background:linear-gradient(115deg,#0B0B0C 0%%,#111111 38%%,#35373B 50%%,#111111 62%%,#0B0B0C 100%%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>"
@@ -176,7 +176,7 @@ If(
     Clear(colRes);
     Clear(colErrLote);
     ClearCollect(colFicha, tblFichaDescarte);
-    ClearCollect(colFichaCod, ForAll(colFicha, {{Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}}));
+    ClearCollect(colFichaCod, ForAll(colFicha, {{Cod: With({{k: Text('Codigo de Barra')}}, If(IsMatch(k, "\\d{{1,5}}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}}));
     ForAll(
         Sequence(RoundUp(CountRows(colCodigos) / 200, 0)) As k,
         With(
@@ -270,7 +270,7 @@ IfError(
         CountRows(Filter(colL, Estado = "Completar")) > 0,
         Patch(
             tblFichaDescarte,
-            ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
+            ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\\d{1,5}"), Text(Value(k), "000000"), k)) = t.Codigo)),
             ForAll(Filter(colL, Estado = "Completar") As t, ''' + REC + ''')
         )
     );
@@ -278,7 +278,7 @@ IfError(
     Notify("No se pudieron completar filas existentes: " & FirstError.Message, NotificationType.Error)
 );
 ClearCollect(colFicha, tblFichaDescarte);
-ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
 UpdateIf(colTanda, (Estado = "Listo" || Estado = "Completar") && !IsBlank(LookUp(colFichaCod, Cod = Codigo && Completo)), {Estado: "Guardado"});
 UpdateIf(colTanda, Estado = "Listo" || Estado = "Completar", {Estado: "Error"});
 Set(varSegGuardado, DateDiff(varT0, Now(), TimeUnit.Seconds));

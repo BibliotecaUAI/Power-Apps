@@ -306,7 +306,7 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =9
-            Text: =CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))) & " CÓDIGOS · MÁX. 2.000"
+            Text: =CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value)))) & " CÓDIGOS · MÁX. 2.000"
             Width: =240
             X: =340
             Y: =328
@@ -398,8 +398,8 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =RGBA(191, 195, 200, 0.18)
             OnSelect: |-
-              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))));
-              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value)), 2000));
+              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value)))));
+              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value))), 2000));
               If(
                   IsEmpty(colCodigos),
                       Notify("Escanee o pegue al menos un código.", NotificationType.Warning),
@@ -410,7 +410,7 @@ Screens:
                   Clear(colRes);
                   Clear(colErrLote);
                   ClearCollect(colFicha, tblFichaDescarte);
-                  ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+                  ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
                   ForAll(
                       Sequence(RoundUp(CountRows(colCodigos) / 200, 0)) As k,
                       With(
@@ -653,7 +653,7 @@ Screens:
                       CountRows(Filter(colL, Estado = "Completar")) > 0,
                       Patch(
                           tblFichaDescarte,
-                          ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
+                          ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)) = t.Codigo)),
                           ForAll(Filter(colL, Estado = "Completar") As t, {
                               'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
@@ -693,7 +693,7 @@ Screens:
                   Notify("No se pudieron completar filas existentes: " & FirstError.Message, NotificationType.Error)
               );
               ClearCollect(colFicha, tblFichaDescarte);
-              ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+              ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
               UpdateIf(colTanda, (Estado = "Listo" || Estado = "Completar") && !IsBlank(LookUp(colFichaCod, Cod = Codigo && Completo)), {Estado: "Guardado"});
               UpdateIf(colTanda, Estado = "Listo" || Estado = "Completar", {Estado: "Error"});
               Set(varSegGuardado, DateDiff(varT0, Now(), TimeUnit.Seconds));

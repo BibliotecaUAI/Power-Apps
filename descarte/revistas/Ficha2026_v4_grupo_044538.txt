@@ -1,5 +1,5 @@
 DEFINE
-    VAR _codes = DATATABLE ( "fila", INTEGER, "cod", STRING, { { 1, "044538" }, { 2, "044539" }, { 3, "044540" }, { 4, "044542" }, { 5, "042266" }, { 6, "044565" }, { 7, "044566" }, { 8, "044567" }, { 9, "044569" }, { 10, "042266" }, { 11, "044565" }, { 12, "044566" }, { 13, "044567" }, { 14, "044568" }, { 15, "044569" } } )
+    VAR _codes = DATATABLE ( "fila", INTEGER, "cod", STRING, "orig", STRING, { { 1, "044538", "044538" }, { 2, "044539", "044539" }, { 3, "044540", "044540" }, { 4, "044542", "044542" }, { 5, "042266", "042266" }, { 6, "044565", "044565" }, { 7, "044566", "044566" }, { 8, "044567", "044567" }, { 9, "044569", "044569" }, { 10, "", "042266" }, { 11, "", "044565" }, { 12, "", "044566" }, { 13, "", "044567" }, { 14, "044568", "044568" }, { 15, "", "044569" } } )
     VAR _b0 =
         ADDCOLUMNS (
             _codes,
@@ -41,7 +41,7 @@ SELECTCOLUMNS (
     _base,
     "Item ingresado en la base de biblioteca", VAR _c = [bc] RETURN YEAR ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[CreationDate] ) ),
     "HRID", VAR _h = [hr] RETURN IF ( ISERROR ( VALUE ( _h ) ), _h, FORMAT ( VALUE ( _h ), "0" ) ),
-    "Codigo de Barra", [cod],
+    "Codigo de Barra", [orig],
     "Cruce Archivo activo Fijo (Finanzas)", VAR _c = [bc] RETURN IF ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ) = "Issue", "No", "Si" ),
     "Valor Neto", "",
     "Copia", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[copyNumber] ),
@@ -72,9 +72,9 @@ SELECTCOLUMNS (
     "Criterios de Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 1 ) ),
     "Justificaciones para aplicar Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 2 ) ),
     "Relación Inventario", "NO",
-    "Observaciones respecto de la justificación al Descarte", "",
+    "Observaciones respecto de la justificación al Descarte", IF ( [cod] = "", "REPETIDO: revisar", "" ),
     "Información para no Descartar", "",
-    "Decisión Final Descarte SI/NO", "SI",
+    "Decisión Final Descarte SI/NO", IF ( [cod] = "", "", "SI" ),
     "orden", [fila]
 )
 ORDER BY [orden]
