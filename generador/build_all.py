@@ -161,6 +161,51 @@ for a, (arch, cajas) in DONDE.items():
         t = t[:j] + bloque + t[j:]
     open(p, 'w').write(t)
 
+
+# ---------- Alineación final con las reglas validadas en la Ficha 2026 ----------
+import re as _re2
+NK = 'With({k: Text(\'Codigo de Barra\')}, If(IsMatch(k, "\\d{1,5}"), Text(Value(k), "000000"), k))'
+def alinear(path, uno_a_uno):
+    t = open(path).read()
+    t = _re2.sub(r"(?<!\{k: )Text\('Codigo de Barra'\)", lambda m: NK, t)
+    t = t.replace("Autor: t.Autor,", 'Autor: Coalesce(t.Autor, "0"),')
+    t = t.replace("'Año de edicion': t.Anio,", "'Año de edicion': Coalesce(t.Anio, \"sin informacion\"),")
+    if uno_a_uno:
+        R = [
+            ("{cod: varEntrada},", '{cod: If(IsMatch(Trim(varEntrada), "\\d{1,5}"), Text(Value(Trim(varEntrada)), "000000"), Trim(varEntrada))},'),
+            ("                                  'Valor Neto': txtValorNeto_1.Text,\n", ""),
+            ("Autor: If(enc, varItem.Autor, txtAutor_1.Text),", 'Autor: Coalesce(If(enc, varItem.Autor, txtAutor_1.Text), "0"),'),
+            ("'Año de edicion': If(enc, varItem.'Año de edicion', txtAnio_1.Text),", "'Año de edicion': Coalesce(If(enc, varItem.'Año de edicion', txtAnio_1.Text), \"sin informacion\"),"),
+            ('Items: =["Compra", "Canje", "Donación", "Desconocida"]', 'Items: =["", "Compra", "Canje", "Donación", "Desconocida"]'),
+            ('Default: =If(IsBlank(txtPOL_1.Text), "Desconocida", "Compra")', 'Default: =If(IsBlank(txtPOL_1.Text), "", "Compra")'),
+        ]
+        for a, z in R:
+            assert a in t, a[:60]
+            t = t.replace(a, z)
+    # propiedades de una línea que ahora contienen ': ' pasan a bloque |-
+    out = []
+    for l in t.split('\n'):
+        m = _re2.match(r'^( {12})([A-Za-z]+): (=.*)$', l)
+        if m and (': ' in m.group(3) or ' #' in m.group(3)):
+            out.append(m.group(1) + m.group(2) + ': |-'); out.append(m.group(1) + '  ' + m.group(3))
+        else:
+            out.append(l)
+    t = '\n'.join(out)
+    open(path, 'w').write(t)
+alinear(R + '/pantallas/2_Descarte.txt', True)
+alinear(R + '/pantallas/3_Descarte_masiva.txt', False)
+
+# Variante de Descarte masiva que usa el flujo de libros existente (sin BuscarLoteFOLIO)
+def variante_flujo_actual():
+    t = open(R + '/pantallas/3_Descarte_masiva.txt').read()
+    i = t.index('ForAll(\n', t.index('Clear(colErrLote);'))
+    j = t.index('Sequence(CountRows(colCodigos)) As i', i); j = t.rfind('ForAll(', i, j)
+    ind = t[t.rfind('\n', 0, i) + 1:i]
+    new = open('variante_flujo_actual.txt').read()
+    new = '\n'.join((ind + l if k > 0 and l else l) for k, l in enumerate(new.split('\n')))
+    open(R + '/pantallas/3b_Descarte_masiva_flujo_actual.txt', 'w').write(t[:i] + new + ind + t[j:].lstrip())
+variante_flujo_actual()
+
 # Un solo archivo con toda la app (pegar de una vez)
 out = ['Screens:']
 for f in ['1_Inicio.txt', '2_Descarte.txt', '3_Descarte_masiva.txt', '4_Prestamo.txt', '5_Devolucion.txt', '6_Morosos.txt', '7_Inventario.txt']:

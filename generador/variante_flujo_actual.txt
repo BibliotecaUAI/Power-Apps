@@ -1,0 +1,35 @@
+ForAll(
+    colCodigos As c,
+    With(
+        {r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(c.Value).datos), "")},
+        With(
+            {x: ParseJSON(If(IsBlank(r), "{}", r))},
+            If(
+                IsBlank(r),
+                    Collect(colErrLote, {Lote: 1}),
+                Text(x.encontrado) = "SI",
+                    Collect(
+                        colRes,
+                        {
+                            Codigo: c.Value,
+                            HRID: Text(x.hrid),
+                            Copia: Text(x.copia),
+                            Tipo: Text(x.tipo),
+                            Ubicacion: Substitute(Text(x.ubicacion), " - ", " "),
+                            Bib: IfError(Text(x.bib), ""),
+                            Crit: IfError(Text(x.crit), ""),
+                            Titulo: Text(x.titulo),
+                            Autor: Text(x.autor),
+                            Idioma: Text(x.idioma),
+                            Fecha: Text(x.fecha),
+                            Anio: Text(x.anio),
+                            PA: Coalesce(Value(Text(x.exA)), 0),
+                            PF: Coalesce(Value(Text(x.exF)), 0),
+                            Pos: Coalesce(Value(Text(x.exP)), 0),
+                            Vina: Coalesce(Value(Text(x.exV)), 0)
+                        }
+                    )
+            )
+        )
+    )
+);

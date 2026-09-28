@@ -306,7 +306,7 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =9
-            Text: =CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))) & " CÓDIGOS · MÁX. 2.000"
+            Text: =CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value)))) & " CÓDIGOS · MÁX. 2.000"
             Width: =240
             X: =340
             Y: =328
@@ -398,8 +398,8 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =RGBA(191, 195, 200, 0.18)
             OnSelect: |-
-              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))));
-              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value)), 2000));
+              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value)))));
+              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), If(IsMatch(Trim(Value), "\d{1,5}"), Text(Value(Trim(Value)), "000000"), Trim(Value))), 2000));
               If(
                   IsEmpty(colCodigos),
                       Notify("Escanee o pegue al menos un código.", NotificationType.Warning),
@@ -410,7 +410,7 @@ Screens:
                   Clear(colRes);
                   Clear(colErrLote);
                   ClearCollect(colFicha, tblFichaDescarte);
-                  ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+                  ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
                   ForAll(
                       colCodigos As c,
                       With(
@@ -451,7 +451,7 @@ Screens:
                       With(
                           {cod: Index(colCodigos, i.Value).Value},
                           With(
-                              {f: LookUp(colRes, Codigo = cod), en: LookUp(colFichaCod, Cod = cod)},
+                              {f: LookUp(colRes, Codigo = cod || Codigo = IfError(Text(Value(cod), "000000"), cod)), en: LookUp(colFichaCod, Cod = cod)},
                               Collect(
                                   colTanda,
                                   {
@@ -618,13 +618,13 @@ Screens:
                               'Tipo de Material': t.Tipo,
                               'Biblioteca-Ubicacion-Colección': t.Ubicacion,
                               Título: t.Titulo,
-                              Autor: t.Autor,
+                              Autor: Coalesce(t.Autor, "0"),
                               Idioma: t.Idioma,
                               'Vinculado UAI (SI/NO)': "NO",
                               'Fecha registro (ingresado en la base)': Substitute(t.Fecha, "-", "/"),
                               'Número de POL *': "-1",
                               'Unidad Academica o Centro de Costo *': "None",
-                              'Año de edicion': t.Anio,
+                              'Año de edicion': Coalesce(t.Anio, "sin informacion"),
                               'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || IfError(Text(Value(t.HRID)), t.HRID) in colHrFicha.Hr || CountRows(Filter(colL, HRID = t.HRID && Orden < t.Orden)) > 0, 0, 1),
                               'Unidad de descarte': If(drpUnidadDescarte_2.Selected.Value = "(automático)", t.Bib, drpUnidadDescarte_2.Selected.Value),
                               'Pregrado A - Existencia': t.PA,
@@ -651,7 +651,7 @@ Screens:
                       CountRows(Filter(colL, Estado = "Completar")) > 0,
                       Patch(
                           tblFichaDescarte,
-                          ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
+                          ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)) = t.Codigo)),
                           ForAll(Filter(colL, Estado = "Completar") As t, {
                               'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
@@ -661,13 +661,13 @@ Screens:
                               'Tipo de Material': t.Tipo,
                               'Biblioteca-Ubicacion-Colección': t.Ubicacion,
                               Título: t.Titulo,
-                              Autor: t.Autor,
+                              Autor: Coalesce(t.Autor, "0"),
                               Idioma: t.Idioma,
                               'Vinculado UAI (SI/NO)': "NO",
                               'Fecha registro (ingresado en la base)': Substitute(t.Fecha, "-", "/"),
                               'Número de POL *': "-1",
                               'Unidad Academica o Centro de Costo *': "None",
-                              'Año de edicion': t.Anio,
+                              'Año de edicion': Coalesce(t.Anio, "sin informacion"),
                               'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || IfError(Text(Value(t.HRID)), t.HRID) in colHrFicha.Hr || CountRows(Filter(colL, HRID = t.HRID && Orden < t.Orden)) > 0, 0, 1),
                               'Unidad de descarte': If(drpUnidadDescarte_2.Selected.Value = "(automático)", t.Bib, drpUnidadDescarte_2.Selected.Value),
                               'Pregrado A - Existencia': t.PA,
@@ -691,7 +691,7 @@ Screens:
                   Notify("No se pudieron completar filas existentes: " & FirstError.Message, NotificationType.Error)
               );
               ClearCollect(colFicha, tblFichaDescarte);
-              ClearCollect(colFichaCod, ForAll(colFicha, {Cod: Text('Codigo de Barra'), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
+              ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
               UpdateIf(colTanda, (Estado = "Listo" || Estado = "Completar") && !IsBlank(LookUp(colFichaCod, Cod = Codigo && Completo)), {Estado: "Guardado"});
               UpdateIf(colTanda, Estado = "Listo" || Estado = "Completar", {Estado: "Error"});
               Set(varSegGuardado, DateDiff(varT0, Now(), TimeUnit.Seconds));

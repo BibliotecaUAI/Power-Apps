@@ -425,38 +425,36 @@ Screens:
                   ClearCollect(colFicha, tblFichaDescarte);
                   ClearCollect(colFichaCod, ForAll(colFicha, {Cod: With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)), Completo: !IsBlank('Item ingresado en la base de biblioteca')}));
                   ForAll(
-                      Sequence(RoundUp(CountRows(colCodigos) / 200, 0)) As k,
+                      colCodigos As c,
                       With(
-                          {txt: Concat(FirstN(LastN(colCodigos, CountRows(colCodigos) - (k.Value - 1) * 200), 200), Value, ",")},
+                          {r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(c.Value).datos), "")},
                           With(
-                              {r: IfError(Text(BuscarLoteFOLIO.Run(txt).datos), "")},
+                              {x: ParseJSON(If(IsBlank(r), "{}", r))},
                               If(
                                   IsBlank(r),
-                                      Collect(colErrLote, {Lote: k.Value}),
-                                  Collect(
-                                      colRes,
-                                      ForAll(
-                                          IfError(Table(ParseJSON(Text(ParseJSON(r).datos))), IfError(Table(ParseJSON(r)), Table(ParseJSON("[]")))) As x,
+                                      Collect(colErrLote, {Lote: 1}),
+                                  Text(x.encontrado) = "SI",
+                                      Collect(
+                                          colRes,
                                           {
-                                              Codigo: Text(x.Value.codigo),
-                                              HRID: Text(x.Value.hrid),
-                                              Copia: Text(x.Value.copia),
-                                              Tipo: Text(x.Value.tipo),
-                                              Ubicacion: Text(x.Value.ubicacion),
-                                              Bib: Text(x.Value.bib),
-                                              Crit: Text(x.Value.crit),
-                                              Titulo: Text(x.Value.titulo),
-                                              Autor: Text(x.Value.autor),
-                                              Idioma: Text(x.Value.idioma),
-                                              Fecha: Text(x.Value.fecha),
-                                              Anio: Text(x.Value.anio),
-                                              PA: Coalesce(Value(Text(x.Value.exA)), 0),
-                                              PF: Coalesce(Value(Text(x.Value.exF)), 0),
-                                              Pos: Coalesce(Value(Text(x.Value.exP)), 0),
-                                              Vina: Coalesce(Value(Text(x.Value.exV)), 0)
+                                              Codigo: c.Value,
+                                              HRID: Text(x.hrid),
+                                              Copia: Text(x.copia),
+                                              Tipo: Text(x.tipo),
+                                              Ubicacion: Substitute(Text(x.ubicacion), " - ", " "),
+                                              Bib: IfError(Text(x.bib), ""),
+                                              Crit: IfError(Text(x.crit), ""),
+                                              Titulo: Text(x.titulo),
+                                              Autor: Text(x.autor),
+                                              Idioma: Text(x.idioma),
+                                              Fecha: Text(x.fecha),
+                                              Anio: Text(x.anio),
+                                              PA: Coalesce(Value(Text(x.exA)), 0),
+                                              PF: Coalesce(Value(Text(x.exF)), 0),
+                                              Pos: Coalesce(Value(Text(x.exP)), 0),
+                                              Vina: Coalesce(Value(Text(x.exV)), 0)
                                           }
                                       )
-                                  )
                               )
                           )
                       )

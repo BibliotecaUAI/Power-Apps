@@ -890,12 +890,12 @@ Screens:
             ChevronBackground: =varT.inp
             ChevronFill: =varT.sub
             Color: =varT.tx
-            Default: =If(IsBlank(txtPOL_1.Text), "Desconocida", "Compra")
+            Default: =If(IsBlank(txtPOL_1.Text), "", "Compra")
             Fill: =varT.inp
             Font: ="Calibri"
             Height: =30
             HoverFill: =varT.inpRO
-            Items: =["Compra", "Canje", "Donación", "Desconocida"]
+            Items: =["", "Compra", "Canje", "Donación", "Desconocida"]
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -1958,24 +1958,23 @@ Screens:
                       Set(varNuevo,
                           Patch(
                               tblFichaDescarte,
-                              If(IsBlank(LookUp(colFicha, Text('Codigo de Barra') = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, Text('Codigo de Barra') = varCodigo)),
+                              If(IsBlank(LookUp(colFicha, With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)) = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k)) = varCodigo)),
                               {
                                   'Item ingresado en la base de biblioteca': Right(Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), "-", "/"), 4),
                                   HRID: IfError(Text(Value(hrid)), hrid),
                                   'Codigo de Barra': varCodigo,
                                   'Cruce Archivo activo Fijo (Finanzas)': drpCruce_1.Selected.Value,
-                                  'Valor Neto': txtValorNeto_1.Text,
                                   Copia: If(enc, varItem.copia, txtCopia_1.Text),
                                   'Tipo de Material': If(enc, varItem.'Tipo de Material', txtTipo_1.Text),
                                   'Biblioteca-Ubicacion-Colección': Substitute(If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text), " - ", " "),
                                   Título: titulo,
-                                  Autor: If(enc, varItem.Autor, txtAutor_1.Text),
+                                  Autor: Coalesce(If(enc, varItem.Autor, txtAutor_1.Text), "0"),
                                   Idioma: If(enc, varItem.Idioma, txtIdioma_1.Text),
                                   'Vinculado UAI (SI/NO)': drpVinculado_1.Selected.Value,
                                   'Fecha registro (ingresado en la base)': Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), "-", "/"),
                                   'Número de POL *': Coalesce(txtPOL_1.Text, "-1"),
                                   'Unidad Academica o Centro de Costo *': drpUnidadAcad_1.Selected.Value,
-                                  'Año de edicion': If(enc, varItem.'Año de edicion', txtAnio_1.Text),
+                                  'Año de edicion': Coalesce(If(enc, varItem.'Año de edicion', txtAnio_1.Text), "sin informacion"),
                                   'Diferenciador de título por ficha descarte': If(IsBlank(hrid), If(titulo in colFicha.Título, 0, 1), If(IfError(Text(Value(hrid)), hrid) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text(HRID)).Value, 0, 1)),
                                   'Unidad de descarte': If(drpUnidadDescarte_1.Selected.Value = "(automático)", Coalesce(varItem.Bib, ""), drpUnidadDescarte_1.Selected.Value),
                                   'Pregrado A - Existencia': Coalesce(varExist.PA, 0),
@@ -2080,7 +2079,8 @@ Screens:
       - btnTodos_1:
           Control: Classic/Button@2.2.0
           Properties:
-            Visible: =!IsBlank(varRes) && CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text('Codigo de Barra')).Value))) > 1
+            Visible: |-
+              =!IsBlank(varRes) && CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k))).Value))) > 1
             BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
             Color: =ColorValue("#111111")
@@ -2092,14 +2092,15 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =ColorValue("#111111")
             OnSelect: |-
-              =Set(varTandaTexto, Concat(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text('Codigo de Barra')).Value)), Trim(Value) & Char(10))); Navigate('Descarte masiva', ScreenTransition.Fade)
+              =Set(varTandaTexto, Concat(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k))).Value)), Trim(Value) & Char(10))); Navigate('Descarte masiva', ScreenTransition.Fade)
             PressedFill: =ColorValue("#3F4247")
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
             RadiusTopLeft: =0
             RadiusTopRight: =0
             Size: =9
-            Text: ="＋  AGREGAR LOS " & CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text('Codigo de Barra')).Value))) & " EJEMPLARES DE ESTE TÍTULO (MISMA BIBLIOTECA) A LECTURA MASIVA   →"
+            Text: |-
+              ="＋  AGREGAR LOS " & CountRows(Filter(Split(IfError(Text(ParseJSON(varRes).todos), ""), ","), !IsBlank(Trim(Value)) && !(Trim(Value) in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k))).Value))) & " EJEMPLARES DE ESTE TÍTULO (MISMA BIBLIOTECA) A LECTURA MASIVA   →"
             Width: =686
             X: =640
             Y: =728
@@ -2113,7 +2114,7 @@ Screens:
             HoverFill: =RGBA(0, 0, 0, 0)
             OnSelect: |-
               =With(
-                  {cod: varEntrada},
+                  {cod: If(IsMatch(Trim(varEntrada), "\d{1,5}"), Text(Value(Trim(varEntrada)), "000000"), Trim(varEntrada))},
                   If(
                       !IsBlank(cod),
                       Set(varCodigo, cod);
@@ -2150,7 +2151,7 @@ Screens:
                       );
                       Set(varEncontrado, !IsBlank(varItem));
                       ClearCollect(colFicha, tblFichaDescarte);
-                      Set(varDuplicado, cod in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), Text('Codigo de Barra')).Value);
+                      Set(varDuplicado, cod in ForAll(Filter(colFicha, !IsBlank('Item ingresado en la base de biblioteca')), With({k: Text('Codigo de Barra')}, If(IsMatch(k, "\d{1,5}"), Text(Value(k), "000000"), k))).Value);
                       If(
                           IsBlank(varRes),
                               Notify("No se pudo consultar FOLIO. Complete la ficha a mano.", NotificationType.Error);
@@ -3009,13 +3010,13 @@ Screens:
                               'Tipo de Material': t.Tipo,
                               'Biblioteca-Ubicacion-Colección': t.Ubicacion,
                               Título: t.Titulo,
-                              Autor: t.Autor,
+                              Autor: Coalesce(t.Autor, "0"),
                               Idioma: t.Idioma,
                               'Vinculado UAI (SI/NO)': "NO",
                               'Fecha registro (ingresado en la base)': Substitute(t.Fecha, "-", "/"),
                               'Número de POL *': "-1",
                               'Unidad Academica o Centro de Costo *': "None",
-                              'Año de edicion': t.Anio,
+                              'Año de edicion': Coalesce(t.Anio, "sin informacion"),
                               'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || IfError(Text(Value(t.HRID)), t.HRID) in colHrFicha.Hr || CountRows(Filter(colL, HRID = t.HRID && Orden < t.Orden)) > 0, 0, 1),
                               'Unidad de descarte': If(drpUnidadDescarte_2.Selected.Value = "(automático)", t.Bib, drpUnidadDescarte_2.Selected.Value),
                               'Pregrado A - Existencia': t.PA,
@@ -3052,13 +3053,13 @@ Screens:
                               'Tipo de Material': t.Tipo,
                               'Biblioteca-Ubicacion-Colección': t.Ubicacion,
                               Título: t.Titulo,
-                              Autor: t.Autor,
+                              Autor: Coalesce(t.Autor, "0"),
                               Idioma: t.Idioma,
                               'Vinculado UAI (SI/NO)': "NO",
                               'Fecha registro (ingresado en la base)': Substitute(t.Fecha, "-", "/"),
                               'Número de POL *': "-1",
                               'Unidad Academica o Centro de Costo *': "None",
-                              'Año de edicion': t.Anio,
+                              'Año de edicion': Coalesce(t.Anio, "sin informacion"),
                               'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || IfError(Text(Value(t.HRID)), t.HRID) in colHrFicha.Hr || CountRows(Filter(colL, HRID = t.HRID && Orden < t.Orden)) > 0, 0, 1),
                               'Unidad de descarte': If(drpUnidadDescarte_2.Selected.Value = "(automático)", t.Bib, drpUnidadDescarte_2.Selected.Value),
                               'Pregrado A - Existencia': t.PA,
