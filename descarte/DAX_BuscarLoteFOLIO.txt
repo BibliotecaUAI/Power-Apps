@@ -2,7 +2,8 @@ DEFINE
     VAR _txt = "CODIGOS_AQUI"
     VAR _path = SUBSTITUTE ( SUBSTITUTE ( _txt, " ", "" ), ",", "|" )
     VAR _codes = SELECTCOLUMNS ( GENERATESERIES ( 1, PATHLENGTH ( _path ) ), "c", PATHITEM ( _path, [Value] ) )
-    VAR _it = FILTER ( f_items, f_items[barcode] IN _codes )
+    VAR _codes6 = SELECTCOLUMNS ( _codes, "c", IF ( ISERROR ( VALUE ( [c] ) ), [c], FORMAT ( VALUE ( [c] ), "000000" ) ) )
+    VAR _it = FILTER ( f_items, f_items[barcode] IN _codes || f_items[barcode] IN _codes6 )
     VAR q = UNICHAR ( 34 )
     VAR _lista =
         CONCATENATEX (

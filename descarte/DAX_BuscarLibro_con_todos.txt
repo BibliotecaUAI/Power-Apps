@@ -1,5 +1,7 @@
 DEFINE
-    VAR _bc = "CODIGO_AQUI"
+    VAR _bc0 = "CODIGO_AQUI"
+    VAR _z = IF ( ISERROR ( VALUE ( _bc0 ) ), _bc0, FORMAT ( VALUE ( _bc0 ), "000000" ) )
+    VAR _bc = IF ( ISEMPTY ( FILTER ( f_items, f_items[barcode] = _bc0 ) ), _z, _bc0 )
     VAR _it = TOPN ( 1, FILTER ( f_items, f_items[barcode] = _bc ) )
     VAR _inst = MAXX ( _it, f_items[f_holdings_script.instanceId] )
     VAR _ins = FILTER ( f_instances, f_instances[id] = _inst )

@@ -219,7 +219,7 @@ If(
         With(
             {{cod: Index(colCodigos, i.Value).Value}},
             With(
-                {{f: LookUp(colRes, Codigo = cod), en: LookUp(colFichaCod, Cod = cod)}},
+                {{f: LookUp(colRes, Codigo = cod || Codigo = IfError(Text(Value(cod), "000000"), cod)), en: LookUp(colFichaCod, Cod = cod)}},
                 Collect(
                     colTanda,
                     {{
