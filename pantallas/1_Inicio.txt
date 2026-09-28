@@ -146,12 +146,12 @@ Screens:
             Width: =588
             X: =104
             Y: =456
-      - htmlTarjetaPanel_0:
+      - htmlTarjetaMorosos_0:
           Control: HtmlViewer@2.1.0
           Properties:
             Height: =226
             HtmlText: |-
-              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>▦</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Panel</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>Préstamos activos, morosos y resumen del descarte.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & "Próximamente" & "</div></div>"
+              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>▦</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Morosos</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>Usuarios morosos reales de FOLIO, por nivel y biblioteca.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & If(IsEmpty(colMorosos), "Ver lista actualizada", Text(varMorTotal, "#,##0") & " morosos en FOLIO") & "</div></div>"
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
@@ -159,7 +159,7 @@ Screens:
             Width: =600
             X: =710
             Y: =450
-      - btnTarjetaPanel_0:
+      - btnTarjetaMorosos_0:
           Control: Classic/Button@2.2.0
           Properties:
             BorderThickness: =0

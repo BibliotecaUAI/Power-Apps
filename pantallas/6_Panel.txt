@@ -2,7 +2,7 @@ Screens:
   scrPanel:
     Properties:
       Fill: =ColorValue("#FFFFFF")
-      OnVisible: =ClearCollect(colPrestamos, tblPrestamos); Set(varMenu, false)
+      OnVisible: =ClearCollect(colPrestamos, tblPrestamos); Set(varCorreoPrueba, "pablo.salas.marin@uai.cl"); Set(varMenu, false); If(IsEmpty(colMorosos), Select(btnCargar_6), Select(btnFiltrar_6))
     Children:
       - htmlHeader_6:
           Control: HtmlViewer@2.1.0
@@ -11,7 +11,7 @@ Screens:
             HtmlText: |-
               ="<div style='height:112px;box-sizing:border-box;padding:0 40px 0 104px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Segoe UI,Arial,sans-serif;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #BFC3C8'>" &
               "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
-              "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px'>Panel</div></div><div style='display:flex;align-items:center'>" &
+              "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px'>Morosos</div></div><div style='display:flex;align-items:center'>" &
               "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>PRÉSTAMOS HOY</div></div>" & "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>DEVOLUCIONES HOY</div></div>" & "<div style='padding:0 26px;'><div style='font-size:24px;font-weight:700;color:#BFC3C8'>" & CountRows(Distinct(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()), RUT)) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>MOROSOS</div></div>" &
               "</div></div>"
             PaddingBottom: =0
@@ -19,19 +19,259 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Width: =1366
-      - htmlProximamente_6:
-          Control: HtmlViewer@2.1.0
+      - txtBuscarMor_6:
+          Control: Classic/TextInput@2.3.2
           Properties:
-            Height: =300
-            HtmlText: |-
-              ="<div style='margin:6px;height:280px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10);font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:10px;letter-spacing:3px;color:#8A8D91;font-weight:700'>EN CONSTRUCCIÓN</div><div style='font-size:26px;font-weight:700;color:#111111;margin-top:10px'>Panel</div><div style='font-size:12px;color:#3F4247;margin-top:8px'>Préstamos activos, morosos y resumen del descarte.</div></div>"
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HintText: ="Buscar por nombre o RUT…"
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =330
+            X: =104
+            Y: =142
+      - drpNivelMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="Todos los niveles"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Todos los niveles", "Nivel 0", "Nivel 1", "Nivel 2", "Nivel 3"]
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =190
+            X: =446
+            Y: =142
+      - drpBibMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="Todas las bibliotecas"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: |-
+              =Ungroup(Table({x: Table({Value: "Todas las bibliotecas"})}, {x: Sort(Distinct(Filter(colMorosos, !IsBlank(Biblioteca)), Biblioteca), Value)}), x)
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =240
+            X: =648
+            Y: =142
+      - lblNiveles_6:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            Height: =30
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Width: =900
-            X: =283
-            Y: =260
+            Size: =7
+            Text: |-
+              ="Nivel 0: hasta 60 días · Nivel 1: hasta 2 años · Nivel 2: hasta 5 años · Nivel 3: más de 5 años"
+            Width: =430
+            X: =900
+            Y: =142
+      - htmlKpis_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =108
+            HtmlText: |-
+              ="<div style='margin:6px;height:96px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='display:flex;align-items:center'><div style='flex:1;padding:4px 18px;border-right:1px solid #DADCDF'><div style='font-size:26px;font-weight:700;color:#111111'>" & Text(varMorTotal, "#,##0") & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>USUARIOS MOROSOS EN FOLIO</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid #DADCDF'><div style='font-size:26px;font-weight:700;color:#111111'>" & Text(varMorLibros, "#,##0") & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>LIBROS VENCIDOS</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid #DADCDF'><div style='font-size:26px;font-weight:700;color:#111111'>" & CountRows(Filter(colMorosos, Dias >= 731)) & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>CON MÁS DE 2 AÑOS</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid #DADCDF'><div style='font-size:26px;font-weight:700;color:#111111'>" & CountRows(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today())) & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>VENCIDOS DE PRUEBA (EXCEL)</div></div></div></div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1240
+            X: =98
+            Y: =180
+      - htmlTabla_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =428
+            HtmlText: |-
+              ="<div style='margin:6px;height:416px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:15px;font-weight:700;color:#111111'>Usuarios morosos</div><div style='font-size:10px;color:#8A8D91'>" & CountRows(colMorVista) & " en la vista · se muestran los 150 con más días" & If(IsBlank(varMorFecha), "", " · consultado " & Text(varMorFecha, "hh:mm")) & "</div></div>" & If(IsEmpty(colMorVista), If(varCargandoMor, "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin datos. Presione ACTUALIZAR DESDE FOLIO.</div>"), "<div style='margin-top:10px;max-height:340px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:#111111'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>RUT</th><th style='padding:6px'>NOMBRE</th><th style='padding:6px'>TIPO</th><th style='padding:6px'>BIBLIOTECA</th><th style='padding:6px'>LIBROS</th><th style='padding:6px'>DÍAS</th><th style='padding:6px'>NIVEL</th></tr>" & Concat(FirstN(colMorVista, 150), "<tr style='border-bottom:1px solid #DADCDF;" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "'><td style='padding:6px;font-weight:700'>" & Substitute(Substitute(RUT, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Nombre, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px'>" & Substitute(Substitute(Biblioteca, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:center'>" & Libros & "</td><td style='padding:6px;text-align:center'>" & Text(Dias, "#,##0") & "</td><td style='padding:6px'>" & If(Nivel = "Nivel 0", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & Upper(Nivel) & "</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & Upper(Nivel) & "</span>") & "</td></tr>") & "</table></div>") & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1240
+            X: =98
+            Y: =290
+      - htmlActualizarFondo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =40
+            HtmlText: |-
+              =If(btnActualizar_6.DisplayMode = DisplayMode.Disabled, "<div style='height:40px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:40px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =400
+            X: =104
+            Y: =722
+      - btnActualizar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =40
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =
+              Set(varCargandoMor, true);
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Blank()));
+              Set(varCargandoMor, false);
+              If(
+                  IsBlank(varResMor),
+                      Notify("No se pudo consultar FOLIO. Intente de nuevo.", NotificationType.Error),
+                  With(
+                      {j: ParseJSON(varResMor)},
+                      Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));
+                      Set(varMorLibros, Coalesce(Value(Text(j.libros)), 0));
+                      ClearCollect(
+                          colMorosos,
+                          ForAll(
+                              Table(j.lista),
+                              {
+                                  RUT: Text(ThisRecord.Value.rut),
+                                  Nombre: Text(ThisRecord.Value.nombre),
+                                  Correo: Text(ThisRecord.Value.correo),
+                                  Tipo: Text(ThisRecord.Value.tipo),
+                                  Biblioteca: Text(ThisRecord.Value.bib),
+                                  Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      );
+                      Set(varMorFecha, Now())
+                  )
+              );
+              Select(btnFiltrar_6)
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =10
+            Text: =If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")
+            Width: =400
+            X: =104
+            Y: =722
+      - btnFiltrar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              ClearCollect(
+                  colMorVista,
+                  Sort(
+                      Filter(
+                          AddColumns(colMorosos, Nivel, If(Dias < 61, "Nivel 0", Dias < 731, "Nivel 1", Dias < 1825, "Nivel 2", "Nivel 3")),
+                          (IsBlank(txtBuscarMor_6.Text) || Lower(txtBuscarMor_6.Text) in Lower(Nombre) || txtBuscarMor_6.Text in RUT),
+                          (drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
+                          (drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
+                      ),
+                      Dias,
+                      SortOrder.Descending
+                  )
+              )
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
+      - btnCargar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              Set(varCargandoMor, true);
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Blank()));
+              Set(varCargandoMor, false);
+              If(
+                  IsBlank(varResMor),
+                      Notify("No se pudo consultar FOLIO. Intente de nuevo.", NotificationType.Error),
+                  With(
+                      {j: ParseJSON(varResMor)},
+                      Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));
+                      Set(varMorLibros, Coalesce(Value(Text(j.libros)), 0));
+                      ClearCollect(
+                          colMorosos,
+                          ForAll(
+                              Table(j.lista),
+                              {
+                                  RUT: Text(ThisRecord.Value.rut),
+                                  Nombre: Text(ThisRecord.Value.nombre),
+                                  Correo: Text(ThisRecord.Value.correo),
+                                  Tipo: Text(ThisRecord.Value.tipo),
+                                  Biblioteca: Text(ThisRecord.Value.bib),
+                                  Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      );
+                      Set(varMorFecha, Now())
+                  )
+              );
+              Select(btnFiltrar_6)
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
       - htmlBrillo_6:
           Control: HtmlViewer@2.1.0
           Properties:
