@@ -1,0 +1,327 @@
+Screens:
+  scrInicio:
+    Properties:
+      Fill: =ColorValue("#FFFFFF")
+      OnVisible: =ClearCollect(colPrestamos, tblPrestamos); ClearCollect(colFicha, tblFichaDescarte); Set(varMenu, false)
+    Children:
+      - htmlHeader_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =114
+            HtmlText: |-
+              ="<div style='height:112px;box-sizing:border-box;padding:0 40px 0 104px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Segoe UI,Arial,sans-serif;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #BFC3C8'>" &
+              "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
+              "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px'>Inicio</div></div><div style='display:flex;align-items:center'>" &
+              "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>PRÉSTAMOS HOY</div></div>" & "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>DEVOLUCIONES HOY</div></div>" & "<div style='padding:0 26px;'><div style='font-size:24px;font-weight:700;color:#BFC3C8'>" & CountRows(Distinct(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()), RUT)) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>MOROSOS</div></div>" &
+              "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+      - lblSaludo_0:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =26
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Hola, " & First(Split(User().FullName, " ")).Value
+            Width: =600
+            X: =104
+            Y: =132
+      - lblFecha_0:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            Height: =18
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: =Text(Today(), "dddd d ""de"" mmmm ""de"" yyyy", "es-CL")
+            Width: =600
+            X: =104
+            Y: =160
+      - htmlTarjetaDescarte_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =226
+            HtmlText: |-
+              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>▤</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Descarte</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>Escanear y registrar material para descarte, libro a libro o en tanda.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & CountRows(colFicha) & " en la ficha · " & Coalesce(varContador, 0) & " en esta sesión" & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =600
+            X: =98
+            Y: =200
+      - btnTarjetaDescarte_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =214
+            HoverFill: =RGBA(191, 195, 200, 0.10)
+            OnSelect: =Navigate(scrDescarteB, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =588
+            X: =104
+            Y: =206
+      - htmlTarjetaPrestamo_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =226
+            HtmlText: |-
+              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>↗</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Préstamo</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>RUT o QR de la cédula + libros. Plazo automático según el material.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & " préstamos hoy" & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =600
+            X: =710
+            Y: =200
+      - btnTarjetaPrestamo_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =214
+            HoverFill: =RGBA(191, 195, 200, 0.10)
+            OnSelect: =Navigate(scrPrestamo, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =588
+            X: =716
+            Y: =206
+      - htmlTarjetaDevolucion_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =226
+            HtmlText: |-
+              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>↙</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Devolución</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>Escanear libro a libro o todo el buzón. Marca a los morosos.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & " devoluciones hoy · " & CountRows(Filter(colPrestamos, Estado = "Activo")) & " activos" & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =600
+            X: =98
+            Y: =450
+      - btnTarjetaDevolucion_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =214
+            HoverFill: =RGBA(191, 195, 200, 0.10)
+            OnSelect: =Navigate(scrDevolucion, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =588
+            X: =104
+            Y: =456
+      - htmlTarjetaPanel_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =226
+            HtmlText: |-
+              ="<div style='margin:6px;height:214px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:16px 22px'><div style='display:flex;justify-content:space-between'><div style='font-size:30px;color:#111111'>▦</div><div style='font-size:10px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>ABRIR →</div></div><div style='font-size:24px;font-weight:700;color:#111111;margin-top:18px'>Panel</div><div style='font-size:12px;color:#3F4247;margin-top:6px'>Préstamos activos, morosos y resumen del descarte.</div></div><div style='position:absolute;left:22px;right:22px;bottom:18px;border-top:1px solid #DADCDF;padding-top:10px;font-size:11px;color:#1B2A4A;font-weight:700'>" & "Próximamente" & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =600
+            X: =710
+            Y: =450
+      - btnTarjetaPanel_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =214
+            HoverFill: =RGBA(191, 195, 200, 0.10)
+            OnSelect: =Navigate(scrPanel, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =588
+            X: =716
+            Y: =456
+      - btnCerrarMenu_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(17, 17, 17, 0.35)
+            Height: =768
+            HoverFill: =RGBA(17, 17, 17, 0.35)
+            OnSelect: =Set(varMenu, false)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Visible: =varMenu
+            Width: =1366
+            X: =0
+            Y: =0
+      - htmlMenu_0:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =768
+            HtmlText: |-
+              =If(varMenu, "<div style='width:230px;height:768px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-right:1px solid #3F4247;font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:112px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;color:#FFFFFF;font-weight:800;font-size:18px;letter-spacing:2px;border-bottom:2px solid #BFC3C8'>UAI · BIBLIOTECAS</div><div style='height:56px;display:flex;align-items:center;padding-left:20px;color:#BFC3C8;font-size:20px;border-bottom:1px solid #3F4247'>☰<span style='margin-left:18px;font-size:10px;letter-spacing:2px'>MENÚ</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#FFFFFF;background:rgba(191,195,200,0.10);'><div style='position:absolute;left:0;top:10px;width:3px;height:36px;background:linear-gradient(180deg,#8A8D91,#FFFFFF,#8A8D91)'></div><span style='font-size:20px;width:24px;text-align:center'>⌂</span><span style='margin-left:18px;font-size:12px;font-weight:700;letter-spacing:1.5px'>INICIO</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>▤</span><span style='margin-left:18px;font-size:12px;font-weight:600;letter-spacing:1.5px'>DESCARTE</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>↗</span><span style='margin-left:18px;font-size:12px;font-weight:600;letter-spacing:1.5px'>PRÉSTAMO</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>↙</span><span style='margin-left:18px;font-size:12px;font-weight:600;letter-spacing:1.5px'>DEVOLUCIÓN</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>▦</span><span style='margin-left:18px;font-size:12px;font-weight:600;letter-spacing:1.5px'>PANEL</span></div></div>", "<div style='width:64px;height:768px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-right:1px solid #3F4247;font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:112px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-weight:800;font-size:18px;letter-spacing:2px;border-bottom:2px solid #BFC3C8'>UAI</div><div style='height:56px;display:flex;align-items:center;padding-left:20px;color:#BFC3C8;font-size:20px;border-bottom:1px solid #3F4247'>☰</div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#FFFFFF;background:rgba(191,195,200,0.10);'><div style='position:absolute;left:0;top:10px;width:3px;height:36px;background:linear-gradient(180deg,#8A8D91,#FFFFFF,#8A8D91)'></div><span style='font-size:20px;width:24px;text-align:center'>⌂</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>▤</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>↗</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>↙</span></div><div style='position:relative;height:56px;display:flex;align-items:center;padding-left:20px;color:#8A8D91;'><span style='font-size:20px;width:24px;text-align:center'>▦</span></div></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =0
+      - btnMenu_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, !varMenu)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =112
+      - btnIrInicio_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =168
+      - btnIrDescarte_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =224
+      - btnIrPrestamo_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =280
+      - btnIrDevolucion_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =336
+      - btnIrPanel_0:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 230, 64)
+            X: =0
+            Y: =392

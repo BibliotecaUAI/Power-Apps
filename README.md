@@ -3,30 +3,20 @@
 No hay que instalar nada ni crear flujos nuevos: todo usa el flujo que ya funciona
 **`Copiade:BuscarLibroFOLIO`** (consulta DAX al Power BI).
 
-## 1. App Descarte — dos pantallas
+## 1. App Descarte de Libros UAI — pantallas en `pantallas/`
 
-Arriba a la izquierda hay un **interruptor**: bolita a la izquierda = **Lectura 1 a 1**,
-bolita a la derecha = **Lectura masiva**.
+| Archivo | Pantalla |
+|---|---|
+| `1_Inicio.txt` | scrInicio (menú + 4 tarjetas) |
+| `2_Descarte_1a1.txt` | scrDescarteB |
+| `3_Descarte_Masiva.txt` | scrDescarteMasiva |
+| `4_Prestamo.txt` | scrPrestamo (en construcción) |
+| `5_Devolucion.txt` | scrDevolucion (en construcción) |
+| `6_Panel.txt` | scrPanel (en construcción) |
 
-### Instalar (una vez)
-
-1. Abre la app en Power Apps → **Editar**.
-2. Presiona **Guardar** (es tu respaldo).
-3. En la lista de pantallas (izquierda), borra **scrDescarteB**.
-4. Abre `descarte/Pantalla_1_Lectura_1a1.txt` → selecciona todo (**Ctrl+A**) → **Ctrl+C**.
-5. En Power Apps, clic derecho en la lista de pantallas → **Pegar**.
-6. Repite los pasos 4 y 5 con `descarte/Pantalla_2_Lectura_Masiva.txt`.
-7. Presiona **Guardar**.
-8. (Opcional) Agrega la cámara: `descarte/Paso_Camara.md`.
-
-### Usar la lectura masiva
-
-1. Mueve el interruptor a **Lectura masiva**.
-2. Elige Biblioteca, Inventario, Criterio y Justificación.
-3. Pega los códigos en el cuadro (desde Excel, Word o como sea) o escanéalos.
-4. Presiona **1 · BUSCAR EN FOLIO** y espera (puede tardar unos minutos).
-5. Revisa la lista de la derecha.
-6. Presiona **2 · GUARDAR EN LA FICHA**.
+Todas llevan el menú lateral. Datos: `tblFichaDescarte` y las tablas de
+`prestamo/Prestamos_Ficticios.xlsx` (`tblPrestamos`, `tblUsuarios`, `tblPlazos`).
+Cámara: `descarte/Paso_Camara.md`.
 
 ## 2. App Préstamo de prueba — `prestamo-prueba/`
 
