@@ -1,0 +1,80 @@
+DEFINE
+    VAR _codes = DATATABLE ( "fila", INTEGER, "cod", STRING, "orig", STRING, { { 1699, "039158", "039158" }, { 1700, "039159", "039159" }, { 1701, "039160", "039160" }, { 1702, "039161", "039161" }, { 1703, "039162", "039162" }, { 1704, "039163", "039163" }, { 1705, "039164", "039164" }, { 1706, "039165", "039165" }, { 1707, "039166", "039166" }, { 1708, "003981", "003981" }, { 1709, "006036", "006036" }, { 1710, "006227", "006227" }, { 1711, "018550", "018550" }, { 1712, "031470", "031470" }, { 1713, "036328", "036328" }, { 1714, "039015", "039015" }, { 1715, "040656", "040656" }, { 1716, "041285", "041285" }, { 1717, "041884", "041884" }, { 1718, "041885", "041885" }, { 1719, "041930", "041930" }, { 1720, "041931", "041931" }, { 1721, "041932", "041932" }, { 1722, "041933", "041933" }, { 1723, "041934", "041934" }, { 1724, "041935", "041935" }, { 1725, "041936", "041936" }, { 1726, "041937", "041937" }, { 1727, "041938", "041938" }, { 1728, "041939", "041939" }, { 1729, "041940", "041940" }, { 1730, "041941", "041941" }, { 1731, "041942", "041942" }, { 1732, "041943", "041943" }, { 1733, "041944", "041944" }, { 1734, "041945", "041945" }, { 1735, "041946", "041946" }, { 1736, "041947", "041947" }, { 1737, "041948", "041948" }, { 1738, "041949", "041949" }, { 1739, "041950", "041950" }, { 1740, "041951", "041951" }, { 1741, "041952", "041952" }, { 1742, "041953", "041953" }, { 1743, "041954", "041954" }, { 1744, "041955", "041955" }, { 1745, "041956", "041956" }, { 1746, "041957", "041957" }, { 1747, "041958", "041958" }, { 1748, "041959", "041959" }, { 1749, "041960", "041960" }, { 1750, "042477", "042477" }, { 1751, "042972", "042972" }, { 1752, "045079", "045079" }, { 1753, "045954", "045954" }, { 1754, "046815", "046815" }, { 1755, "046816", "046816" }, { 1756, "047964", "047964" }, { 1757, "048832", "048832" }, { 1758, "049986", "049986" }, { 1759, "090693", "090693" }, { 1760, "090694", "090694" }, { 1761, "303697", "303697" }, { 1762, "310208", "310208" }, { 1763, "313267", "313267" }, { 1764, "315112", "315112" }, { 1765, "317449", "317449" }, { 1766, "317513", "317513" }, { 1767, "36762-10", "36762-10" }, { 1768, "36762-100", "36762-100" }, { 1769, "36762-110", "36762-110" }, { 1770, "36762-120", "36762-120" }, { 1771, "36762-130", "36762-130" }, { 1772, "36762-140", "36762-140" }, { 1773, "36762-150", "36762-150" }, { 1774, "36762-160", "36762-160" }, { 1775, "36762-170", "36762-170" }, { 1776, "36762-180", "36762-180" }, { 1777, "36762-190", "36762-190" }, { 1778, "36762-20", "36762-20" }, { 1779, "36762-200", "36762-200" }, { 1780, "36762-210", "36762-210" }, { 1781, "36762-220", "36762-220" }, { 1782, "36762-230", "36762-230" }, { 1783, "36762-240", "36762-240" }, { 1784, "36762-260", "36762-260" }, { 1785, "36762-270", "36762-270" }, { 1786, "36762-30", "36762-30" }, { 1787, "36762-40", "36762-40" }, { 1788, "36762-50", "36762-50" }, { 1789, "36762-60", "36762-60" }, { 1790, "36762-70", "36762-70" }, { 1791, "36762-80", "36762-80" }, { 1792, "36762-90", "36762-90" } } )
+    VAR _b0 =
+        ADDCOLUMNS (
+            _codes,
+            "bc",
+                VAR _c = [cod]
+                VAR _z = IF ( ISERROR ( VALUE ( _c ) ), _c, FORMAT ( VALUE ( _c ), "000000" ) )
+                VAR _hit = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[barcode] )
+                RETURN IF ( ISBLANK ( _hit ), MAXX ( FILTER ( f_items, f_items[barcode] = _z ), f_items[barcode] ), _hit )
+        )
+    VAR _base =
+        ADDCOLUMNS (
+            _b0,
+            "hr", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_instances_script.hrid] ),
+            "inst", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_holdings_script.instanceId] ),
+            "cp", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[copyNumber] ),
+            "crit",
+                VAR _c = [bc]
+                VAR _tipo = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] )
+                VAR _in = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_holdings_script.instanceId] )
+                VAR _idi = MAXX ( FILTER ( f_instances, f_instances[id] = _in ), f_instances[languages] )
+                VAR _moroso = COUNTROWS ( FILTER ( f_loans, f_loans[items.barcode] = _c && f_loans[pre_Sub_estado] = "MOROSO" ) ) > 0
+                VAR _ult = MAXX ( FILTER ( f_loans, f_loans[items.barcode] = _c ), f_loans[loanDateTime] )
+                VAR _okIdioma = _idi = "" || CONTAINSSTRING ( _idi, "spa" ) || CONTAINSSTRING ( _idi, "eng" ) || CONTAINSSTRING ( _idi, "ger" ) || CONTAINSSTRING ( _idi, "fre" ) || CONTAINSSTRING ( _idi, "ita" ) || CONTAINSSTRING ( _idi, "por" ) || CONTAINSSTRING ( _idi, "lat" ) || CONTAINSSTRING ( _idi, "grc" ) || CONTAINSSTRING ( _idi, "ara" )
+                VAR _ex = COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _in ) )
+                RETURN
+                    SWITCH (
+                        TRUE (),
+                        ISBLANK ( _in ), "",
+                        _tipo = "Issue", "Contenido|Vigencia",
+                        _moroso, "Limpieza y depuración|Morosidad",
+                        NOT _okIdioma, "Contenido|Idioma",
+                        ISBLANK ( _ult ) || _ult < TODAY () - 1826, "Contexto|Demanda real y demanda potencial",
+                        _ex > 2, "Contexto|Duplicidad (redundancia)",
+                        ""
+                    )
+        )
+EVALUATE
+SELECTCOLUMNS (
+    _base,
+    "Item ingresado en la base de biblioteca", VAR _c = [bc] RETURN YEAR ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[CreationDate] ) ),
+    "HRID", VAR _h = [hr] RETURN IF ( ISERROR ( VALUE ( _h ) ), _h, FORMAT ( VALUE ( _h ), "0" ) ),
+    "Codigo de Barra", [orig],
+    "Cruce Archivo activo Fijo (Finanzas)", VAR _c = [bc] RETURN IF ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ) = "Issue", "No", "Si" ),
+    "Valor Neto", "",
+    "Copia", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[copyNumber] ),
+    "Tipo de Material", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ),
+    "Biblioteca-Ubicacion-Colección", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), TRIM ( f_items[f_locations_script.biblioteca] ) & " " & TRIM ( f_items[f_locations_script.ubicación] ) ),
+    "Título", VAR _i = [inst] RETURN MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[title] ),
+    "Autor",
+        VAR _i = [inst]
+        VAR _a = MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[contributors] )
+        VAR _p = SEARCH ( "'name': '", _a, 1, 0 )
+        RETURN IF ( _p = 0, "0", MID ( _a, _p + 9, SEARCH ( "'", _a, _p + 9, LEN ( _a ) + 1 ) - _p - 9 ) ),
+    "Idioma", VAR _i = [inst] RETURN SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[languages] ), "[", "" ), "]", "" ), "'", "" ),
+    "Vinculado UAI (SI/NO)", "NO",
+    "Fecha registro (ingresado en la base)", VAR _c = [bc] RETURN FORMAT ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[CreationDate] ), "dd/mm/yyyy" ),
+    "Número de POL *", "-1",
+    "Unidad Academica o Centro de Costo *", "None",
+    "Año de edicion", VAR _c = [bc] VAR _y = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_intancesPublication.dateOfPublication] ) RETURN IF ( ISBLANK ( _y ) || _y = "", "sin informacion", _y ),
+    "Diferenciador de título por ficha descarte", VAR _i = [inst] VAR _f = [fila] RETURN IF ( ISBLANK ( _i ), 1, IF ( COUNTROWS ( FILTER ( _base, [inst] = _i && [fila] < _f ) ) = 0, 1, 0 ) ),
+    "Unidad de descarte", VAR _c = [bc] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), TRIM ( f_items[f_locations_script.biblioteca] ) ),
+    "Pregrado A - Existencia", VAR _i = [inst] VAR _cp = [cp] RETURN IF ( ISBLANK ( _i ), 0, COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && f_items[copyNumber] = _cp && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. A" ) ) ) + 0 ),
+    "Pregrado F - Existencia", VAR _i = [inst] VAR _cp = [cp] RETURN IF ( ISBLANK ( _i ), 0, COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && f_items[copyNumber] = _cp && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. F" ) ) ) + 0 ),
+    "Posgrado - Existencia", VAR _i = [inst] VAR _cp = [cp] RETURN IF ( ISBLANK ( _i ), 0, COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && f_items[copyNumber] = _cp && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Postgrado" ) ) ) + 0 ),
+    "Viña - Existencia", VAR _i = [inst] VAR _cp = [cp] RETURN IF ( ISBLANK ( _i ), 0, COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && f_items[copyNumber] = _cp && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Viña" ) ) ) + 0 ),
+    "Informar a Finanzas (SI/NO)", "NO",
+    "Forma de Adquisición", "",
+    "Bibliografía de programas académicos (SI/NO)", "NO",
+    "Obra en Volúmenes - Parte de una Colección (SI/NO)", VAR _c = [bc] RETURN IF ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ) = "Issue", "SI", "NO" ),
+    "Criterios de Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 1 ) ),
+    "Justificaciones para aplicar Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 2 ) ),
+    "Relación Inventario", "NO",
+    "Observaciones respecto de la justificación al Descarte", IF ( [cod] = "", "REPETIDO: revisar", "" ),
+    "Información para no Descartar", "",
+    "Decisión Final Descarte SI/NO", IF ( [cod] = "", "", "SI" ),
+    "orden", [fila]
+)
+ORDER BY [orden]
