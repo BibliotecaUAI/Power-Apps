@@ -25,51 +25,35 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Width: =1366
-      - btnModo1a1_2:
-          Control: Classic/Button@2.2.0
+      - htmlSwitch_2:
+          Control: HtmlViewer@2.1.0
           Properties:
-            BorderColor: =ColorValue("#111111")
-            BorderThickness: =1
-            Color: =ColorValue("#111111")
-            Fill: =ColorValue("#FFFFFF")
-            Font: =Font.'Segoe UI'
-            FontWeight: =FontWeight.Bold
             Height: =30
-            HoverColor: =ColorValue("#FFFFFF")
-            HoverFill: =ColorValue("#3F4247")
-            OnSelect: =Navigate(scrDescarteB, ScreenTransition.None)
-            PressedFill: =ColorValue("#3F4247")
-            RadiusBottomLeft: =0
-            RadiusBottomRight: =0
-            RadiusTopLeft: =0
-            RadiusTopRight: =0
-            Size: =9
-            Text: ="LECTURA 1 A 1"
-            Width: =150
+            HtmlText: ="<div style='height:30px;display:flex;align-items:center;font-family:Segoe UI,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px'><span style='color:#8A8D91'>LECTURA 1 A 1</span><div style='margin:0 12px;width:46px;height:24px;border-radius:12px;box-sizing:border-box;position:relative;background:linear-gradient(115deg,#0B0B0C 0%,#35373B 50%,#111111 100%);border:1px solid #8A8D91'><div style='position:absolute;top:2px;left:23px;width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.35)'></div></div><span style='color:#111111'>LECTURA MASIVA</span></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =300
             X: =80
             Y: =124
-      - btnModoMasiva_2:
+      - btnSwitch_2:
           Control: Classic/Button@2.2.0
           Properties:
-            BorderColor: =ColorValue("#111111")
-            BorderThickness: =1
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Font: =Font.'Segoe UI'
-            FontWeight: =FontWeight.Bold
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
             Height: =30
-            HoverColor: =ColorValue("#FFFFFF")
-            HoverFill: =ColorValue("#111111")
-            OnSelect: =false
-            PressedFill: =ColorValue("#3F4247")
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Navigate(scrDescarteB, ScreenTransition.None)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
             RadiusTopLeft: =0
             RadiusTopRight: =0
-            Size: =9
-            Text: ="LECTURA MASIVA"
-            Width: =150
-            X: =229
+            Text: =""
+            Width: =300
+            X: =80
             Y: =124
       - lblModoHint_2:
           Control: Label@2.5.1
@@ -83,9 +67,9 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =8
-            Text: ="Modo 2 · muchos códigos a la vez"
-            Width: =220
-            X: =394
+            Text: ="Pegue o escanee muchos códigos"
+            Width: =210
+            X: =400
             Y: =124
       - lblPasoLote_2:
           Control: Label@2.5.1
@@ -304,7 +288,7 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =7
-            Text: =CountRows(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value))) & " CÓDIGOS · MÁX. 200"
+            Text: =CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))) & " CÓDIGOS · MÁX. 200"
             Width: =240
             X: =340
             Y: =328
@@ -395,8 +379,8 @@ Screens:
             HoverColor: =ColorValue("#FFFFFF")
             HoverFill: =RGBA(191, 195, 200, 0.18)
             OnSelect: |-
-              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value))));
-              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value)), 200));
+              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value))));
+              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(Substitute(Substitute(Substitute(Substitute(txtTanda_2.Text, Char(13), Char(10)), Char(9), Char(10)), ",", Char(10)), ";", Char(10)), " ", Char(10)), Char(10)), !IsBlank(Trim(Value))), Trim(Value)), 200));
               If(
                   IsEmpty(colCodigos),
                       Notify("Escanee o pegue al menos un código.", NotificationType.Warning),
@@ -581,7 +565,7 @@ Screens:
                                           'Item ingresado en la base de biblioteca': "SI",
                                           HRID: t.HRID,
                                           'Codigo de Barra': t.Codigo,
-                                          'Cruce Archivo activo Fijo (Finanzas)': "No esta en archivo",
+                                          'Cruce Archivo activo Fijo (Finanzas)': "Esta en archivo",
                                           'Valor Neto': "",
                                           copia: t.copia,
                                           'Tipo de Material': t.Tipo,
@@ -600,7 +584,7 @@ Screens:
                                           'Pregrado  F - Existencia': t.PF,
                                           'Posgrado - Existencia': t.Pos,
                                           'Viña - Existencia': t.Vina,
-                                          'Informar a Finanzas (SI/NO)': "NO",
+                                          'Informar a Finanzas (SI/NO)': "SI",
                                           'Forma de Adquisición': "Desconocida",
                                           'Bibliografía de programas académicos (SI/NO)': "Por confirmar",
                                           'Obra en Volúmenes - Parte de una Colección (SI/NO)': "NO",

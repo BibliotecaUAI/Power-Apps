@@ -5,25 +5,28 @@ No hay que instalar nada ni crear flujos nuevos: todo usa el flujo que ya funcio
 
 ## 1. App Descarte — dos pantallas
 
-- `descarte/Pantalla_1_Lectura_1a1.txt` → pantalla `scrDescarteB` (libro por libro).
-- `descarte/Pantalla_2_Lectura_Masiva.txt` → pantalla `scrDescarteMasiva` (tanda de códigos).
+Arriba a la izquierda hay un **interruptor**: bolita a la izquierda = **Lectura 1 a 1**,
+bolita a la derecha = **Lectura masiva**.
 
-Arriba a la izquierda, los botones **LECTURA 1 A 1** / **LECTURA MASIVA** cambian de pantalla.
+### Instalar (una vez)
 
-1. Abrir la app en **Editar** → **Guardar** (respaldo).
-2. Borrar la pantalla `scrDescarteB`.
-3. Copiar todo `Pantalla_1_Lectura_1a1.txt` → clic derecho en el árbol → **Pegar**.
-4. Copiar todo `Pantalla_2_Lectura_Masiva.txt` → clic derecho en el árbol → **Pegar**.
-5. Agregar la cámara a mano en cada pantalla: ver **`descarte/Paso_Camara.md`**.
-6. Guardar.
+1. Abre la app en Power Apps → **Editar**.
+2. Presiona **Guardar** (es tu respaldo).
+3. En la lista de pantallas (izquierda), borra **scrDescarteB**.
+4. Abre `descarte/Pantalla_1_Lectura_1a1.txt` → selecciona todo (**Ctrl+A**) → **Ctrl+C**.
+5. En Power Apps, clic derecho en la lista de pantallas → **Pegar**.
+6. Repite los pasos 4 y 5 con `descarte/Pantalla_2_Lectura_Masiva.txt`.
+7. Presiona **Guardar**.
+8. (Opcional) Agrega la cámara: `descarte/Paso_Camara.md`.
 
-**Lectura masiva:** escanear (pistola o cámara) o pegar un código por línea →
-**1 · BUSCAR EN FOLIO** (máx. 200) → revisar la vista previa (Listo / Ya en ficha /
-No en FOLIO) → **2 · GUARDAR N EN LA FICHA**. Solo se guardan los "Listo"; los datos
-que no vienen de FOLIO quedan con su valor por defecto (POL vacío, Forma de
-adquisición "Desconocida", Bibliografía "Por confirmar", etc.).
-Por ahora usa el mismo flujo `Copiade:BuscarLibroFOLIO`, un código a la vez: 100 códigos
-pueden tardar 1–3 minutos. El flujo "FolioLote" (una sola consulta) lo hará más rápido.
+### Usar la lectura masiva
+
+1. Mueve el interruptor a **Lectura masiva**.
+2. Elige Biblioteca, Inventario, Criterio y Justificación.
+3. Pega los códigos en el cuadro (desde Excel, Word o como sea) o escanéalos.
+4. Presiona **1 · BUSCAR EN FOLIO** y espera (puede tardar unos minutos).
+5. Revisa la lista de la derecha.
+6. Presiona **2 · GUARDAR EN LA FICHA**.
 
 ## 2. App Préstamo de prueba — `prestamo-prueba/`
 
