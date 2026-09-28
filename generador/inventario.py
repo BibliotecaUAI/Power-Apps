@@ -159,8 +159,8 @@ ctrls = [
     oculto('btnProcesarInv_7', PROCESAR),
     rail('7', 'Inventario'),
 ]
-ONV = ('If(!varInvIniciado, ClearCollect(colInv, {Orden: 0, Codigo: "", Titulo: "", Autor: "", Tipo: "", Ubic: "", Hora: "", Estado: ""}); '
-       'Clear(colInv); ClearCollect(colCodInv, {Value: ""}); Clear(colCodInv); Set(varRepetidosInv, 0); Set(varInvIniciado, true)); '
+ONV = ('If(!varInvIniciado, ClearCollect(colInv, {Orden:0, Codigo:"", Titulo:"", Autor:"", Tipo:"", Ubic:"", Hora:"", Estado:""}); '
+       'Clear(colInv); ClearCollect(colCodInv, {Value:""}); Clear(colCodInv); Set(varRepetidosInv, 0); Set(varInvIniciado, true)); '
        'Set(varMenu, false); SetFocus(txtInv_7)')
 OUT = '/home/user/Power-Apps/pantallas/7_Inventario.txt'
 open(OUT, 'w').write(pantalla('scrInventario', ONV, ctrls))

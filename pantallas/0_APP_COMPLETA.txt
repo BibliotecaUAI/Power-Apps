@@ -5424,7 +5424,7 @@ Screens:
     Properties:
       Fill: =varT.bg
       OnVisible: |-
-        =Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"})); Set(varMenu, false); SetFocus(txtInv_7)
+        =Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"})); If(!varInvIniciado, ClearCollect(colInv, {Orden:0, Codigo:"", Titulo:"", Autor:"", Tipo:"", Ubic:"", Hora:"", Estado:""}); Clear(colInv); ClearCollect(colCodInv, {Value:""}); Clear(colCodInv); Set(varRepetidosInv, 0); Set(varInvIniciado, true)); Set(varMenu, false); SetFocus(txtInv_7)
     Children:
       - htmlFondo_7:
           Control: HtmlViewer@2.1.0
@@ -5889,8 +5889,11 @@ Screens:
               Set(varBuscandoInv, true);
               Set(varRepetidosInv, Coalesce(varRepetidosInv, 0) + CountRows(Filter(colCodInv, Value in colInv.Codigo)));
               ClearCollect(colCodNuevos, Filter(colCodInv, !(Value in colInv.Codigo)));
+              Set(varInvBase, CountRows(colInv));
               ForAll(
-                  colCodNuevos As c,
+                  Sequence(CountRows(colCodNuevos)) As i,
+                  With(
+                      {c: Index(colCodNuevos, i.Value)},
                       With(
                           {r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(c.Value).datos), "")},
                           With(
@@ -5900,7 +5903,7 @@ Screens:
                                   Collect(
                                       colInv,
                                       {
-                                          Orden: CountRows(colInv) + 1,
+                                          Orden: varInvBase + i.Value,
                                           Codigo: c.Value,
                                           Titulo: If(enc, IfError(Text(j.titulo), ""), "—"),
                                           Autor: If(enc, IfError(Text(j.autor), ""), ""),
@@ -5913,6 +5916,7 @@ Screens:
                               )
                           )
                       )
+                  )
               );
               Set(varBuscandoInv, false);
               Clear(colCodInv)
