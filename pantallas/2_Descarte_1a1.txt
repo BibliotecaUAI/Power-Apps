@@ -1,0 +1,1870 @@
+Screens:
+  scrDescarteB:
+    Properties:
+      Fill: =ColorValue("#FFFFFF")
+      OnVisible: =ClearCollect(colFicha, tblFichaDescarte); Set(varEntrada, Blank()); SetFocus(txtEscaneo_1); Set(varMenu, false)
+    Children:
+      - htmlHeader:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =114
+            HtmlText: |-
+              =With(
+                  {r: If(varContador > 0 && !IsBlank(varInicio), Round(varContador / Max(DateDiff(varInicio, Now(), TimeUnit.Minutes), 1) * 60, 0), 0)},
+                  "<div style='height:112px;box-sizing:border-box;padding:0 40px 0 104px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Segoe UI,Arial,sans-serif;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #BFC3C8'>" &
+                  "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
+                  "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px;text-shadow:0 1px 0 rgba(191,195,200,0.35)'>Descarte de Material</div></div>" &
+                  "<div style='display:flex;align-items:center'>" &
+                  "<div style='padding:0 26px;border-right:1px solid #3F4247'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & Coalesce(varContador, 0) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>GUARDADOS EN LA SESIÓN</div></div>" &
+                  "<div style='padding:0 26px;border-right:1px solid #3F4247'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(colFicha) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>TOTAL EN LA FICHA</div></div>" &
+                  "<div style='padding:0 0 0 26px'><div style='font-size:24px;font-weight:700;color:" & If(Coalesce(varContador, 0) = 0, "#8A8D91", r >= 60, "#8FA3C7", "#E57373") & "'>" & If(Coalesce(varContador, 0) = 0, "–", r >= 60, "▲ " & r, "▼ " & r) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>RITMO · LIBROS/HORA (META 60)</div></div>" &
+                  "</div></div>"
+              )
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+      - htmlSwitch_1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =30
+            HtmlText: |-
+              ="<div style='height:30px;display:flex;align-items:center;font-family:Segoe UI,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px'><span style='color:#111111'>LECTURA 1 A 1</span><div style='margin:0 12px;width:46px;height:24px;border-radius:12px;box-sizing:border-box;position:relative;background:#DADCDF;border:1px solid #BFC3C8'><div style='position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.35)'></div></div><span style='color:#8A8D91'>LECTURA MASIVA</span></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =300
+            X: =80
+            Y: =124
+      - btnSwitch_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =30
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Navigate(scrDescarteMasiva, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Text: =""
+            Width: =300
+            X: =80
+            Y: =124
+      - lblModoHint_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: ="Escanee libro por libro"
+            Width: =210
+            X: =400
+            Y: =124
+      - lblPasoLote:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Lote"
+            Width: =200
+            X: =80
+            Y: =180
+      - lbl_drpUnidadDescarte_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="BIBLIOTECA"
+            Width: =243
+            X: =80
+            Y: =206
+      - drpUnidadDescarte_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =varLoteBiblioteca
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
+            OnChange: =Set(varLoteBiblioteca, Self.Selected.Value)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =220
+      - lbl_drpInventario_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="RELACIÓN INVENTARIO"
+            Width: =243
+            X: =337
+            Y: =206
+      - drpInventario_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =varLoteInventario
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
+            OnChange: =Set(varLoteInventario, Self.Selected.Value)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =220
+      - lbl_drpCriterio_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="CRITERIO"
+            Width: =243
+            X: =80
+            Y: =258
+      - drpCriterio_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =varLoteCriterio
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]
+            OnChange: =Set(varLoteCriterio, Self.Selected.Value)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =272
+      - lbl_drpJustificacion_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="JUSTIFICACIÓN"
+            Width: =243
+            X: =337
+            Y: =258
+      - drpJustificacion_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =varLoteJustificacion
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: |-
+              =ForAll(
+                  Filter(
+                      Table(
+                          {Criterio: "Contenido", Justificacion: "Disponibilidad de ediciones anteriores"},
+                          {Criterio: "Contenido", Justificacion: "Idioma"},
+                          {Criterio: "Contenido", Justificacion: "Pertinencia"},
+                          {Criterio: "Contenido", Justificacion: "Vigencia"},
+                          {Criterio: "Contexto", Justificacion: "Demanda real y demanda potencial"},
+                          {Criterio: "Contexto", Justificacion: "Duplicidad"},
+                          {Criterio: "Contexto", Justificacion: "Colecciones incompletas"},
+                          {Criterio: "Contexto", Justificacion: "Material perdido"},
+                          {Criterio: "Contexto", Justificacion: "Obsolescencia"},
+                          {Criterio: "Estado de Conservación", Justificacion: "Conservación"},
+                          {Criterio: "Estado de Conservación", Justificacion: "Deterioro"},
+                          {Criterio: "Limpieza y depuración", Justificacion: "Morosidad"}
+                      ),
+                      Criterio = drpCriterio_1.Selected.Value
+                  ),
+                  {Value: Justificacion}
+              )
+            OnChange: =Set(varLoteJustificacion, Self.Selected.Value)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =272
+      - lblPasoEscanear:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Escanear"
+            Width: =200
+            X: =80
+            Y: =338
+      - lblFuentes_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="LECTOR · CÁMARA · TECLADO"
+            Width: =200
+            X: =380
+            Y: =342
+      - txtEscaneo_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#1B2A4A")
+            Color: =ColorValue("#1B2A4A")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            FocusedBorderColor: =ColorValue("#111111")
+            FocusedBorderThickness: =2
+            Font: =Font.'Open Sans'
+            Height: =52
+            HintText: ="Escanee o digite el código y presione Enter…"
+            OnChange: |-
+              =If(
+                  !IsBlank(Trim(Self.Text)),
+                  Set(varEntrada, Trim(Self.Text));
+                  Select(btnProcesarEscaneo)
+              )
+            PaddingLeft: =14
+            PaddingRight: =56
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =14
+            Width: =360
+            X: =80
+            Y: =362
+      - htmlRafagaFondo_1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =52
+            HtmlText: |-
+              =If(btnRafaga_1.DisplayMode = DisplayMode.Disabled, "<div style='height:52px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:52px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =128
+            X: =452
+            Y: =362
+      - btnRafaga_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =52
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: =Set(varRafaga, !varRafaga); SetFocus(txtEscaneo_1)
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: =If(varRafaga, "●  ESCÁNER · ON", "○  ESCÁNER · OFF")
+            Width: =128
+            X: =452
+            Y: =362
+      - lblEstado_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =If(varBuscando, ColorValue("#8A8D91"), IsBlank(varCodigo), ColorValue("#8A8D91"), varDuplicado, ColorValue("#B3261E"), varEncontrado, ColorValue("#1B2A4A"), ColorValue("#3F4247"))
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =16
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: |-
+              =If(varBuscando, "◌  BUSCANDO EN FOLIO…", IsBlank(varCodigo), "○  ESPERANDO ESCANEO (CÁMARA, PISTOLA O DIGITADO)", varDuplicado, "●  YA ESTÁ EN LA FICHA: " & varCodigo, varEncontrado, "●  ENCONTRADO EN FOLIO: " & varCodigo, "●  NO ESTÁ EN FOLIO: COMPLETE LA FICHA TÉCNICA")
+            Width: =500
+            X: =80
+            Y: =420
+      - lblPasoDecision:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Decisión"
+            Width: =200
+            X: =80
+            Y: =448
+      - lbl_drpFormaAdq_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="FORMA DE ADQUISICIÓN"
+            Width: =243
+            X: =80
+            Y: =474
+      - drpFormaAdq_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =If(IsBlank(txtPOL_1.Text), "Desconocida", "Compra")
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Compra", "Canje", "Donación", "Desconocida"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =488
+      - lbl_drpFinanzas_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="INFORMAR A FINANZAS"
+            Width: =243
+            X: =337
+            Y: =474
+      - drpFinanzas_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =If(drpFormaAdq_1.Selected.Value = "Compra" || drpCruce_1.Selected.Value = "Esta en archivo", "SI", "NO")
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["SI", "NO"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =488
+      - lbl_drpBibliografia_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="BIBLIOGRAFÍA DE PROGRAMAS"
+            Width: =243
+            X: =80
+            Y: =526
+      - drpBibliografia_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="Por confirmar"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["SI", "NO", "Por confirmar"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =540
+      - lbl_drpVolumenes_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="OBRA EN VOLÚMENES"
+            Width: =243
+            X: =337
+            Y: =526
+      - drpVolumenes_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="NO"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["SI", "NO", "Se desconoce"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =540
+      - lbl_txtObsJustif_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="OBSERVACIONES SOBRE LA JUSTIFICACIÓN"
+            Width: =500
+            X: =80
+            Y: =580
+      - txtObsJustif_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =500
+            X: =80
+            Y: =594
+      - lbl_txtNoDescartar_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="INFORMACIÓN PARA NO DESCARTAR"
+            Width: =500
+            X: =80
+            Y: =634
+      - txtNoDescartar_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =500
+            X: =80
+            Y: =648
+      - lblPasoLibro:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Libro"
+            Width: =200
+            X: =640
+            Y: =140
+      - htmlCard:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =472
+            HtmlText: |-
+              ="<div style='margin:10px 12px;height:448px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25)'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =710
+            X: =628
+            Y: =156
+      - lblCardEstado:
+          Control: Label@2.5.1
+          Properties:
+            Color: =If(varEncontrado, ColorValue("#1B2A4A"), ColorValue("#3F4247"))
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: =If(varEncontrado, "●  ENCONTRADO EN FOLIO", IsBlank(varCodigo), "", "●  REGISTRO MANUAL")
+            Width: =300
+            X: =662
+            Y: =182
+      - lblCardHRID:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: =If(varEncontrado, "HRID " & varItem.HRID, "")
+            Width: =200
+            X: =1104
+            Y: =182
+      - lblLibroTitulo_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =52
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =If(varEncontrado, varItem.Título, IsBlank(varCodigo), "Escanee un libro para ver su ficha.", "Libro no registrado en FOLIO.")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =642
+            X: =662
+            Y: =200
+      - lblLibroMeta_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#3F4247")
+            Font: =Font.'Segoe UI'
+            Height: =18
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: =If(varEncontrado, varItem.Autor & "  ·  " & varItem.'Año de edición' & "  ·  " & varItem.Idioma & "  ·  " & varItem.'Tipo de Material' & "  ·  " & varItem.copia, If(IsBlank(varCodigo), "", "Complete los datos en la ficha técnica."))
+            Width: =642
+            X: =662
+            Y: =254
+      - ruleCard1:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =ColorValue("#DADCDF")
+            Height: =1
+            Width: =642
+            X: =662
+            Y: =280
+      - lblExistPA_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =18
+            Text: =Coalesce(varExist.PA, 0)
+            Width: =160
+            X: =662
+            Y: =288
+      - lblExistCapPA_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =12
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="PREG A"
+            Width: =160
+            X: =662
+            Y: =318
+      - barExistPA:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =If(Coalesce(varExist.PA, 0) >= 2, ColorValue("#111111"), Coalesce(varExist.PA, 0) = 1, ColorValue("#8A8D91"), ColorValue("#DADCDF"))
+            Height: =4
+            Width: =112
+            X: =686
+            Y: =334
+      - lblExistPF_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =18
+            Text: =Coalesce(varExist.PF, 0)
+            Width: =160
+            X: =822
+            Y: =288
+      - lblExistCapPF_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =12
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="PREG F"
+            Width: =160
+            X: =822
+            Y: =318
+      - barExistPF:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =If(Coalesce(varExist.PF, 0) >= 2, ColorValue("#111111"), Coalesce(varExist.PF, 0) = 1, ColorValue("#8A8D91"), ColorValue("#DADCDF"))
+            Height: =4
+            Width: =112
+            X: =846
+            Y: =334
+      - lblExistPos_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =18
+            Text: =Coalesce(varExist.Pos, 0)
+            Width: =160
+            X: =982
+            Y: =288
+      - lblExistCapPos_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =12
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="POSGRADO"
+            Width: =160
+            X: =982
+            Y: =318
+      - barExistPos:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =If(Coalesce(varExist.Pos, 0) >= 2, ColorValue("#111111"), Coalesce(varExist.Pos, 0) = 1, ColorValue("#8A8D91"), ColorValue("#DADCDF"))
+            Height: =4
+            Width: =112
+            X: =1006
+            Y: =334
+      - lblExistVina_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =18
+            Text: =Coalesce(varExist.Vina, 0)
+            Width: =160
+            X: =1142
+            Y: =288
+      - lblExistCapVina_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =12
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="VIÑA"
+            Width: =160
+            X: =1142
+            Y: =318
+      - barExistVina:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =If(Coalesce(varExist.Vina, 0) >= 2, ColorValue("#111111"), Coalesce(varExist.Vina, 0) = 1, ColorValue("#8A8D91"), ColorValue("#DADCDF"))
+            Height: =4
+            Width: =112
+            X: =1166
+            Y: =334
+      - ruleCard2:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =ColorValue("#DADCDF")
+            Height: =1
+            Width: =642
+            X: =662
+            Y: =350
+      - lblFichaTec_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="FICHA TÉCNICA  —  datos de FOLIO bloqueados; completar POL, valor neto, activo fijo, vínculo y unidad"
+            Width: =642
+            X: =662
+            Y: =358
+      - lbl_txtHRID_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="HRID"
+            Width: =206
+            X: =662
+            Y: =378
+      - txtHRID_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.HRID
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =662
+            Y: =391
+      - lbl_txtCodigo_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="CÓDIGO DE BARRA"
+            Width: =206
+            X: =880
+            Y: =378
+      - txtCodigo_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#DADCDF")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varCodigo
+            DisplayMode: =DisplayMode.View
+            Fill: =ColorValue("#F7F7F8")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =880
+            Y: =391
+      - lbl_txtCopia_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="COPIA"
+            Width: =206
+            X: =1098
+            Y: =378
+      - txtCopia_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.copia
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =1098
+            Y: =391
+      - lbl_txtTitulo_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="TÍTULO"
+            Width: =206
+            X: =662
+            Y: =424
+      - txtTitulo_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.Título
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =662
+            Y: =437
+      - lbl_txtAutor_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="AUTOR"
+            Width: =206
+            X: =880
+            Y: =424
+      - txtAutor_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.Autor
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =880
+            Y: =437
+      - lbl_txtTipo_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="TIPO DE MATERIAL"
+            Width: =206
+            X: =1098
+            Y: =424
+      - txtTipo_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.'Tipo de Material'
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =1098
+            Y: =437
+      - lbl_txtIdioma_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="IDIOMA"
+            Width: =206
+            X: =662
+            Y: =470
+      - txtIdioma_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.Idioma
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =662
+            Y: =483
+      - lbl_txtAnio_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="AÑO DE EDICIÓN"
+            Width: =206
+            X: =880
+            Y: =470
+      - txtAnio_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.'Año de edición'
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =880
+            Y: =483
+      - lbl_txtUbicacion_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="UBICACIÓN"
+            Width: =206
+            X: =1098
+            Y: =470
+      - txtUbicacion_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.'Biblioteca-Ubicacion-Colección'
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =1098
+            Y: =483
+      - lbl_txtFechaReg_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="FECHA REGISTRO"
+            Width: =206
+            X: =662
+            Y: =516
+      - txtFechaReg_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =If(varEncontrado, ColorValue("#DADCDF"), ColorValue("#BFC3C8"))
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =varItem.'Fecha registro (ingresado en la base)'
+            DisplayMode: =If(varEncontrado, DisplayMode.View, DisplayMode.Edit)
+            Fill: =If(varEncontrado, ColorValue("#F7F7F8"), ColorValue("#FFFFFF"))
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =662
+            Y: =529
+      - lbl_txtPOL_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="N° POL"
+            Width: =206
+            X: =880
+            Y: =516
+      - txtPOL_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =880
+            Y: =529
+      - lbl_txtValorNeto_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="VALOR NETO"
+            Width: =206
+            X: =1098
+            Y: =516
+      - txtValorNeto_1:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =206
+            X: =1098
+            Y: =529
+      - lbl_drpCruce_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="ACTIVO FIJO · SI POR DEFECTO"
+            Width: =206
+            X: =662
+            Y: =562
+      - drpCruce_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="Esta en archivo"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Esta en archivo", "No esta en archivo"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =206
+            X: =662
+            Y: =575
+      - lbl_drpVinculado_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="VINCULADO UAI"
+            Width: =206
+            X: =880
+            Y: =562
+      - drpVinculado_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="NO"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["SI", "NO"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =206
+            X: =880
+            Y: =575
+      - lbl_drpUnidadAcad_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="UNIDAD ACADÉMICA"
+            Width: =206
+            X: =1098
+            Y: =562
+      - drpUnidadAcad_1:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: ="Desconocida"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =28
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Facultad de Artes Liberales", "Facultad de Derecho", "Facultad de Ingeniería y Ciencias", "Escuela de Negocios", "Escuela de Periodismo", "Escuela de Psicología", "Escuela de Diseño", "Escuela de Gobierno", "CEHIP", "Dirección de Docencia", "Dirección de Investigación", "Biblioteca", "Desconocida"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =206
+            X: =1098
+            Y: =575
+      - htmlGuardarFondo:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =56
+            HtmlText: |-
+              =If(btnGuardar_1.DisplayMode = DisplayMode.Disabled, "<div style='height:56px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:56px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =516
+            X: =640
+            Y: =640
+      - btnGuardar_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(!IsBlank(varCodigo) && !varDuplicado && !IsBlank(drpUnidadDescarte_1.Selected.Value) && !IsBlank(drpJustificacion_1.Selected.Value) && !IsBlank(drpInventario_1.Selected.Value) && (varEncontrado || !IsBlank(txtTitulo_1.Text)), DisplayMode.Edit, DisplayMode.Disabled)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =56
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =With(
+                  {
+                      enc: varEncontrado,
+                      hrid: If(varEncontrado, varItem.HRID, txtHRID_1.Text),
+                      titulo: If(varEncontrado, varItem.Título, txtTitulo_1.Text)
+                  },
+                  IfError(
+                      Set(varNuevo,
+                          Patch(
+                              tblFichaDescarte,
+                              Defaults(tblFichaDescarte),
+                              {
+                                  Número: Text(Coalesce(Max(colFicha, Value(Número)), 0) + 1),
+                                  'Item ingresado en la base de biblioteca': If(enc, "SI", "NO"),
+                                  HRID: hrid,
+                                  'Codigo de Barra': varCodigo,
+                                  'Cruce Archivo activo Fijo (Finanzas)': drpCruce_1.Selected.Value,
+                                  'Valor Neto': txtValorNeto_1.Text,
+                                  copia: If(enc, varItem.copia, txtCopia_1.Text),
+                                  'Tipo de Material': If(enc, varItem.'Tipo de Material', txtTipo_1.Text),
+                                  'Biblioteca-Ubicacion-Colección': If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text),
+                                  Título: titulo,
+                                  Autor: If(enc, varItem.Autor, txtAutor_1.Text),
+                                  Idioma: If(enc, varItem.Idioma, txtIdioma_1.Text),
+                                  'Vinculado UAI (SI/NO)': drpVinculado_1.Selected.Value,
+                                  'Fecha registro (ingresado en la base)': If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text),
+                                  'Número de POL *': txtPOL_1.Text,
+                                  'Unidad Academica o Centro de Costo *': drpUnidadAcad_1.Selected.Value,
+                                  'Año de edición': If(enc, varItem.'Año de edición', txtAnio_1.Text),
+                                  'Diferenciador de título por ficha descarte': If(IsBlank(hrid), If(titulo in colFicha.Título, 0, 1), If(hrid in colFicha.HRID, 0, 1)),
+                                  'Unidad de descarte': drpUnidadDescarte_1.Selected.Value,
+                                  'Pregrado  A - Existencia': Coalesce(varExist.PA, 0),
+                                  'Pregrado  F - Existencia': Coalesce(varExist.PF, 0),
+                                  'Posgrado - Existencia': Coalesce(varExist.Pos, 0),
+                                  'Viña - Existencia': Coalesce(varExist.Vina, 0),
+                                  'Informar a Finanzas (SI/NO)': drpFinanzas_1.Selected.Value,
+                                  'Forma de Adquisición': drpFormaAdq_1.Selected.Value,
+                                  'Bibliografía de programas académicos (SI/NO)': drpBibliografia_1.Selected.Value,
+                                  'Obra en Volúmenes - Parte de una Colección (SI/NO)': drpVolumenes_1.Selected.Value,
+                                  'Criterios de Descarte': drpCriterio_1.Selected.Value,
+                                  'Justificaciones para aplicar Descarte': drpJustificacion_1.Selected.Value,
+                                  'Relación Inventario': drpInventario_1.Selected.Value,
+                                  'Observaciones respecto de la justificación al Descarte': txtObsJustif_1.Text,
+                                  'Información para no Descartar': txtNoDescartar_1.Text,
+                                  'Decisión Final Descarte SI/NO': Blank()
+                              }
+                          )
+                      );
+                      Collect(colFicha, varNuevo);
+                      If(IsBlank(varInicio), Set(varInicio, Now()));
+                      Set(varUltimo, varNuevo.Número & " — " & titulo);
+                      Set(varContador, Coalesce(varContador, 0) + 1);
+                      Notify("Guardado N° " & varNuevo.Número, NotificationType.Success, 2000);
+                      Set(varItem, Blank());
+                      Set(varCodigo, Blank());
+                      Set(varEncontrado, false);
+                      Set(varDuplicado, false);
+                      Set(varExist, {PA: 0, PF: 0, Pos: 0, Vina: 0});
+                      Reset(txtHRID_1); Reset(txtValorNeto_1); Reset(txtCopia_1); Reset(txtTipo_1); Reset(txtUbicacion_1);
+                      Reset(txtTitulo_1); Reset(txtAutor_1); Reset(txtIdioma_1); Reset(txtFechaReg_1); Reset(txtPOL_1); Reset(txtAnio_1);
+                      Reset(drpCruce_1); Reset(drpVinculado_1); Reset(drpUnidadAcad_1);
+                      Reset(drpFormaAdq_1); Reset(drpFinanzas_1); Reset(drpBibliografia_1); Reset(drpVolumenes_1);
+                      Reset(txtObsJustif_1); Reset(txtNoDescartar_1);
+                      Reset(txtEscaneo_1);
+                      SetFocus(txtEscaneo_1),
+                      Notify("No se pudo guardar: " & FirstError.Message, NotificationType.Error)
+                  )
+              )
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =13
+            Text: ="GUARDAR   →"
+            Width: =516
+            X: =640
+            Y: =640
+      - btnLimpiar_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =56
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varItem, Blank());
+              Set(varCodigo, Blank());
+              Set(varEntrada, Blank());
+              Set(varEncontrado, false);
+              Set(varDuplicado, false);
+              Set(varExist, {PA: 0, PF: 0, Pos: 0, Vina: 0});
+              Reset(txtHRID_1); Reset(txtValorNeto_1); Reset(txtCopia_1); Reset(txtTipo_1); Reset(txtUbicacion_1);
+              Reset(txtTitulo_1); Reset(txtAutor_1); Reset(txtIdioma_1); Reset(txtFechaReg_1); Reset(txtPOL_1); Reset(txtAnio_1);
+              Reset(drpCruce_1); Reset(drpVinculado_1); Reset(drpUnidadAcad_1);
+              Reset(drpFormaAdq_1); Reset(drpFinanzas_1); Reset(drpBibliografia_1); Reset(drpVolumenes_1);
+              Reset(txtObsJustif_1); Reset(txtNoDescartar_1);
+              Reset(txtEscaneo_1);
+              SetFocus(txtEscaneo_1)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =11
+            Text: ="Limpiar"
+            Width: =156
+            X: =1170
+            Y: =640
+      - lblUltimo_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#3F4247")
+            Font: =Font.'Segoe UI'
+            Height: =18
+            Italic: =true
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: |-
+              =If(IsBlank(varUltimo), "Aún no se guarda ningún libro en esta sesión.", "Último guardado: N° " & varUltimo)
+            Width: =686
+            X: =640
+            Y: =704
+      - btnProcesarEscaneo:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =With(
+                  {cod: varEntrada},
+                  If(
+                      !IsBlank(cod),
+                      Set(varCodigo, cod);
+                      Set(varBuscando, true);
+                      Set(varRes, IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), Blank()));
+                      Set(varBuscando, false);
+                      With(
+                          {j: ParseJSON(If(IsBlank(varRes), "{}", varRes))},
+                          Set(varItem,
+                              If(Text(j.encontrado) = "SI",
+                                  {
+                                      HRID: Text(j.hrid),
+                                      copia: Text(j.copia),
+                                      'Tipo de Material': Text(j.tipo),
+                                      'Biblioteca-Ubicacion-Colección': Text(j.ubicacion),
+                                      Título: Text(j.titulo),
+                                      Autor: Text(j.autor),
+                                      Idioma: Text(j.idioma),
+                                      'Fecha registro (ingresado en la base)': Text(j.fecha),
+                                      'Año de edición': Text(j.anio)
+                                  }
+                              )
+                          );
+                          Set(varExist,
+                              {
+                                  PA: Coalesce(Value(j.exA), 0),
+                                  PF: Coalesce(Value(j.exF), 0),
+                                  Pos: Coalesce(Value(j.exP), 0),
+                                  Vina: Coalesce(Value(j.exV), 0)
+                              }
+                          )
+                      );
+                      Set(varEncontrado, !IsBlank(varItem));
+                      ClearCollect(colFicha, tblFichaDescarte);
+                      Set(varDuplicado, cod in colFicha.'Codigo de Barra');
+                      If(
+                          IsBlank(varRes),
+                              Notify("No se pudo consultar FOLIO. Complete la ficha a mano.", NotificationType.Error);
+                              SetFocus(txtTitulo_1),
+                          varDuplicado,
+                              Notify("El código " & cod & " ya está en la ficha.", NotificationType.Warning);
+                              Reset(txtEscaneo_1); SetFocus(txtEscaneo_1),
+                          !varEncontrado,
+                              Notify("El código " & cod & " no está en FOLIO: complete la ficha técnica.", NotificationType.Warning);
+                              SetFocus(txtTitulo_1),
+                          varRafaga && !IsBlank(drpUnidadDescarte_1.Selected.Value) && !IsBlank(drpJustificacion_1.Selected.Value) && !IsBlank(drpInventario_1.Selected.Value),
+                              Select(btnGuardar_1),
+                          SetFocus(btnGuardar_1)
+                      )
+                  )
+              );
+              Set(varEntrada, Blank())
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
+      - htmlBrillo_1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =112
+            HtmlText: |-
+              ="<img style='display:block' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%221366%22 height=%22112%22><defs><clipPath id=%22c%22><rect x=%2284%22 y=%2214%22 width=%221264%22 height=%2272%22 rx=%2218%22/></clipPath><linearGradient id=%22g%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.22%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient></defs><g clip-path=%22url(%23c)%22><rect y=%2214%22 width=%22220%22 height=%2272%22 fill=%22url(%23g)%22 transform=%22skewX(-20)%22><animate attributeName=%22x%22 values=%22-300;1700;1700%22 keyTimes=%220;0.5;1%22 dur=%227s%22 repeatCount=%22indefinite%22/></rect></g></svg>'/>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+            X: =0
+            Y: =0
+      - btnCerrarMenu_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(17, 17, 17, 0.35)
+            Height: =768
+            HoverFill: =RGBA(17, 17, 17, 0.35)
+            OnSelect: =Set(varMenu, false)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Visible: =varMenu
+            Width: =1366
+            X: =0
+            Y: =0
+      - htmlMenu_1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =768
+            HtmlText: |-
+              =If(varMenu, "<div style='margin:14px 0 0 14px;width:216px;height:740px;border-radius:18px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.28);font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden;box-sizing:border-box'><div style='height:84px;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;color:#FFFFFF;font-weight:700;font-size:14px;letter-spacing:2px;box-sizing:border-box'>UAI · BIBLIOTECAS</div><div style='height:56px;display:flex;align-items:center;padding-left:20px;color:#BFC3C8;font-size:18px;border-top:1px solid rgba(191,195,200,0.22)'>☰<span style='margin-left:14px;font-size:10px;letter-spacing:2px'>MENÚ</span></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 11l9-7 9 7%22/><path d=%22M5 10v10h14V10%22/><path d=%22M10 20v-6h4v6%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Inicio</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;background:linear-gradient(135deg,#35373B,#111111);box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 4px 10px rgba(0,0,0,0.35);color:#FFFFFF;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23FFFFFF%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 7h16%22/><path d=%22M9 7V4h6v3%22/><path d=%22M6 7l1 13h10l1-13%22/><path d=%22M10 11v6M14 11v6%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:700;letter-spacing:1px'>Descarte</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 5h9a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2z%22/><path d=%22M15 12h6M18 9l3 3-3 3%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Préstamo</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M11 5h9v14h-9a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z%22/><path d=%22M9 12H3M6 9l-3 3 3 3%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Devolución</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2213%22 r=%227%22/><path d=%22M12 9v4l2.5 2%22/><path d=%22M5 4l-2 2M19 4l2 2%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Morosos</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 6v12M7 6v12M10 6v12M14 6v12M17 6v12M20 6v12%22/><path d=%22M2 3h4M18 3h4M2 21h4M18 21h4%22/></svg>'/></span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Inventario</span></div></div><div style='position:absolute;left:0;right:0;bottom:16px;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;color:#BFC3C8;font-size:18px'>◐<span style=margin-left:14px;font-size:11px;letter-spacing:1px>Modo claro / oscuro</span></div></div>", "<div style='margin:14px 0 0 14px;width:58px;height:740px;border-radius:18px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.28);font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden;box-sizing:border-box'><div style='height:84px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-weight:700;font-size:14px;letter-spacing:2px;box-sizing:border-box'>UAI</div><div style='height:56px;display:flex;align-items:center;padding-left:19px;color:#BFC3C8;font-size:18px;border-top:1px solid rgba(191,195,200,0.22)'>☰</div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 11l9-7 9 7%22/><path d=%22M5 10v10h14V10%22/><path d=%22M10 20v-6h4v6%22/></svg>'/></span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#35373B,#111111);box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 4px 10px rgba(0,0,0,0.35);color:#FFFFFF;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23FFFFFF%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 7h16%22/><path d=%22M9 7V4h6v3%22/><path d=%22M6 7l1 13h10l1-13%22/><path d=%22M10 11v6M14 11v6%22/></svg>'/></span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 5h9a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2z%22/><path d=%22M15 12h6M18 9l3 3-3 3%22/></svg>'/></span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M11 5h9v14h-9a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z%22/><path d=%22M9 12H3M6 9l-3 3 3 3%22/></svg>'/></span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2213%22 r=%227%22/><path d=%22M12 9v4l2.5 2%22/><path d=%22M5 4l-2 2M19 4l2 2%22/></svg>'/></span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='width:20px;display:flex;justify-content:center'><img style='display:block' width='20' height='20' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 6v12M7 6v12M10 6v12M14 6v12M17 6v12M20 6v12%22/><path d=%22M2 3h4M18 3h4M2 21h4M18 21h4%22/></svg>'/></span></div></div><div style='position:absolute;left:0;right:0;bottom:16px;display:flex;align-items:center;justify-content:center;color:#BFC3C8;font-size:18px'>◐</div></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =If(varMenu, 244, 86)
+            X: =0
+            Y: =0
+      - btnMenu_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, !varMenu)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =98
+      - btnTema_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =48
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varOscuro, !varOscuro); Set(varT, If(varOscuro, TEMA_OSCURO, TEMA_CLARO))
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =700
+      - btnIrInicio_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =154
+      - btnIrDescarte_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.Cover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =210
+      - btnIrPrestamo_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Cover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =266
+      - btnIrDevolucion_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Cover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =322
+      - btnIrMorosos_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.UnCover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =378
+      - btnIrInventario_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate(scrInventario, ScreenTransition.Cover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =434

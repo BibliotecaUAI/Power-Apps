@@ -1,33 +1,19 @@
 Screens:
-  Préstamo:
+  scrPrestamo:
     Properties:
-      Fill: =varT.bg
-      OnVisible: |-
-        =Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"})); ClearCollect(colPrestamos, tblPrestamos); ClearCollect(colPlazos, tblPlazos); Set(varCorreoPrueba, "pablo.salas.marin@uai.cl"); Set(varMenu, false); SetFocus(txtUsuario_4)
+      Fill: =ColorValue("#FFFFFF")
+      OnVisible: =ClearCollect(colPrestamos, tblPrestamos); ClearCollect(colPlazos, tblPlazos); Set(varCorreoPrueba, "pablo.salas.marin@uai.cl"); Set(varMenu, false); SetFocus(txtUsuario_4)
     Children:
-      - htmlFondo_4:
-          Control: HtmlViewer@2.1.0
-          Properties:
-            Fill: =RGBA(0, 0, 0, 0)
-            Height: =768
-            HtmlText: ="<div style='position:relative;width:1366px;height:768px;overflow:hidden;background:" & varT.hBg & "'><div style='position:absolute;left:0;top:0;width:13px;height:768px;background:" & varT.hFranja & "'></div><div style='position:absolute;left:1240px;top:0px;width:28px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1283px;top:0px;width:83px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1336px;top:31px;width:30px;height:215px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:246px;width:126px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:277px;width:29px;height:214px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1307px;top:277px;width:30px;height:214px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:492px;width:126px;height:30px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1336px;top:522px;width:30px;height:217px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:738px;width:126px;height:30px;background:" & varT.hMarca & "'></div></div>"
-            PaddingBottom: =0
-            PaddingLeft: =0
-            PaddingRight: =0
-            PaddingTop: =0
-            Width: =1366
-            X: =0
-            Y: =0
       - htmlHeader_4:
           Control: HtmlViewer@2.1.0
           Properties:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =114
             HtmlText: |-
-              ="<div style='height:72px;margin:14px 18px 0 84px;border-radius:18px;overflow:hidden;box-shadow:0 14px 30px rgba(17,17,17,0.25);border:1px solid #3F4247;box-sizing:border-box;padding:0 26px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Calibri,Carlito,Segoe UI,sans-serif;display:flex;justify-content:space-between;align-items:center'>" &
+              ="<div style='height:112px;box-sizing:border-box;padding:0 40px 0 104px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Segoe UI,Arial,sans-serif;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #BFC3C8'>" &
               "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
-              "<div style='font-size:22px;font-weight:700;color:#FFFFFF;margin-top:4px'>Préstamo</div></div><div style='display:flex;align-items:center'>" &
-              "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:20px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>PRÉSTAMOS HOY</div></div>" & "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:20px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>DEVOLUCIONES HOY</div></div>" & "<div style='padding:0 26px;'><div style='font-size:20px;font-weight:700;color:#BFC3C8'>" & CountRows(Distinct(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()), RUT)) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>MOROSOS</div></div>" &
+              "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px'>Préstamo</div></div><div style='display:flex;align-items:center'>" &
+              "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>PRÉSTAMOS HOY</div></div>" & "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>DEVOLUCIONES HOY</div></div>" & "<div style='padding:0 26px;'><div style='font-size:24px;font-weight:700;color:#BFC3C8'>" & CountRows(Distinct(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()), RUT)) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>MOROSOS</div></div>" &
               "</div></div>"
             PaddingBottom: =0
             PaddingLeft: =0
@@ -38,14 +24,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =16
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="USUARIO Y LIBROS DESDE FOLIO · EL PRÉSTAMO SE ANOTA EN EXCEL"
             Width: =480
             X: =104
@@ -53,15 +39,15 @@ Screens:
       - lblPaso1_4:
           Control: Label@2.5.1
           Properties:
-            Color: =varT.tx
-            Font: ="Calibri"
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =22
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =12
+            Size: =11
             Text: ="1 · Usuario"
             Width: =300
             X: =104
@@ -70,14 +56,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =14
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="ESCANEE EL QR DE LA CÉDULA O DIGITE EL RUT + ENTER"
             Width: =476
             X: =104
@@ -85,52 +71,40 @@ Screens:
       - txtUsuario_4:
           Control: Classic/TextInput@2.3.2
           Properties:
-            BorderColor: =varT.lineStrong
+            BorderColor: =ColorValue("#111111")
             BorderThickness: =2
-            Color: =varT.tx
+            Color: =ColorValue("#1B2A4A")
             Default: =""
-            Fill: =varT.inp
-            FocusedBorderColor: =varT.lineStrong
+            Fill: =ColorValue("#FFFFFF")
+            FocusedBorderColor: =ColorValue("#111111")
             FocusedBorderThickness: =2
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             Height: =52
             HintText: ="RUT o QR de la cédula…"
             OnChange: |-
               =If(!IsBlank(Trim(Self.Text)), Set(varEntradaUsuario, Trim(Self.Text)); Select(btnBuscarUsuario_4))
             PaddingLeft: =14
             PaddingRight: =56
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =11
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =16
             Width: =476
             X: =104
             Y: =200
-      - barCamaraUsuario_4:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaUsuario, Trim(First(Self.Barcodes).Value)); Select(btnBuscarUsuario_4))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =204
       - lblPaso2_4:
           Control: Label@2.5.1
           Properties:
-            Color: =varT.tx
-            Font: ="Calibri"
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =22
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =12
+            Size: =11
             Text: ="2 · Libros"
             Width: =300
             X: =104
@@ -139,14 +113,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =14
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="ESCANEE UNO TRAS OTRO · SE SUMAN A LA LISTA"
             Width: =476
             X: =104
@@ -154,52 +128,40 @@ Screens:
       - txtLibro_4:
           Control: Classic/TextInput@2.3.2
           Properties:
-            BorderColor: =varT.lineStrong
+            BorderColor: =ColorValue("#111111")
             BorderThickness: =2
-            Color: =varT.tx
+            Color: =ColorValue("#1B2A4A")
             Default: =""
-            Fill: =varT.inp
-            FocusedBorderColor: =varT.lineStrong
+            Fill: =ColorValue("#FFFFFF")
+            FocusedBorderColor: =ColorValue("#111111")
             FocusedBorderThickness: =2
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             Height: =52
             HintText: ="Código de barras del libro…"
             OnChange: |-
               =If(!IsBlank(Trim(Self.Text)), Set(varEntradaLibro, Trim(Self.Text)); Select(btnAgregarLibro_4))
             PaddingLeft: =14
             PaddingRight: =56
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =11
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =16
             Width: =476
             X: =104
             Y: =314
-      - barCamaraLibro_4:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaLibro, Trim(First(Self.Barcodes).Value)); Select(btnAgregarLibro_4))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =318
       - lblPaso3_4:
           Control: Label@2.5.1
           Properties:
-            Color: =varT.tx
-            Font: ="Calibri"
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =22
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =12
+            Size: =11
             Text: ="3 · Condiciones"
             Width: =300
             X: =104
@@ -208,14 +170,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =14
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="BIBLIOTECA"
             Width: =230
             X: =104
@@ -223,21 +185,21 @@ Screens:
       - drpBiblioteca_4:
           Control: Classic/DropDown@2.3.1
           Properties:
-            BorderColor: =varT.line
+            BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
-            ChevronBackground: =varT.inp
-            ChevronFill: =varT.sub
-            Color: =varT.tx
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
             Default: ="Biblioteca Viña"
-            Fill: =varT.inp
-            Font: ="Calibri"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
             Height: =30
-            HoverFill: =varT.inpRO
+            HoverFill: =ColorValue("#F7F7F8")
             Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
-            Size: =10
+            Size: =9
             Width: =230
             X: =104
             Y: =426
@@ -245,14 +207,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =14
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="CORREO AL USUARIO"
             Width: =230
             X: =350
@@ -260,21 +222,21 @@ Screens:
       - drpCorreo_4:
           Control: Classic/DropDown@2.3.1
           Properties:
-            BorderColor: =varT.line
+            BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
-            ChevronBackground: =varT.inp
-            ChevronFill: =varT.sub
-            Color: =varT.tx
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
             Default: ="Enviar resumen"
-            Fill: =varT.inp
-            Font: ="Calibri"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
             Height: =30
-            HoverFill: =varT.inpRO
+            HoverFill: =ColorValue("#F7F7F8")
             Items: =["Enviar resumen", "No enviar"]
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
-            Size: =10
+            Size: =9
             Width: =230
             X: =350
             Y: =426
@@ -282,14 +244,14 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =14
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =7
             Text: ="OBSERVACIONES"
             Width: =476
             X: =104
@@ -297,19 +259,19 @@ Screens:
       - txtObs_4:
           Control: Classic/TextInput@2.3.2
           Properties:
-            BorderColor: =varT.line
+            BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
-            Color: =varT.tx
+            Color: =ColorValue("#111111")
             Default: =""
-            Fill: =varT.inp
-            Font: ="Calibri"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
             Height: =30
             PaddingLeft: =8
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
             Width: =476
             X: =104
             Y: =480
@@ -317,13 +279,13 @@ Screens:
           Control: Label@2.5.1
           Properties:
             Color: =ColorValue("#8A8D91")
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             Height: =32
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =9
+            Size: =8
             Text: |-
               ="Plazos según la hoja Plazos del Excel: libro 28 días · iPad 14 · Kindle 28 · calculadora, test y mapa 1 día · colección histórica solo sala."
             Width: =476
@@ -337,8 +299,8 @@ Screens:
             HtmlText: |-
               =If(
                   IsBlank(varUsuario),
-                  "<div style='margin:6px;height:150px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>○  ESPERANDO USUARIO</div><div style='font-size:14px;font-weight:700;color:#8A8D91;margin-top:14px'>Escanee el QR de la cédula o digite el RUT.</div></div></div>",
-                  "<div style='position:relative;margin:6px;height:150px;box-sizing:border-box;border-radius:18px;overflow:hidden;font-family:Calibri,Carlito,Segoe UI,sans-serif;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:" & If(varMoroso, "1.5px solid #B3261E;box-shadow:0 0 0 4px rgba(179,38,30,0.16),0 0 22px rgba(179,38,30,0.35)", "1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.25)") & "'><div style='position:absolute;right:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,rgba(191,195,200,0.5) 0 2px,transparent 2px 5px,rgba(191,195,200,0.3) 5px 6px,transparent 6px 9px)'></div><div style='position:absolute;left:22px;top:26px;width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#8A8D91,#FFFFFF 45%,#BFC3C8);padding:3px;box-sizing:border-box'><div style='width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#35373B,#111111);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#FFFFFF'>" & Upper(Left(varUsuario.Nombre, 1) & Left(varUsuario.Apellido, 1)) & "</div></div><div style='position:absolute;left:138px;top:22px;right:330px'><div style='font-size:10px;letter-spacing:2px;font-weight:700;color:#BFC3C8'>CARNÉ DE BIBLIOTECA · " & varUsuario.Origen & "</div><div style='font-size:20px;font-weight:700;color:#FFFFFF;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varUsuario.Nombre & " " & varUsuario.Apellido & "</div><div style='font-size:12px;font-style:italic;color:#BFC3C8;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varUsuario.UnidadAcademica & If(IsBlank(varUsuario.Programa), "", " · " & varUsuario.Programa) & "</div><span style='display:inline-block;padding:3px 10px;margin-right:6px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(191,195,200,0.35);font-size:11px;color:#E6E7E9'>" & "RUT " & varUsuario.RUT & "</span><span style='display:inline-block;padding:3px 10px;margin-right:6px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(191,195,200,0.35);font-size:11px;color:#E6E7E9'>" & Coalesce(varUsuario.TipoUsuario, "Usuario") & "</span></div><div style='position:absolute;right:28px;top:38px;display:flex;gap:10px;align-items:center'><div style='width:86px;height:60px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(191,195,200,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:20px;font-weight:700;color:" & "#FFFFFF" & "'>" & varUsuario.ActivosFolio & "</div><div style='font-size:10px;font-style:italic;color:#BFC3C8'>en FOLIO</div></div><div style='width:86px;height:60px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(191,195,200,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:20px;font-weight:700;color:" & If(varUsuario.MorososFolio > 0, "#FF6B5E", "#FFFFFF") & "'>" & varUsuario.MorososFolio & "</div><div style='font-size:10px;font-style:italic;color:#BFC3C8'>vencidos</div></div><div style='width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;letter-spacing:1.5px;" & If(varMoroso, "border:2px solid #B3261E;box-shadow:0 0 14px rgba(179,38,30,0.6),inset 0 0 10px rgba(179,38,30,0.35);color:#FF8A80", "border:2px solid #BFC3C8;box-shadow:inset 0 0 10px rgba(255,255,255,0.15);color:#FFFFFF") & "'>" & If(varMoroso, "MOROSO", "AL DÍA") & "</div></div></div>"
+                  "<div style='margin:6px;height:150px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>○  ESPERANDO USUARIO</div><div style='font-size:18px;font-weight:700;color:#8A8D91;margin-top:14px'>Escanee el QR de la cédula o digite el RUT.</div></div></div>",
+                  "<div style='position:relative;margin:6px;height:150px;box-sizing:border-box;border-radius:18px;overflow:hidden;font-family:Calibri,Carlito,Segoe UI,sans-serif;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:" & If(varMoroso, "1.5px solid #B3261E;box-shadow:0 0 0 4px rgba(179,38,30,0.16),0 0 22px rgba(179,38,30,0.35)", "1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.25)") & "'><div style='position:absolute;right:0;top:0;bottom:0;width:10px;background:repeating-linear-gradient(180deg,rgba(191,195,200,0.5) 0 2px,transparent 2px 5px,rgba(191,195,200,0.3) 5px 6px,transparent 6px 9px)'></div><div style='position:absolute;left:22px;top:26px;width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#8A8D91,#FFFFFF 45%,#BFC3C8);padding:3px;box-sizing:border-box'><div style='width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#35373B,#111111);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#FFFFFF'>" & Upper(Left(varUsuario.Nombre, 1) & Left(varUsuario.Apellido, 1)) & "</div></div><div style='position:absolute;left:138px;top:22px;right:330px'><div style='font-size:10px;letter-spacing:2px;font-weight:700;color:#BFC3C8'>CARNÉ DE BIBLIOTECA · " & varUsuario.Origen & "</div><div style='font-size:20px;font-weight:700;color:#FFFFFF;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varUsuario.Nombre & " " & varUsuario.Apellido & "</div><div style='font-size:12px;font-style:italic;color:#BFC3C8;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>" & varUsuario.UnidadAcademica & If(IsBlank(varUsuario.Programa), "", " · " & varUsuario.Programa) & "</div><span style='display:inline-block;padding:3px 10px;margin-right:6px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(191,195,200,0.35);font-size:11px;color:#E6E7E9'>" & "RUT " & varUsuario.RUT & "</span><span style='display:inline-block;padding:3px 10px;margin-right:6px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(191,195,200,0.35);font-size:11px;color:#E6E7E9'>" & Coalesce(varUsuario.TipoUsuario, "Usuario") & "</span></div><div style='position:absolute;right:28px;top:38px;display:flex;gap:10px;align-items:center'><div style='width:86px;height:60px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(191,195,200,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:20px;font-weight:700;color:" & "#FFFFFF" & "'>" & varUsuario.ActivosFolio & "</div><div style='font-size:10px;font-style:italic;color:#BFC3C8'>en FOLIO</div></div><div style='width:86px;height:60px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(191,195,200,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center'><div style='font-size:20px;font-weight:700;color:" & If(varUsuario.MorososFolio > 0, "#FF6B5E", "#FFFFFF") & "'>" & varUsuario.MorososFolio & "</div><div style='font-size:10px;font-style:italic;color:#BFC3C8'>vencidos</div></div><div style='width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;letter-spacing:1.5px;" & If(varMoroso, "border:2px solid #B3261E;box-shadow:0 0 14px rgba(179,38,30,0.6),inset 0 0 10px rgba(179,38,30,0.35);color:#FF8A80", "border:2px solid #BFC3C8;box-shadow:inset 0 0 10px rgba(255,255,255,0.15);color:#FFFFFF") & "'>" & If(varMoroso, "MOROSO", "AL DÍA") & "</div></div></div>"
               )
             PaddingBottom: =0
             PaddingLeft: =0
@@ -368,7 +330,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =320
             HtmlText: |-
-              ="<div style='margin:6px;height:308px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Libros a prestar</div><div style='margin-right:130px'>" & If(CountRows(Filter(colCarrito, Estado = "LISTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:" & varT.hPosTx & ";background:" & varT.hPos & "'>" & CountRows(Filter(colCarrito, Estado = "LISTO")) & " LISTOS</span>", "") & " " & If(CountRows(Filter(colCarrito, Estado <> "LISTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & CountRows(Filter(colCarrito, Estado <> "LISTO")) & " NO SE PRESTAN</span>", "") & "</div></div>" & If(IsEmpty(colCarrito), If(varBuscandoLibro, "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Buscando en FOLIO…</div>", "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Escanee los libros uno tras otro. Se suman aquí con su plazo.</div>"), "<div style='margin-top:10px;max-height:230px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:" & varT.hTx & "'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>CÓDIGO</th><th style='padding:6px'>TÍTULO</th><th style='padding:6px'>TIPO</th><th style='padding:6px'>PLAZO</th><th style='padding:6px'>VENCE</th></tr>" & Concat(Sort(colCarrito, Orden), "<tr style='border-bottom:1px solid " & varT.hLin & "'><td style='padding:7px 6px;font-weight:700'>" & Substitute(Substitute(Codigo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & If(Estado = "LISTO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:" & varT.hPosTx & ";background:" & varT.hPos & "'>" & Dias & If(Dias = 1, " DÍA", " DÍAS") & "</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & Estado & "</span>") & "</td><td style='padding:7px 6px'>" & If(IsBlank(Vence), "—", Text(DateValue(Vence), "dd-mm-yyyy")) & "</td></tr>") & "</table></div>") & "</div></div>"
+              ="<div style='margin:6px;height:308px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='display:flex;justify-content:space-between;align-items:center'><div style='font-size:15px;font-weight:700;color:#111111'>Libros a prestar</div><div style='margin-right:130px'>" & If(CountRows(Filter(colCarrito, Estado = "LISTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountRows(Filter(colCarrito, Estado = "LISTO")) & " LISTOS</span>", "") & " " & If(CountRows(Filter(colCarrito, Estado <> "LISTO")) > 0, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & CountRows(Filter(colCarrito, Estado <> "LISTO")) & " NO SE PRESTAN</span>", "") & "</div></div>" & If(IsEmpty(colCarrito), If(varBuscandoLibro, "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Buscando en FOLIO…</div>", "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Escanee los libros uno tras otro. Se suman aquí con su plazo.</div>"), "<div style='margin-top:10px;max-height:230px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;font-size:11px;color:#111111'><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'><th style='padding:6px'>CÓDIGO</th><th style='padding:6px'>TÍTULO</th><th style='padding:6px'>TIPO</th><th style='padding:6px'>PLAZO</th><th style='padding:6px'>VENCE</th></tr>" & Concat(Sort(colCarrito, Orden), "<tr style='border-bottom:1px solid #DADCDF'><td style='padding:7px 6px;font-weight:700'>" & Substitute(Substitute(Codigo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:7px 6px'>" & If(Estado = "LISTO", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & Dias & If(Dias = 1, " DÍA", " DÍAS") & "</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>" & Estado & "</span>") & "</td><td style='padding:7px 6px'>" & If(IsBlank(Vence), "—", Text(DateValue(Vence), "dd-mm-yyyy")) & "</td></tr>") & "</table></div>") & "</div></div>"
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
@@ -379,12 +341,12 @@ Screens:
       - btnQuitar_4:
           Control: Classic/Button@2.2.0
           Properties:
-            BorderColor: =varT.line
+            BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
-            Color: =varT.tx
+            Color: =ColorValue("#111111")
             DisplayMode: =If(IsEmpty(colCarrito), DisplayMode.Disabled, DisplayMode.Edit)
-            Fill: =varT.inp
-            Font: ="Calibri"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Normal
             Height: =26
             HoverColor: =ColorValue("#FFFFFF")
@@ -392,11 +354,11 @@ Screens:
             OnSelect: |-
               =Remove(colCarrito, Last(Sort(colCarrito, Orden)))
             PressedFill: =ColorValue("#3F4247")
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =9
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =8
             Text: ="Quitar último"
             Width: =120
             X: =1190
@@ -407,7 +369,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HtmlText: |-
-              =If(btnRegistrar_4.DisplayMode = DisplayMode.Disabled, "<div style='height:56px;border-radius:14px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:56px;border-radius:14px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+              =If(btnRegistrar_4.DisplayMode = DisplayMode.Disabled, "<div style='height:56px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:56px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
@@ -424,7 +386,7 @@ Screens:
             DisabledFill: =RGBA(0, 0, 0, 0)
             DisplayMode: =If(!IsBlank(varUsuario) && CountRows(Filter(colCarrito, Estado = "LISTO")) > 0 && !varRegistrando && !varBuscandoLibro, DisplayMode.Edit, DisplayMode.Disabled)
             Fill: =RGBA(0, 0, 0, 0)
-            Font: ="Calibri"
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =56
             HoverColor: =ColorValue("#FFFFFF")
@@ -499,11 +461,11 @@ Screens:
               );
               Set(varRegistrando, false)
             PressedFill: =RGBA(27, 42, 74, 0.55)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =13
             Text: =If(varRegistrando, "REGISTRANDO…", "REGISTRAR PRÉSTAMO (" & CountRows(Filter(colCarrito, Estado = "LISTO")) & ")   →")
             Width: =516
             X: =640
@@ -511,12 +473,12 @@ Screens:
       - btnCancelar_4:
           Control: Classic/Button@2.2.0
           Properties:
-            BorderColor: =varT.line
+            BorderColor: =ColorValue("#BFC3C8")
             BorderThickness: =1
-            Color: =varT.tx
+            Color: =ColorValue("#111111")
             DisplayMode: =DisplayMode.Edit
-            Fill: =varT.inp
-            Font: ="Calibri"
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Normal
             Height: =56
             HoverColor: =ColorValue("#FFFFFF")
@@ -531,11 +493,11 @@ Screens:
               Reset(txtObs_4);
               SetFocus(txtUsuario_4)
             PressedFill: =ColorValue("#3F4247")
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
-            Size: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =11
             Text: ="Cancelar"
             Width: =156
             X: =1170
@@ -543,14 +505,14 @@ Screens:
       - lblUltimo_4:
           Control: Label@2.5.1
           Properties:
-            Color: =varT.sub
-            Font: ="Calibri"
+            Color: =ColorValue("#3F4247")
+            Font: =Font.'Segoe UI'
             Height: =18
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
             PaddingTop: =0
-            Size: =10
+            Size: =9
             Text: |-
               =If(IsBlank(varUltimoPrestamo), "Aún no se registra ningún préstamo en esta sesión.", "Último: " & varUltimoPrestamo)
             Width: =686
@@ -696,10 +658,10 @@ Screens:
             HoverFill: =RGBA(17, 17, 17, 0.35)
             OnSelect: =Set(varMenu, false)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Visible: =varMenu
@@ -730,10 +692,10 @@ Screens:
             HoverFill: =RGBA(191, 195, 200, 0.12)
             OnSelect: =Set(varMenu, !varMenu)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -747,13 +709,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =48
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: |-
-              =Set(varOscuro, !varOscuro); Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"}))
+            OnSelect: =Set(varOscuro, !varOscuro); Set(varT, If(varOscuro, TEMA_OSCURO, TEMA_CLARO))
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -767,12 +728,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Inicio', ScreenTransition.Fade)
+            OnSelect: =Set(varMenu, false); Navigate(scrInicio, ScreenTransition.Fade)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -786,12 +747,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Descarte', ScreenTransition.CoverRight)
+            OnSelect: =Set(varMenu, false); Navigate(scrDescarteB, ScreenTransition.CoverRight)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -805,12 +766,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Préstamo', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrPrestamo, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -824,12 +785,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Devolución', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrDevolucion, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -843,12 +804,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Morosos', ScreenTransition.UnCover)
+            OnSelect: =Set(varMenu, false); Navigate(scrPanel, ScreenTransition.UnCover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)
@@ -862,12 +823,12 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Inventario', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate(scrInventario, ScreenTransition.Cover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
-            RadiusBottomLeft: =12
-            RadiusBottomRight: =12
-            RadiusTopLeft: =12
-            RadiusTopRight: =12
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
             TabIndex: =-1
             Text: =""
             Width: =If(varMenu, 216, 58)

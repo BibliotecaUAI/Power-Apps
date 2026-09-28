@@ -10,8 +10,11 @@ PROCESAR = '''
 Set(varBuscandoInv, true);
 Set(varRepetidosInv, Coalesce(varRepetidosInv, 0) + CountRows(Filter(colCodInv, Value in colInv.Codigo)));
 ClearCollect(colCodNuevos, Filter(colCodInv, !(Value in colInv.Codigo)));
+Set(varInvBase, CountRows(colInv));
 ForAll(
-    colCodNuevos As c,
+    Sequence(CountRows(colCodNuevos)) As i,
+    With(
+        {c: Index(colCodNuevos, i.Value)},
         With(
             {r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(c.Value).datos), "")},
             With(
@@ -21,7 +24,7 @@ ForAll(
                     Collect(
                         colInv,
                         {
-                            Orden: CountRows(colInv) + 1,
+                            Orden: varInvBase + i.Value,
                             Codigo: c.Value,
                             Titulo: If(enc, IfError(Text(j.titulo), ""), "—"),
                             Autor: If(enc, IfError(Text(j.autor), ""), ""),
@@ -34,6 +37,7 @@ ForAll(
                 )
             )
         )
+    )
 );
 Set(varBuscandoInv, false);
 Clear(colCodInv)'''
@@ -155,7 +159,9 @@ ctrls = [
     oculto('btnProcesarInv_7', PROCESAR),
     rail('7', 'Inventario'),
 ]
-ONV = 'Set(varMenu, false); SetFocus(txtInv_7)'
+ONV = ('If(!varInvIniciado, ClearCollect(colInv, {Orden: 0, Codigo: "", Titulo: "", Autor: "", Tipo: "", Ubic: "", Hora: "", Estado: ""}); '
+       'Clear(colInv); ClearCollect(colCodInv, {Value: ""}); Clear(colCodInv); Set(varRepetidosInv, 0); Set(varInvIniciado, true)); '
+       'Set(varMenu, false); SetFocus(txtInv_7)')
 OUT = '/home/user/Power-Apps/pantallas/7_Inventario.txt'
 open(OUT, 'w').write(pantalla('scrInventario', ONV, ctrls))
 validar(OUT, 'scrInventario')
