@@ -4,7 +4,7 @@ DEFINE
         ADDCOLUMNS (
             _codes,
             "bc",
-                VAR _c = [bc]
+                VAR _c = [cod]
                 VAR _z = IF ( ISERROR ( VALUE ( _c ) ), _c, FORMAT ( VALUE ( _c ), "000000" ) )
                 VAR _hit = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[barcode] )
                 RETURN IF ( ISBLANK ( _hit ), MAXX ( FILTER ( f_items, f_items[barcode] = _z ), f_items[barcode] ), _hit )
