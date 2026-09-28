@@ -42,8 +42,8 @@ ClearCollect(
         Filter(
             AddColumns(colMorosos, Nivel, ''' + NIVEL + '''),
             (IsBlank(txtBuscarMor_6.Text) || Lower(txtBuscarMor_6.Text) in Lower(Nombre) || txtBuscarMor_6.Text in RUT),
-            (drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
-            (drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
+            (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
+            (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
         ),
         Dias,
         SortOrder.Descending
@@ -142,7 +142,7 @@ ctrls = [
     fondo('htmlActualizarFondo_6', 'btnActualizar_6', 104, 722, 400, 40),
     boton('btnActualizar_6', 104, 722, 400, 40, 'If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")', CARGAR,
           displaymode='If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)', size=10),
-    label('lblDiag_6', '=If(!IsBlank(varResMor) && IsEmpty(colMorosos) && !varCargandoMor, "Diagnóstico · respuesta de FOLIO (" & Len(varResMor) & " caracteres): " & Left(varResMor, 300), "")',
+    label('lblDiag_6', '=If(varCargandoMor, "Consultando FOLIO…", IsBlank(varResMor), "Diagnóstico · FOLIO aún no responde (presione Actualizar).", IsEmpty(colMorVista), "Diagnóstico · recibidos " & CountRows(colMorosos) & " morosos, en vista " & CountRows(colMorVista) & " · respuesta (" & Len(varResMor) & " car.): " & Left(varResMor, 260), "")',
           520, 722, 820, h=40, size=8, color='#B3261E', bold=False),
     oculto('btnFiltrar_6', FILTRAR),
     oculto('btnCargar_6', CARGAR),

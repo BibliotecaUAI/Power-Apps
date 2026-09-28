@@ -225,7 +225,7 @@ Screens:
             PaddingTop: =0
             Size: =9
             Text: |-
-              =If(!IsBlank(varResMor) && IsEmpty(colMorosos) && !varCargandoMor, "Diagnóstico · respuesta de FOLIO (" & Len(varResMor) & " caracteres): " & Left(varResMor, 300), "")
+              =If(varCargandoMor, "Consultando FOLIO…", IsBlank(varResMor), "Diagnóstico · FOLIO aún no responde (presione Actualizar).", IsEmpty(colMorVista), "Diagnóstico · recibidos " & CountRows(colMorosos) & " morosos, en vista " & CountRows(colMorVista) & " · respuesta (" & Len(varResMor) & " car.): " & Left(varResMor, 260), "")
             Width: =820
             X: =520
             Y: =722
@@ -245,8 +245,8 @@ Screens:
                       Filter(
                           AddColumns(colMorosos, Nivel, If(Dias < 61, "Nivel 0", Dias < 731, "Nivel 1", Dias < 1825, "Nivel 2", "Nivel 3")),
                           (IsBlank(txtBuscarMor_6.Text) || Lower(txtBuscarMor_6.Text) in Lower(Nombre) || txtBuscarMor_6.Text in RUT),
-                          (drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
-                          (drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
+                          (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
+                          (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
                       ),
                       Dias,
                       SortOrder.Descending
