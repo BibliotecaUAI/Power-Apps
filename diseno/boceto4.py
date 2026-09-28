@@ -1,10 +1,10 @@
 # Boceto v4: fluido, elegante, letra tipo Calibri (Carlito), textos 10-12 pt, vidrio + modo oscuro
 def tema(oscuro):
     if oscuro:
-        return dict(bg="radial-gradient(1200px 600px at 85% -10%,#3F4247 0%,transparent 60%),radial-gradient(900px 500px at 10% 110%,#2a2c30 0%,transparent 60%),#0B0B0C",
-                    glass="rgba(40,42,46,0.55)", gb="rgba(191,195,200,0.22)", hi="rgba(255,255,255,0.10)",
-                    tx="#F2F2F3", sub="#BFC3C8", mut="#8A8D91", line="rgba(191,195,200,0.18)", inp="rgba(255,255,255,0.06)", pos="#E6E7E9")
-    return dict(bg="radial-gradient(1100px 560px at 88% -12%,#DADCDF 0%,transparent 62%),radial-gradient(900px 520px at 6% 112%,#E3E5E8 0%,transparent 60%),#F4F4F5",
+        return dict(bg="radial-gradient(700px 420px at 20% 35%,#4A4D52 0%,transparent 70%),radial-gradient(800px 460px at 85% 80%,#3F4247 0%,transparent 70%),radial-gradient(500px 300px at 60% 10%,#55585E 0%,transparent 70%),linear-gradient(160deg,#232428,#1A1B1E)",
+                    glass="rgba(70,72,78,0.45)", gb="rgba(191,195,200,0.30)", hi="rgba(255,255,255,0.14)",
+                    tx="#F2F2F3", sub="#C4C7CC", mut="#9A9DA2", line="rgba(191,195,200,0.16)", inp="rgba(255,255,255,0.07)", pos="#E6E7E9")
+    return dict(bg="radial-gradient(700px 420px at 20% 35%,#D2D5D9 0%,transparent 70%),radial-gradient(800px 460px at 85% 80%,#D8DBDF 0%,transparent 70%),radial-gradient(500px 300px at 60% 10%,#C9CCD1 0%,transparent 70%),linear-gradient(160deg,#F4F4F5,#EBECEE)",
                 glass="rgba(255,255,255,0.62)", gb="rgba(255,255,255,0.9)", hi="rgba(255,255,255,0.9)",
                 tx="#111111", sub="#3F4247", mut="#8A8D91", line="rgba(17,17,17,0.08)", inp="rgba(255,255,255,0.85)", pos="#111111")
 F = "font-family:Carlito,Calibri,sans-serif"
@@ -85,8 +85,8 @@ def switch(on):
     return (f"<div style='width:40px;height:22px;border-radius:11px;position:relative;{DARK + ';' if on else 'background:#DADCDF;'}border:1px solid #BFC3C8'>"
             f"<div style='position:absolute;top:2px;left:{20 if on else 2}px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35)'></div></div>")
 
-def prestamo():
-    t=tema(False)
+def prestamo(oscuro=False):
+    t=tema(oscuro)
     b=header(t,'Préstamo','Préstamo ficticio · se registra en Excel')+rail(t,'Préstamo')
     b+=(f"<div class='g' style='left:84px;top:104px;width:470px;height:560px'><div style='padding:18px 22px'>"
         f"<div class='h1'>1 · Usuario</div><div class='h2'>Escanee el QR de la cédula o digite el RUT</div>"
@@ -107,7 +107,7 @@ def prestamo():
         f"<table style='margin-top:10px'><tr><th>CÓDIGO</th><th>TÍTULO</th><th>TIPO</th><th>PLAZO</th><th>VENCE</th><th></th></tr>{tr}</table></div></div>")
     b+=(f"<div style='position:absolute;left:570px;top:680px;width:590px;height:48px;border-radius:14px;{DARK};border:1px solid #3F4247;box-shadow:0 10px 22px rgba(17,17,17,.25);overflow:hidden;display:flex;align-items:center;justify-content:center;{F};font-size:13px;font-weight:700;letter-spacing:2px;color:#fff'>{SHINE}<span style='position:relative'>REGISTRAR PRÉSTAMO (3) →</span></div>"
         f"<div class='g' style='left:1174px;top:680px;width:174px;height:48px;display:flex;align-items:center;justify-content:center'><span class='p' style='color:{t['tx']}'>Cancelar</span></div>")
-    return screen(b,t,'v4_prestamo',False)
+    return screen(b,t,'v4_prestamo'+('_oscuro' if oscuro else ''),oscuro)
 
 def carne(x,y,w,h,nombre,ini,rut,tipo,unidad,prog,act,venc,moroso):
     borde = "border:1.5px solid #B3261E;box-shadow:0 0 0 4px rgba(179,38,30,.16),0 0 22px rgba(179,38,30,.35),0 18px 40px rgba(17,17,17,.25)" if moroso else "border:1px solid #3F4247;box-shadow:0 18px 40px rgba(17,17,17,.25)"
@@ -153,5 +153,5 @@ def screen(body,t,label,oscuro):
             f"<style>.{label} .p{{{css(t).split('.p{')[1].split('}')[0]}}} .{label} .cap{{{css(t).split('.cap{')[1].split('}')[0]}}} .{label} .in{{{css(t).split('.in{')[1].split('}')[0]}}} .{label} td{{{css(t).split('td{')[1].split('}')[0]}}} .{label} th{{{css(t).split('th{')[1].split('}')[0]}}} .{label} table{{{css(t).split('table{')[1].split('}')[0]}}} .{label} .pos{{{css(t).split('.pos{')[1].split('}')[0]}}}</style>"
             f"{body}</div></div>")
 
-html = f"<html><head><meta charset='utf-8'><link href='fonts/carlito.css' rel='stylesheet'></head><body style='margin:0;background:#DADCDF'>{inicio(False)}{inicio(True)}{prestamo()}{morosos()}</body></html>"
+html = f"<html><head><meta charset='utf-8'><link href='fonts/carlito.css' rel='stylesheet'></head><body style='margin:0;background:#DADCDF'>{inicio(False)}{inicio(True)}{prestamo()}{prestamo(True)}{morosos()}</body></html>"
 open('boceto4.html','w').write(html)
