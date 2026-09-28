@@ -77,6 +77,7 @@ def ficha2026_1a1(path):
          "                              tblFichaDescarte,\n                              If(IsBlank(LookUp(colFicha, Text('Codigo de Barra') = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, Text('Codigo de Barra') = varCodigo)),"),
         ("                                  Número: Text(Coalesce(Max(colFicha, Value(Número)), 0) + 1),\n", ""),
         ("HRID: hrid,", "HRID: IfError(Text(Value(hrid)), hrid),"),
+        ("'Item ingresado en la base de biblioteca': If(enc, \"SI\", \"NO\"),", "'Item ingresado en la base de biblioteca': Right(Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), \"-\", \"/\"), 4),"),
         ("copia: If(enc, varItem.copia, txtCopia_1.Text),", "Copia: If(enc, varItem.copia, txtCopia_1.Text),"),
         ("'Biblioteca-Ubicacion-Colección': If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text),",
          "'Biblioteca-Ubicacion-Colección': Substitute(If(enc, varItem.'Biblioteca-Ubicacion-Colección', txtUbicacion_1.Text), \" - \", \" \"),"),

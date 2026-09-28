@@ -29,7 +29,7 @@ DEFINE
 EVALUATE
 SELECTCOLUMNS (
     _base,
-    "Item ingresado en la base de biblioteca", IF ( ISBLANK ( [inst] ), "NO", "SI" ),
+    "Item ingresado en la base de biblioteca", VAR _c = [cod] RETURN YEAR ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[CreationDate] ) ),
     "HRID", VAR _h = [hr] RETURN IF ( ISERROR ( VALUE ( _h ) ), _h, FORMAT ( VALUE ( _h ), "0" ) ),
     "Codigo de Barra", [cod],
     "Cruce Archivo activo Fijo (Finanzas)", VAR _c = [cod] RETURN IF ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ) = "Issue", "No", "Si" ),

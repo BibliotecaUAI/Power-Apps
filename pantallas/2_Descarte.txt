@@ -1514,7 +1514,7 @@ Screens:
                               tblFichaDescarte,
                               If(IsBlank(LookUp(colFicha, Text('Codigo de Barra') = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, Text('Codigo de Barra') = varCodigo)),
                               {
-                                  'Item ingresado en la base de biblioteca': If(enc, "SI", "NO"),
+                                  'Item ingresado en la base de biblioteca': Right(Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), "-", "/"), 4),
                                   HRID: IfError(Text(Value(hrid)), hrid),
                                   'Codigo de Barra': varCodigo,
                                   'Cruce Archivo activo Fijo (Finanzas)': drpCruce_1.Selected.Value,

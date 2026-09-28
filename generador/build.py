@@ -130,7 +130,7 @@ def boton_negro(n, text, displaymode, onselect, x, y, w, h, size=12):
             Y: ={y}'''
 
 REC = '''{
-                'Item ingresado en la base de biblioteca': "SI",
+                'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                 HRID: IfError(Text(Value(t.HRID)), t.HRID),
                 'Codigo de Barra': t.Codigo,
                 'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),

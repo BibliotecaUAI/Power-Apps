@@ -1960,7 +1960,7 @@ Screens:
                               tblFichaDescarte,
                               If(IsBlank(LookUp(colFicha, Text('Codigo de Barra') = varCodigo)), Defaults(tblFichaDescarte), LookUp(colFicha, Text('Codigo de Barra') = varCodigo)),
                               {
-                                  'Item ingresado en la base de biblioteca': If(enc, "SI", "NO"),
+                                  'Item ingresado en la base de biblioteca': Right(Substitute(If(enc, varItem.'Fecha registro (ingresado en la base)', txtFechaReg_1.Text), "-", "/"), 4),
                                   HRID: IfError(Text(Value(hrid)), hrid),
                                   'Codigo de Barra': varCodigo,
                                   'Cruce Archivo activo Fijo (Finanzas)': drpCruce_1.Selected.Value,
@@ -3001,7 +3001,7 @@ Screens:
                   If(
                       CountRows(Filter(colL, Estado = "Listo")) > 0,
                       Collect(tblFichaDescarte, ForAll(Filter(colL, Estado = "Listo") As t, {
-                              'Item ingresado en la base de biblioteca': "SI",
+                              'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
                               'Codigo de Barra': t.Codigo,
                               'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),
@@ -3044,7 +3044,7 @@ Screens:
                           tblFichaDescarte,
                           ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
                           ForAll(Filter(colL, Estado = "Completar") As t, {
-                              'Item ingresado en la base de biblioteca': "SI",
+                              'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
                               'Codigo de Barra': t.Codigo,
                               'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),

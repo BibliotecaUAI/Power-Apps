@@ -612,7 +612,7 @@ Screens:
                   If(
                       CountRows(Filter(colL, Estado = "Listo")) > 0,
                       Collect(tblFichaDescarte, ForAll(Filter(colL, Estado = "Listo") As t, {
-                              'Item ingresado en la base de biblioteca': "SI",
+                              'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
                               'Codigo de Barra': t.Codigo,
                               'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),
@@ -655,7 +655,7 @@ Screens:
                           tblFichaDescarte,
                           ForAll(Filter(colL, Estado = "Completar") As t, LookUp(colFicha, Text('Codigo de Barra') = t.Codigo)),
                           ForAll(Filter(colL, Estado = "Completar") As t, {
-                              'Item ingresado en la base de biblioteca': "SI",
+                              'Item ingresado en la base de biblioteca': Right(Substitute(t.Fecha, "-", "/"), 4),
                               HRID: IfError(Text(Value(t.HRID)), t.HRID),
                               'Codigo de Barra': t.Codigo,
                               'Cruce Archivo activo Fijo (Finanzas)': If(t.Tipo = "Issue", "No", "Si"),
