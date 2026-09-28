@@ -92,7 +92,8 @@ fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;" & If(Dias >= 731, "box-s
         + ' & "</td><td style=\'padding:6px\'>" & ' + ESC.format(x='Tipo')
         + ' & "</td><td style=\'padding:6px\'>" & ' + ESC.format(x='Biblioteca')
         + ' & "</td><td style=\'padding:6px;text-align:center\'>" & Libros & "</td><td style=\'padding:6px;text-align:center\'>" & Text(Dias, "#,##0")'
-        + ' & "</td><td style=\'padding:6px\'>" & If(Nivel = "Nivel 0", "' + badge('" & Upper(Nivel) & "') + '", "' + badge('" & Upper(Nivel) & "', True) + '") & "</td></tr>"')
+        + ' & "</td><td style=\'padding:6px\'><span style=\'display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;'
+          'border:1px solid #BFC3C8;box-shadow:0 0 6px rgba(191,195,200,0.55),inset 0 0 4px rgba(255,255,255,0.6)\'>" & Nivel & "</span></td></tr>"')
 vacio = "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>%s</div>"
 TABLA = ('"' + CARD % (416, '1px solid #DADCDF')
          + "<div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:15px;font-weight:700;color:#111111'>Usuarios morosos</div>"
