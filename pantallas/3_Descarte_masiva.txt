@@ -333,6 +333,19 @@ Screens:
             Width: =500
             X: =80
             Y: =348
+      - barCamara_2:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            DisplayMode: =If(varBuscandoTanda || varGuardandoTanda, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varTandaTexto, txtTanda_2.Text & If(IsBlank(txtTanda_2.Text) || EndsWith(txtTanda_2.Text, Char(10)), "", Char(10)) & Trim(First(Self.Barcodes).Value) & Char(10)); Reset(txtTanda_2))
+            Text: ="📷"
+            Width: =48
+            X: =528
+            Y: =352
       - lbl_txtObsTanda_2:
           Control: Label@2.5.1
           Properties:

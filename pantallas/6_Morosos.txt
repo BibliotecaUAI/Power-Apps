@@ -55,6 +55,18 @@ Screens:
             Width: =330
             X: =104
             Y: =142
+      - barCamara_6:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Height: =26
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varBuscarMor, With({t: Trim(First(Self.Barcodes).Value)}, If("RUN=" in t, First(Split(Last(Split(t, "RUN=")).Value, "&")).Value, t))); Reset(txtBuscarMor_6); Select(btnFiltrar_6))
+            Text: ="📷"
+            Width: =34
+            X: =398
+            Y: =144
       - drpNivelMor_6:
           Control: Classic/DropDown@2.3.1
           Properties:

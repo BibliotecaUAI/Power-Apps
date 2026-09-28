@@ -783,19 +783,6 @@ Screens:
             Width: =360
             X: =80
             Y: =362
-      - barCamara_1:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            DisplayMode: =If(varBuscando, DisplayMode.Disabled, DisplayMode.Edit)
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesarEscaneo))
-            Text: ="📷"
-            Width: =48
-            X: =388
-            Y: =366
       - htmlRafagaFondo_1:
           Control: HtmlViewer@2.1.0
           Properties:
@@ -2681,19 +2668,6 @@ Screens:
             Width: =500
             X: =80
             Y: =348
-      - barCamara_2:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            DisplayMode: =If(varBuscandoTanda || varGuardandoTanda, DisplayMode.Disabled, DisplayMode.Edit)
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varTandaTexto, txtTanda_2.Text & If(IsBlank(txtTanda_2.Text) || EndsWith(txtTanda_2.Text, Char(10)), "", Char(10)) & Trim(First(Self.Barcodes).Value) & Char(10)); Reset(txtTanda_2))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =352
       - lbl_txtObsTanda_2:
           Control: Label@2.5.1
           Properties:
@@ -3364,18 +3338,6 @@ Screens:
             Width: =476
             X: =104
             Y: =200
-      - barCamaraUsuario_4:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaUsuario, Trim(First(Self.Barcodes).Value)); Select(btnBuscarUsuario_4))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =204
       - lblPaso2_4:
           Control: Label@2.5.1
           Properties:
@@ -3433,18 +3395,6 @@ Screens:
             Width: =476
             X: =104
             Y: =314
-      - barCamaraLibro_4:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaLibro, Trim(First(Self.Barcodes).Value)); Select(btnAgregarLibro_4))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =318
       - lblPaso3_4:
           Control: Label@2.5.1
           Properties:
@@ -4240,18 +4190,6 @@ Screens:
             Width: =476
             X: =104
             Y: =200
-      - barCamara_5:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varDevolTexto, txtDevol_5.Text & If(IsBlank(txtDevol_5.Text) || EndsWith(txtDevol_5.Text, Char(10)), "", Char(10)) & Trim(First(Self.Barcodes).Value) & Char(10)); Reset(txtDevol_5))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =204
       - htmlRevisarFondo_5:
           Control: HtmlViewer@2.1.0
           Properties:
@@ -4735,18 +4673,6 @@ Screens:
             Width: =330
             X: =104
             Y: =142
-      - barCamara_6:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            Fill: =ColorValue("#111111")
-            Height: =26
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varBuscarMor, With({t: Trim(First(Self.Barcodes).Value)}, If("RUN=" in t, First(Split(Last(Split(t, "RUN=")).Value, "&")).Value, t))); Reset(txtBuscarMor_6); Select(btnFiltrar_6))
-            Text: ="📷"
-            Width: =34
-            X: =398
-            Y: =144
       - drpNivelMor_6:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -5617,19 +5543,6 @@ Screens:
             Width: =476
             X: =104
             Y: =286
-      - barCamara_7:
-          Control: BarcodeReader@0.0.30
-          Properties:
-            Color: =ColorValue("#FFFFFF")
-            DisplayMode: =If(varBuscandoInv, DisplayMode.Disabled, DisplayMode.Edit)
-            Fill: =ColorValue("#111111")
-            Height: =44
-            OnScan: |-
-              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaInv, Trim(First(Self.Barcodes).Value)); Select(btnEscanearInv_7))
-            Text: ="📷"
-            Width: =48
-            X: =528
-            Y: =290
       - lblCap3_7:
           Control: Label@2.5.1
           Properties:

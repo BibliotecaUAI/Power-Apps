@@ -55,6 +55,23 @@ def set_default(arch, ctrl, expr):
 set_default('5_Devolucion.txt', 'txtDevol_5', 'varDevolTexto')
 set_default('6_Morosos.txt', 'txtBuscarMor_6', 'varBuscarMor')
 
+# Cámara (lector de código de barras) dentro de cada buscador, justo después del cuadro de texto
+import importlib.util
+spec = importlib.util.spec_from_file_location('camara', 'camara.py'); cm = importlib.util.module_from_spec(spec); spec.loader.exec_module(cm)
+DONDE = {'1_Camara_Descarte.txt': ('2_Descarte.txt', ['txtEscaneo_1']), '2_Camara_Descarte_masiva.txt': ('3_Descarte_masiva.txt', ['txtTanda_2']),
+         '3_Camara_Prestamo.txt': ('4_Prestamo.txt', ['txtUsuario_4', 'txtLibro_4']), '4_Camara_Devolucion.txt': ('5_Devolucion.txt', ['txtDevol_5']),
+         '5_Camara_Morosos.txt': ('6_Morosos.txt', ['txtBuscarMor_6']), '6_Camara_Inventario.txt': ('7_Inventario.txt', ['txtInv_7'])}
+for a, (arch, cajas) in DONDE.items():
+    p = R + '/pantallas/' + arch
+    t = open(p).read()
+    for caja, ctrl in zip(cajas, cm.ARCH[a]):
+        bloque = ''.join('      ' + l + '\n' for l in ctrl.rstrip('\n').split('\n'))
+        i = t.index('      - ' + caja + ':')
+        j = t.find('\n      - ', i + 1)
+        j = len(t) if j < 0 else j + 1
+        t = t[:j] + bloque + t[j:]
+    open(p, 'w').write(t)
+
 # Un solo archivo con toda la app (pegar de una vez)
 out = ['Screens:']
 for f in ['1_Inicio.txt', '2_Descarte.txt', '3_Descarte_masiva.txt', '4_Prestamo.txt', '5_Devolucion.txt', '6_Morosos.txt', '7_Inventario.txt']:

@@ -109,6 +109,18 @@ Screens:
             Width: =476
             X: =104
             Y: =200
+      - barCamara_5:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varDevolTexto, txtDevol_5.Text & If(IsBlank(txtDevol_5.Text) || EndsWith(txtDevol_5.Text, Char(10)), "", Char(10)) & Trim(First(Self.Barcodes).Value) & Char(10)); Reset(txtDevol_5))
+            Text: ="📷"
+            Width: =48
+            X: =528
+            Y: =204
       - htmlRevisarFondo_5:
           Control: HtmlViewer@2.1.0
           Properties:

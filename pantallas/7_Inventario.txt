@@ -196,6 +196,19 @@ Screens:
             Width: =476
             X: =104
             Y: =286
+      - barCamara_7:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            DisplayMode: =If(varBuscandoInv, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaInv, Trim(First(Self.Barcodes).Value)); Select(btnEscanearInv_7))
+            Text: ="📷"
+            Width: =48
+            X: =528
+            Y: =290
       - lblCap3_7:
           Control: Label@2.5.1
           Properties:

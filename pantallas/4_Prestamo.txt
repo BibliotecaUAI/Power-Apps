@@ -107,6 +107,18 @@ Screens:
             Width: =476
             X: =104
             Y: =200
+      - barCamaraUsuario_4:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaUsuario, Trim(First(Self.Barcodes).Value)); Select(btnBuscarUsuario_4))
+            Text: ="📷"
+            Width: =48
+            X: =528
+            Y: =204
       - lblPaso2_4:
           Control: Label@2.5.1
           Properties:
@@ -164,6 +176,18 @@ Screens:
             Width: =476
             X: =104
             Y: =314
+      - barCamaraLibro_4:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntradaLibro, Trim(First(Self.Barcodes).Value)); Select(btnAgregarLibro_4))
+            Text: ="📷"
+            Width: =48
+            X: =528
+            Y: =318
       - lblPaso3_4:
           Control: Label@2.5.1
           Properties:

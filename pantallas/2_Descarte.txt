@@ -337,6 +337,19 @@ Screens:
             Width: =360
             X: =80
             Y: =362
+      - barCamara_1:
+          Control: BarcodeReader@0.0.30
+          Properties:
+            Color: =ColorValue("#FFFFFF")
+            DisplayMode: =If(varBuscando, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#111111")
+            Height: =44
+            OnScan: |-
+              =If(!IsBlank(First(Self.Barcodes).Value), Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesarEscaneo))
+            Text: ="📷"
+            Width: =48
+            X: =388
+            Y: =366
       - htmlRafagaFondo_1:
           Control: HtmlViewer@2.1.0
           Properties:
