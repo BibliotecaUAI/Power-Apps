@@ -14,7 +14,8 @@ DEFINE
             VAR _autor = IF ( _p = 0, "", MID ( _c, _p + 9, SEARCH ( "'", _c, _p + 9, LEN ( _c ) + 1 ) - _p - 9 ) )
             VAR _tit = MAXX ( _ins, f_instances[title] )
             VAR _idi = SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( _ins, f_instances[languages] ), "[", "" ), "]", "" ), "'", "" )
-            VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i )
+            VAR _cp = f_items[copyNumber]
+            VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && f_items[copyNumber] = _cp )
             VAR _tipoK = f_items[f_mtypes_script.name]
             VAR _inK = _i
             VAR _idiK = MAXX ( FILTER ( f_instances, f_instances[id] = _inK ), f_instances[languages] )
@@ -32,10 +33,10 @@ DEFINE
                 & "," & q & "bib" & q & ":" & q & TRIM ( f_items[f_locations_script.biblioteca] ) & q
                 & "," & q & "crit" & q & ":" & q & _crit & q
                 & "," & q & "titulo" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( _tit, "\", "/" ), q, "'" ), UNICHAR ( 10 ), " " ), UNICHAR ( 13 ), " " ) & q
-                & "," & q & "autor" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( _autor, "\", "/" ), q, "'" ) & q
+                & "," & q & "autor" & q & ":" & q & SUBSTITUTE ( SUBSTITUTE ( IF ( _autor = "", "0", _autor ), "\", "/" ), q, "'" ) & q
                 & "," & q & "idioma" & q & ":" & q & _idi & q
                 & "," & q & "fecha" & q & ":" & q & FORMAT ( f_items[CreationDate], "dd/mm/yyyy" ) & q
-                & "," & q & "anio" & q & ":" & q & f_items[f_intancesPublication.dateOfPublication] & q
+                & "," & q & "anio" & q & ":" & q & IF ( ISBLANK ( f_items[f_intancesPublication.dateOfPublication] ) || f_items[f_intancesPublication.dateOfPublication] = "", "sin informacion", f_items[f_intancesPublication.dateOfPublication] ) & q
                 & "," & q & "exA" & q & ":" & q & ( COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. A" ) ) ) + 0 ) & q
                 & "," & q & "exF" & q & ":" & q & ( COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. F" ) ) ) + 0 ) & q
                 & "," & q & "exP" & q & ":" & q & ( COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Postgrado" ) ) ) + 0 ) & q

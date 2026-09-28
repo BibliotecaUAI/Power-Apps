@@ -55,7 +55,7 @@ def ficha2026(path):
         ('["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]',
          '["(automático)", "Biblioteca Viña del Mar", "Biblioteca Postgrado", "Biblioteca Pregrado Edif. A", "Biblioteca Pregrado Edif. F"]'),
         ('["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]',
-         '["No", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]'),
+         '["NO", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]'),
         ('["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]',
          '["(automático)", "Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]'),
         ('Justificacion: "Duplicidad"}', 'Justificacion: "Duplicidad (redundancia)"}'),

@@ -617,7 +617,7 @@ Screens:
             Font: ="Calibri"
             Height: =30
             HoverFill: =varT.inpRO
-            Items: =["No", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
+            Items: =["NO", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
             OnChange: =Set(varLoteInventario, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
@@ -2547,7 +2547,7 @@ Screens:
             Font: ="Calibri"
             Height: =30
             HoverFill: =varT.inpRO
-            Items: =["No", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
+            Items: =["NO", "Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
             OnChange: =Set(varLoteInventario, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")

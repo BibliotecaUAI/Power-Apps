@@ -6,7 +6,8 @@ DEFINE
     VAR _c = MAXX ( _ins, f_instances[contributors] )
     VAR _p = SEARCH ( "'name': '", _c, 1, 0 )
     VAR _autor = IF ( _p = 0, "", MID ( _c, _p + 9, SEARCH ( "'", _c, _p + 9, LEN ( _c ) + 1 ) - _p - 9 ) )
-    VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _inst )
+    VAR _cp = MAXX ( _it, f_items[copyNumber] )
+    VAR _todos = FILTER ( f_items, f_items[f_holdings_script.instanceId] = _inst && f_items[copyNumber] = _cp )
     VAR _bib = MAXX ( _it, f_items[f_locations_script.biblioteca] )
     VAR _hay = NOT ISEMPTY ( _it )
     VAR _tipoK = MAXX ( _it, f_items[f_mtypes_script.name] )
@@ -27,9 +28,9 @@ ROW (
     "bib", MAXX ( _it, TRIM ( f_items[f_locations_script.biblioteca] ) ),
     "crit", _crit,
     "fecha", FORMAT ( MAXX ( _it, f_items[CreationDate] ), "dd/mm/yyyy" ),
-    "anio", MAXX ( _it, f_items[f_intancesPublication.dateOfPublication] ),
+    "anio", VAR _y = MAXX ( _it, f_items[f_intancesPublication.dateOfPublication] ) RETURN IF ( ISBLANK ( _y ) || _y = "", "sin informacion", _y ),
     "titulo", MAXX ( _ins, f_instances[title] ),
-    "autor", _autor,
+    "autor", IF ( _autor = "", "0", _autor ),
     "idioma", SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( _ins, f_instances[languages] ), "[", "" ), "]", "" ), "'", "" ),
     "exA", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. A" ) ) ) + 0, 0 ),
     "exF", IF ( _hay, COUNTROWS ( FILTER ( _todos, CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. F" ) ) ) + 0, 0 ),
