@@ -7,7 +7,27 @@ DEFINE
         ADDCOLUMNS (
             _codes,
             "hr", VAR _c = [cod] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_instances_script.hrid] ),
-            "inst", VAR _c = [cod] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_holdings_script.instanceId] )
+            "inst", VAR _c = [cod] RETURN MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_holdings_script.instanceId] ),
+            "crit",
+                VAR _c = [cod]
+                VAR _tipo = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] )
+                VAR _in = MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_holdings_script.instanceId] )
+                VAR _idi = MAXX ( FILTER ( f_instances, f_instances[id] = _in ), f_instances[languages] )
+                VAR _moroso = COUNTROWS ( FILTER ( f_loans, f_loans[items.barcode] = _c && f_loans[pre_Sub_estado] = "MOROSO" ) ) > 0
+                VAR _ult = MAXX ( FILTER ( f_loans, f_loans[items.barcode] = _c ), f_loans[loanDateTime] )
+                VAR _okIdioma = _idi = "" || CONTAINSSTRING ( _idi, "spa" ) || CONTAINSSTRING ( _idi, "eng" ) || CONTAINSSTRING ( _idi, "ger" ) || CONTAINSSTRING ( _idi, "fre" ) || CONTAINSSTRING ( _idi, "ita" ) || CONTAINSSTRING ( _idi, "por" ) || CONTAINSSTRING ( _idi, "lat" ) || CONTAINSSTRING ( _idi, "grc" ) || CONTAINSSTRING ( _idi, "ara" )
+                VAR _ex = COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _in ) )
+                RETURN
+                    SWITCH (
+                        TRUE (),
+                        ISBLANK ( _in ), "",
+                        _tipo = "Issue", "Contenido|Vigencia",
+                        _moroso, "Limpieza y depuración|Morosidad",
+                        NOT _okIdioma, "Contenido|Idioma",
+                        ISBLANK ( _ult ) || _ult < TODAY () - 1826, "Contexto|Demanda real y demanda potencial",
+                        _ex > 2, "Contexto|Duplicidad (redundancia)",
+                        ""
+                    )
         )
 EVALUATE
 SELECTCOLUMNS (
@@ -42,12 +62,12 @@ SELECTCOLUMNS (
     "Forma de Adquisición", "",
     "Bibliografía de programas académicos (SI/NO)", "NO",
     "Obra en Volúmenes - Parte de una Colección (SI/NO)", VAR _c = [cod] RETURN IF ( MAXX ( FILTER ( f_items, f_items[barcode] = _c ), f_items[f_mtypes_script.name] ) = "Issue", "SI", "NO" ),
-    "Criterios de Descarte", "",
-    "Justificaciones para aplicar Descarte", "",
+    "Criterios de Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 1 ) ),
+    "Justificaciones para aplicar Descarte", VAR _k = [crit] RETURN IF ( _k = "", "", PATHITEM ( _k, 2 ) ),
     "Relación Inventario", "No",
     "Observaciones respecto de la justificación al Descarte", "",
     "Información para no Descartar", "",
-    "Decisión Final Descarte SI/NO", "",
+    "Decisión Final Descarte SI/NO", "SI",
     "orden", [fila]
 )
 ORDER BY [orden]
