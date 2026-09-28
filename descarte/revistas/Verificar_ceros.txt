@@ -1,0 +1,11 @@
+DEFINE
+    VAR _codes = DATATABLE ( "cod", STRING, { { "38749" }, { "48159" }, { "48582" }, { "49708" } } )
+EVALUATE
+ADDCOLUMNS (
+    _codes,
+    "Tal cual", VAR _c = [cod] RETURN COUNTROWS ( FILTER ( f_items, f_items[barcode] = _c ) ) + 0,
+    "Con un 0 (0xxxxx)", VAR _c = [cod] RETURN COUNTROWS ( FILTER ( f_items, f_items[barcode] = "0" & _c ) ) + 0,
+    "Con 00 (00xxxxx)", VAR _c = [cod] RETURN COUNTROWS ( FILTER ( f_items, f_items[barcode] = "00" & _c ) ) + 0,
+    "Parecidos en FOLIO", VAR _c = [cod] RETURN CONCATENATEX ( TOPN ( 5, FILTER ( f_items, CONTAINSSTRING ( f_items[barcode], _c ) ), f_items[barcode] ), f_items[barcode], " | " ),
+    "Título", VAR _c = [cod] VAR _i = MAXX ( FILTER ( f_items, CONTAINSSTRING ( f_items[barcode], _c ) ), f_items[f_holdings_script.instanceId] ) RETURN MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[title] )
+)
