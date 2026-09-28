@@ -167,7 +167,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =214
             HoverFill: =RGBA(191, 195, 200, 0.10)
-            OnSelect: =Navigate('Morosos', ScreenTransition.Cover)
+            OnSelect: =Navigate('Morosos', ScreenTransition.UnCover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -252,7 +252,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Inicio', ScreenTransition.UnCover)
+            OnSelect: =Set(varMenu, false); Navigate('Inicio', ScreenTransition.Fade)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
@@ -328,7 +328,7 @@ Screens:
             Fill: =RGBA(0, 0, 0, 0)
             Height: =56
             HoverFill: =RGBA(191, 195, 200, 0.12)
-            OnSelect: =Set(varMenu, false); Navigate('Morosos', ScreenTransition.Cover)
+            OnSelect: =Set(varMenu, false); Navigate('Morosos', ScreenTransition.UnCover)
             PressedFill: =RGBA(191, 195, 200, 0.25)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
