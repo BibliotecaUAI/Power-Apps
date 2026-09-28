@@ -3,7 +3,7 @@
 No hay que instalar nada ni crear flujos nuevos: todo usa el flujo que ya funciona
 **`Copiade:BuscarLibroFOLIO`** (consulta DAX al Power BI).
 
-## 1. App Descarte con cámara — `descarte/scrDescarteB.pa.yaml`
+## 1. App Descarte con cámara — `descarte/Pantalla_Descarte_Camara.txt`
 
 1. Abrir la app en **Editar** → **Guardar** (respaldo).
 2. Borrar la pantalla `scrDescarteB`.

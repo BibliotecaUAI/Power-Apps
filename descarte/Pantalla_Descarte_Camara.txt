@@ -294,17 +294,6 @@ Screens:
             Width: =290
             X: =80
             Y: =322
-      - barCamara_1:
-          Control: BarcodeReader
-          Properties:
-            Height: =52
-            OnScan: |-
-              =Set(varEntrada, Trim(First(Self.Barcodes).Value));
-              Select(btnProcesarEscaneo)
-            Text: ="CÁMARA"
-            Width: =66
-            X: =378
-            Y: =322
       - btnRafaga_1:
           Control: Classic/Button@2.2.0
           Properties:
