@@ -112,11 +112,13 @@ Screens:
             ChevronBackground: =ColorValue("#FFFFFF")
             ChevronFill: =ColorValue("#3F4247")
             Color: =ColorValue("#111111")
+            Default: =varLoteBiblioteca
             Fill: =ColorValue("#FFFFFF")
             Font: =Font.'Segoe UI'
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
+            OnChange: =Set(varLoteBiblioteca, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -148,11 +150,13 @@ Screens:
             ChevronBackground: =ColorValue("#FFFFFF")
             ChevronFill: =ColorValue("#3F4247")
             Color: =ColorValue("#111111")
+            Default: =varLoteInventario
             Fill: =ColorValue("#FFFFFF")
             Font: =Font.'Segoe UI'
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
+            OnChange: =Set(varLoteInventario, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -184,11 +188,13 @@ Screens:
             ChevronBackground: =ColorValue("#FFFFFF")
             ChevronFill: =ColorValue("#3F4247")
             Color: =ColorValue("#111111")
+            Default: =varLoteCriterio
             Fill: =ColorValue("#FFFFFF")
             Font: =Font.'Segoe UI'
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]
+            OnChange: =Set(varLoteCriterio, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -220,6 +226,7 @@ Screens:
             ChevronBackground: =ColorValue("#FFFFFF")
             ChevronFill: =ColorValue("#3F4247")
             Color: =ColorValue("#111111")
+            Default: =varLoteJustificacion
             Fill: =ColorValue("#FFFFFF")
             Font: =Font.'Segoe UI'
             Height: =30
@@ -245,6 +252,7 @@ Screens:
                   ),
                   {Value: Justificacion}
               )
+            OnChange: =Set(varLoteJustificacion, Self.Selected.Value)
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
