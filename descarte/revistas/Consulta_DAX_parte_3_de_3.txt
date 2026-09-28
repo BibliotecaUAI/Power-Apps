@@ -1,0 +1,42 @@
+// Pegar en Power BI Desktop → Vista de consultas DAX → Ejecutar.
+// Resultado 1: filas listas para la ficha (desde "Item ingresado" hasta "Viña - Existencia").
+// Resultado 2: códigos que NO están en FOLIO.
+DEFINE
+    VAR _codes = { "36945-480", "36945-490", "36945-50", "36945-500", "36945-60", "36945-70", "36945-80", "36945-90", "36719-10", "36719-100", "36719-110", "36719-120", "36719-130", "36719-140", "36719-150", "36719-160", "36719-170", "36719-180", "36719-190", "36719-20", "36719-200", "36719-210", "36719-220", "36719-230", "36719-240", "36719-250", "36719-260", "36719-270", "36719-280", "36719-290", "36719-30", "36719-300", "36719-310", "36719-320", "36719-330", "36719-340", "36719-350", "36719-360", "36719-370", "36719-380", "36719-390", "36719-40", "36719-400", "36719-410", "36719-420", "36719-430", "36719-440", "36719-450", "36719-460", "36719-470", "36719-480", "36719-490", "36719-50", "36719-500", "36719-510", "36719-520", "36719-530", "36719-540", "36719-550", "36719-560", "36719-570", "36719-580", "36719-590", "36719-60", "36719-600", "36719-610", "36719-620", "36719-630", "36719-640", "36719-650", "36719-660", "36719-670", "36719-680", "36719-690", "36719-70", "36719-700", "36719-710", "36719-720", "36719-730", "36719-740", "36719-750", "36719-770", "36719-790", "36719-80", "36719-800", "36719-820", "36719-830", "36719-840", "36719-850", "36719-860", "36719-870", "36719-880", "36719-890", "36719-90", "36719-900", "36719-910", "36719-920", "36719-930", "18038", "30200", "30461", "30792", "31104", "36388", "36475", "37817", "42289", "42942", "42943", "42944", "42945", "42946", "42947", "42948", "42949", "42950", "42951", "42952", "42953", "42954", "42955", "42956", "42957", "42958", "42959", "42960", "42961", "44658", "45378", "45625", "46538", "48100", "48847", "49674", "100146", "303087", "304683", "306615", "309345", "310629", "312812", "315972", "318195", "45082", "45083", "45084", "45201", "45203", "45204", "45205", "45206", "45207", "45208", "45209", "45210", "45211", "45212", "45213", "46053", "5564", "14205", "31969", "36331", "36473", "39987", "39988", "39989", "40002", "46049", "46808", "48628", "49124", "100079", "306828", "309536", "317045", "318300", "36778-430", "36778-440", "36778-450", "36778-460", "7950", "16975", "37464", "38583", "38584", "38585", "38586", "45522", "48429", "302781", "309814", "36905-240", "36905-250", "36905-260", "36905-270", "40069", "40070", "40071", "86895", "86896", "86897", "86898", "86899", "86900", "86990", "86991", "86992", "86993", "86994", "86995", "86996", "86997", "86998", "86999", "87000", "87001", "87002", "87003", "87004", "87005", "87006", "87007", "87008", "87009", "87010", "87011", "87012", "87013", "87014", "87015", "87016", "30451", "36463", "36727", "38352", "38353", "38354", "38355", "38356", "38357", "38358", "38359", "38360", "42203", "44817", "46794", "49083", "100133", "311092", "315672", "318204", "322092", "322652", "325406", "329006", "344743-10", "344743-30", "344743-40", "344743-50", "36710-10", "36710-100", "36710-110", "36710-120", "36710-130", "36710-140", "36710-150", "36710-160", "36710-170", "36710-180", "36710-190", "36710-20", "36710-200", "36710-210", "36438", "39146", "39147", "39148", "39149", "39150", "39151", "39152", "39153", "39154", "39155", "39156", "39157", "39158", "39159", "39160", "39161", "39162", "39163", "39164", "39165", "39166", "3981", "6036", "6227", "18550", "31470", "36328", "39015", "40656", "41285", "41884", "41885", "41930", "41931", "41932", "41933", "41934", "41935", "41936", "41937", "41938", "41939", "41940", "41941", "41942", "41943", "41944", "41945", "41946", "41947", "41948", "41949", "41950", "41951", "41952", "41953", "41954", "41955", "41956", "41957", "41958", "41959", "41960", "42477", "42972", "45079", "45954", "46815", "46816", "47964", "48832", "49986", "90693", "90694", "303697", "310208", "313267", "315112", "317449", "317513", "36762-10", "36762-100", "36762-110", "36762-120", "36762-130", "36762-140", "36762-150", "36762-160", "36762-170", "36762-180", "36762-190", "36762-20", "36762-200", "36762-210", "36762-220", "36762-230", "36762-240", "36762-260", "36762-270", "36762-30", "36762-40", "36762-50", "36762-60", "36762-70", "36762-80", "36762-90" }
+    VAR _it = FILTER ( f_items, f_items[barcode] IN _codes )
+EVALUATE
+SELECTCOLUMNS (
+    _it,
+    "Item ingresado en la base de biblioteca", "SI",
+    "HRID", f_items[f_instances_script.hrid],
+    "Codigo de Barra", f_items[barcode],
+    "Cruce Archivo activo Fijo (Finanzas)", "",
+    "Valor Neto", "",
+    "copia", f_items[copyNumber],
+    "Tipo de Material", f_items[f_mtypes_script.name],
+    "Biblioteca-Ubicacion-Colección", TRIM ( f_items[f_locations_script.biblioteca] ) & " - " & TRIM ( f_items[f_locations_script.ubicación] ),
+    "Título", VAR _i = f_items[f_holdings_script.instanceId] RETURN MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[title] ),
+    "Autor",
+        VAR _i = f_items[f_holdings_script.instanceId]
+        VAR _c = MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[contributors] )
+        VAR _p = SEARCH ( "'name': '", _c, 1, 0 )
+        RETURN IF ( _p = 0, "", MID ( _c, _p + 9, SEARCH ( "'", _c, _p + 9, LEN ( _c ) + 1 ) - _p - 9 ) ),
+    "Idioma", VAR _i = f_items[f_holdings_script.instanceId] RETURN SUBSTITUTE ( SUBSTITUTE ( SUBSTITUTE ( MAXX ( FILTER ( f_instances, f_instances[id] = _i ), f_instances[languages] ), "[", "" ), "]", "" ), "'", "" ),
+    "Vinculado UAI (SI/NO)", "NO",
+    "Fecha registro (ingresado en la base)", FORMAT ( f_items[CreationDate], "dd-mm-yyyy" ),
+    "Número de POL", "",
+    "Unidad Academica o Centro de Costo", "Desconocida",
+    "Año de edición", f_items[f_intancesPublication.dateOfPublication],
+    "Diferenciador de título por ficha descarte",
+        VAR _i = f_items[f_holdings_script.instanceId]
+        RETURN IF ( f_items[barcode] = MINX ( FILTER ( _it, f_items[f_holdings_script.instanceId] = _i ), f_items[barcode] ), 1, 0 ),
+    "Unidad de descarte", "",
+    "Pregrado A - Existencia", VAR _i = f_items[f_holdings_script.instanceId] RETURN COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. A" ) ) ) + 0,
+    "Pregrado F - Existencia", VAR _i = f_items[f_holdings_script.instanceId] RETURN COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Edif. F" ) ) ) + 0,
+    "Posgrado - Existencia", VAR _i = f_items[f_holdings_script.instanceId] RETURN COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Postgrado" ) ) ) + 0,
+    "Viña - Existencia", VAR _i = f_items[f_holdings_script.instanceId] RETURN COUNTROWS ( FILTER ( f_items, f_items[f_holdings_script.instanceId] = _i && CONTAINSSTRING ( f_items[f_locations_script.biblioteca], "Viña" ) ) ) + 0
+)
+ORDER BY [HRID], [Codigo de Barra]
+
+EVALUATE
+EXCEPT ( _codes, SELECTCOLUMNS ( _it, "Value", f_items[barcode] ) )
