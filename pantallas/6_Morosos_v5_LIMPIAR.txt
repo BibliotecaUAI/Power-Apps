@@ -1,0 +1,730 @@
+Screens:
+  Morosos:
+    Properties:
+      Fill: =varT.bg
+      OnVisible: |-
+        =Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"})); ClearCollect(colPrestamos, tblPrestamos); Set(varCorreoPrueba, "pablo.salas.marin@uai.cl"); Set(varMenu, false); If(IsEmpty(colMorosos), Select(btnCargar_6), Select(btnFiltrar_6))
+    Children:
+      - htmlFondo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =768
+            HtmlText: ="<div style='position:relative;width:1366px;height:768px;overflow:hidden;background:" & varT.hBg & "'><div style='position:absolute;left:0;top:0;width:13px;height:768px;background:" & varT.hFranja & "'></div><div style='position:absolute;left:1240px;top:0px;width:28px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1283px;top:0px;width:83px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1336px;top:31px;width:30px;height:215px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:246px;width:126px;height:31px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:277px;width:29px;height:214px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1307px;top:277px;width:30px;height:214px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:492px;width:126px;height:30px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1336px;top:522px;width:30px;height:217px;background:" & varT.hMarca & "'></div><div style='position:absolute;left:1240px;top:738px;width:126px;height:30px;background:" & varT.hMarca & "'></div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+            X: =0
+            Y: =0
+      - htmlHeader_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =114
+            HtmlText: |-
+              ="<div style='height:72px;margin:14px 18px 0 84px;border-radius:18px;overflow:hidden;box-shadow:0 14px 30px rgba(17,17,17,0.25);border:1px solid #3F4247;box-sizing:border-box;padding:0 26px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Calibri,Carlito,Segoe UI,sans-serif;display:flex;justify-content:space-between;align-items:center'>" &
+              "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
+              "<div style='font-size:22px;font-weight:700;color:#FFFFFF;margin-top:4px'>Morosos</div></div><div style='display:flex;align-items:center'>" &
+              "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:20px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaPrestamo = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>PRÉSTAMOS HOY</div></div>" & "<div style='padding:0 26px;border-right:1px solid #3F4247;'><div style='font-size:20px;font-weight:700;color:#FFFFFF'>" & CountRows(Filter(colPrestamos, !IsBlank(IdPrestamo) && FechaDevolucion = Text(Today(), "yyyy-mm-dd"))) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>DEVOLUCIONES HOY</div></div>" & "<div style='padding:0 26px;'><div style='font-size:20px;font-weight:700;color:#BFC3C8'>" & CountRows(Distinct(Filter(colPrestamos, Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today()), RUT)) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>MOROSOS</div></div>" &
+              "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+      - txtBuscarMor_6:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            Color: =varT.tx
+            Default: =""
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HintText: ="Buscar por nombre o RUT…"
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Width: =330
+            X: =104
+            Y: =142
+      - drpNivelMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: ="Todos los niveles"
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: =["Todos los niveles", "Nivel 0", "Nivel 1", "Nivel 2", "Nivel 3"]
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =190
+            X: =446
+            Y: =142
+      - drpBibMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: ="Todas las bibliotecas"
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: |-
+              =Ungroup(Table({x: Table({Value: "Todas las bibliotecas"})}, {x: Sort(Distinct(Filter(colMorosos, !IsBlank(Biblioteca)), Biblioteca), Value)}), x)
+            OnChange: =Select(btnFiltrar_6)
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =240
+            X: =648
+            Y: =142
+      - lblNiveles_6:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: ="Calibri"
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: |-
+              ="Nivel 0: hasta 60 días · Nivel 1: hasta 2 años · Nivel 2: hasta 5 años · Nivel 3: más de 5 años"
+            Width: =430
+            X: =900
+            Y: =142
+      - htmlKpis_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =108
+            HtmlText: |-
+              ="<div style='margin:6px;height:96px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='display:flex;align-items:center'><div style='flex:1;padding:4px 18px;border-right:1px solid " & varT.hLin & "'><div style='font-size:20px;font-weight:700;color:" & varT.hTx & "'>" & Text(varMorTotal, "#,##0") & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>USUARIOS MOROSOS EN FOLIO</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid " & varT.hLin & "'><div style='font-size:20px;font-weight:700;color:" & varT.hTx & "'>" & Text(varMorLibros, "#,##0") & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>LIBROS VENCIDOS</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid " & varT.hLin & "'><div style='font-size:20px;font-weight:700;color:" & varT.hTx & "'>" & CountRows(Filter(colMorosos, Dias >= 731)) & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>CON MÁS DE 2 AÑOS</div></div><div style='flex:1;padding:4px 18px;border-right:1px solid " & varT.hLin & "'><div style='font-size:20px;font-weight:700;color:" & varT.hTx & "'>" & CountRows(Filter(colMorosos, Dias >= 1825)) & "</div><div style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>CON MÁS DE 5 AÑOS</div></div></div></div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1240
+            X: =98
+            Y: =180
+      - htmlTabla_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =428
+            HtmlText: |-
+              ="<div style='margin:6px;height:416px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='display:flex;justify-content:space-between;align-items:baseline'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Usuarios morosos</div><div style='font-size:10px;color:#8A8D91'>" & CountRows(colMorVista) & " en la vista · se muestran hasta 300 · use el buscador" & If(IsBlank(varMorFecha), "", " · consultado " & Text(varMorFecha, "hh:mm")) & "</div></div>" & If(IsEmpty(colMorVista), If(varCargandoMor, "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", "<div style='padding:70px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin datos. Presione ACTUALIZAR DESDE FOLIO.</div>"), "<div style='margin-top:10px;max-height:340px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:" & varT.hTx & "'><colgroup><col style='width:86px'><col><col style='width:92px'><col style='width:46px'><col style='width:50px'><col style='width:70px'></colgroup><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:6px;text-align:left'>RUT</th><th style='padding:6px;text-align:left'>NOMBRE</th><th style='padding:6px;text-align:left'>TIPO</th><th style='padding:6px;text-align:center'>LIBROS</th><th style='padding:6px;text-align:center'>DÍAS</th><th style='padding:6px;text-align:center'>NIVEL</th></tr>" & Concat(FirstN(colMorVista, 300), "<tr style='border-bottom:1px solid " & varT.hLin & ";" & If(Dias >= 731, "box-shadow:inset 3px 0 0 #B3261E;", "") & "'><td style='padding:6px;text-align:left;font-weight:700'>" & Substitute(Substitute(RUT, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:left'>" & Substitute(Substitute(Nombre, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:left'>" & Substitute(Substitute(Tipo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:6px;text-align:center'>" & Libros & "</td><td style='padding:6px;text-align:center'>" & Text(Dias, "#,##0") & "</td><td style='padding:6px;text-align:center'><span style='display:inline-block;padding:1px 10px;border-radius:999px;font-size:11px;border:1px solid #BFC3C8;box-shadow:0 0 6px rgba(191,195,200,0.55),inset 0 0 4px rgba(255,255,255,0.6)'>" & Nivel & "</span></td></tr>") & "</table></div>") & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =540
+            X: =98
+            Y: =290
+      - htmlDetalle_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =428
+            HtmlText: |-
+              ="<div style='margin:6px;height:416px;box-sizing:border-box;border-radius:16px;overflow:hidden;position:relative;" & varT.hGlass & ";border:" & varT.hBorde & ";font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><img style='position:absolute;right:22px;top:0;z-index:2' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2236%22><defs><linearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230B0B0C%22/><stop offset=%220.5%22 stop-color=%22%2335373B%22/><stop offset=%221%22 stop-color=%22%23111111%22/></linearGradient><linearGradient id=%22s%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.85%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient><clipPath id=%22k%22><polygon points=%220,0 24,0 24,36 12,28 0,36%22/></clipPath></defs><g clip-path=%22url(%23k)%22><rect width=%2224%22 height=%2236%22 fill=%22url(%23r)%22/><rect x=%22-20%22 width=%2212%22 height=%2236%22 fill=%22url(%23s)%22 transform=%22skewX(-15)%22><animate attributeName=%22x%22 values=%22-20;44;44%22 keyTimes=%220;0.3;1%22 dur=%224s%22 repeatCount=%22indefinite%22/></rect></g><polygon points=%220,0 24,0 24,36 12,28 0,36%22 fill=%22none%22 stroke=%22%238A8D91%22 stroke-width=%221%22/></svg>'/><div style='padding:14px 58px 14px 22px'><div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>Detalle de morosidad</div><div style='font-size:11px;font-style:italic;color:" & varT.hSub & "'>Elija un usuario (o búsquelo) y presione Ver detalle</div><div style='height:44px'></div>" & If(varCargandoDet, "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Consultando FOLIO…</div>", IsBlank(varDet.Nombre), "<div style='padding:40px 0;text-align:center;font-size:12px;color:#8A8D91'>Sin usuario seleccionado.</div>", "<div style='font-size:14px;font-weight:700;color:" & varT.hTx & "'>" & varDet.Nombre & " " & varDet.Apellido & "</div><div style='font-size:11px;color:" & varT.hSub & "'>RUT " & varDet.RUT & " · " & Coalesce(varDet.Tipo, "Usuario") & "</div><div style='font-size:11px;font-style:italic;color:" & varT.hSub & ";margin-bottom:6px'>" & Coalesce(varDet.Correo, "sin correo registrado") & "</div><div style='max-height:160px;overflow-y:auto'><table style='width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:" & varT.hTx & "'><colgroup><col><col style='width:88px'><col style='width:120px'><col style='width:84px'><col style='width:60px'></colgroup><tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'><th style='padding:5px 4px;text-align:left'>LIBRO</th><th style='padding:5px 4px;text-align:center'>CÓDIGO</th><th style='padding:5px 4px;text-align:left'>BIBLIOTECA</th><th style='padding:5px 4px;text-align:center'>VENCIÓ</th><th style='padding:5px 4px;text-align:center'>DÍAS</th></tr>" & Concat(colDet, "<tr style='border-bottom:1px solid " & varT.hLin & "'><td style='padding:5px 4px;text-align:left'>" & Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:5px 4px;text-align:center'>" & Codigo & "</td><td style='padding:5px 4px;text-align:left'>" & Substitute(Substitute(Bib, "&", "&amp;"), "<", "&lt;") & "</td><td style='padding:5px 4px;text-align:center;white-space:nowrap'>" & Vence & "</td><td style='padding:5px 4px;text-align:center;font-weight:700;color:#B3261E'>" & Text(Dias, "#,##0") & "</td></tr>") & "</table></div>") & "</div></div>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =694
+            X: =644
+            Y: =290
+      - drpSelMor_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: =""
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: |-
+              =ForAll(FirstN(colMorVista, 500), {Value: Nombre & " · " & RUT})
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =440
+            X: =666
+            Y: =348
+      - btnVerDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            Color: =varT.tx
+            DisplayMode: =If(IsBlank(drpSelMor_6.Selected.Value) || varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =varT.inp
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Normal
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varSelRut, Last(Split(drpSelMor_6.Selected.Value, " · ")).Value); Select(btnDetalle_6)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: =If(varCargandoDet, "…", "Ver detalle")
+            Width: =100
+            X: =1114
+            Y: =348
+      - btnLimpiarDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            Color: =varT.tx
+            DisplayMode: =If(varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =varT.inp
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Normal
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="✕  Limpiar"
+            Width: =94
+            X: =1222
+            Y: =348
+      - lblDestino_6:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: ="ENVIAR A"
+            Width: =80
+            X: =666
+            Y: =628
+      - drpDestino_6:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            ChevronBackground: =varT.inp
+            ChevronFill: =varT.sub
+            Color: =varT.tx
+            Default: ="A mi correo (prueba)"
+            Fill: =varT.inp
+            Font: ="Calibri"
+            Height: =30
+            HoverFill: =varT.inpRO
+            Items: =["A mi correo (prueba)", "Al correo del usuario"]
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =10
+            Width: =300
+            X: =740
+            Y: =628
+      - htmlEnviarFondo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =40
+            HtmlText: |-
+              =If(btnEnviarDet_6.DisplayMode = DisplayMode.Disabled, "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =650
+            X: =666
+            Y: =666
+      - btnEnviarDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(IsEmpty(colDet), DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Bold
+            Height: =40
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =
+              With(
+                  {dest: If(drpDestino_6.Selected.Value = "Al correo del usuario", varDet.Correo, Coalesce(varCorreoPrueba, "pablo.salas.marin@uai.cl"))},
+                  If(
+                      IsEmpty(colDet) || IsBlank(dest),
+                          Notify("Primero elija un usuario con libros vencidos.", NotificationType.Warning),
+                      IfError(
+                          Office365Outlook.SendEmailV2(dest, "Bibliotecas UAI: Solicitud de devolución de material", "<div style='font-family:Calibri,Segoe UI,Arial,sans-serif;font-size:14px;color:#111111;max-width:720px'><p>Estimado/a " & Trim(varDet.Nombre & " " & varDet.Apellido) & ":</p><p>Junto con saludar, me comunico con usted para solicitar la devolución de el/los préstamos a su nombre, que se encuentran vencidos desde la fecha que se indica a continuación:</p><table style='border-collapse:collapse;font-size:13px;width:100%'><tr style='background:#111111;color:#FFFFFF'><th style='padding:7px 8px;text-align:left'>Título</th><th style='padding:7px 8px;text-align:center'>Código</th><th style='padding:7px 8px;text-align:left'>Biblioteca</th><th style='padding:7px 8px;text-align:center'>Vencido desde</th><th style='padding:7px 8px;text-align:center'>Días de atraso</th></tr>" & Concat(colDet, "<tr><td style='padding:6px 8px;border-bottom:1px solid #DADCDF'>" & Titulo & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center'>" & Codigo & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF'>" & Bib & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center'>" & Vence & "</td><td style='padding:6px 8px;border-bottom:1px solid #DADCDF;text-align:center'>" & Dias & "</td></tr>") & "</table><p>Solicitamos que realice la devolución en cualquiera de nuestras Bibliotecas a la brevedad, para evitar las sanciones que puedan restringir tus requerimientos en bibliotecas.</p><p>Atentamente,<br>Bibliotecas UAI</p></div>", {Cc: "pablo.salas.marin@uai.cl", Importance: "Normal"});
+                          Notify("Correo enviado a " & dest, NotificationType.Success, 3000);
+                          true,
+                          Notify("No se pudo enviar el correo: " & FirstError.Message, NotificationType.Error)
+                      )
+                  )
+              )
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="✉  ENVIAR CORREO DE MOROSIDAD"
+            Width: =650
+            X: =666
+            Y: =666
+      - btnDetalle_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              If(
+                  !IsBlank(varSelRut),
+                  Set(varCargandoDet, true);
+                  Set(varResDet, IfError(Text(DetalleMorosoFOLIO.Run(varSelRut).datos), Notify("Error del flujo DetalleMorosoFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+                  Set(varCargandoDet, false);
+                  With(
+                      {j: IfError(ParseJSON(Text(ParseJSON(varResDet).datos)), ParseJSON(If(IsBlank(varResDet), "{}", varResDet)))},
+                      Set(varDet, {RUT: Text(j.rut), Nombre: Text(j.nombre), Apellido: Text(j.apellido), Correo: Text(j.correo), Tipo: Text(j.tipo),
+                                   Para: IfError(Text(j.para), ""), Html: IfError(Text(j.html), "")});
+                      ClearCollect(
+                          colDet,
+                          ForAll(
+                              IfError(Table(j.lista), Table(ParseJSON("[]"))),
+                              {
+                                  Titulo: Text(ThisRecord.Value.titulo),
+                                  Codigo: Text(ThisRecord.Value.codigo),
+                                  Bib: Text(ThisRecord.Value.bib),
+                                  Vence: Text(ThisRecord.Value.vence),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      )
+                  )
+              )
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
+      - htmlActualizarFondo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =40
+            HtmlText: |-
+              =If(btnActualizar_6.DisplayMode = DisplayMode.Disabled, "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:40px;border-radius:14px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =400
+            X: =104
+            Y: =722
+      - btnActualizar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(varCargandoMor, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Bold
+            Height: =40
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =
+              Set(varCargandoMor, true);
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Notify("Error del flujo ListaMorososFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+              Set(varCargandoMor, false);
+              If(
+                  IsBlank(varResMor),
+                      Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
+                  With(
+                      {j: IfError(ParseJSON(Text(ParseJSON(varResMor).datos)), ParseJSON(varResMor))},
+                      With(
+                          {filas: IfError(Table(j.lista), Table(j))},
+                          Set(varMorTotal, Coalesce(IfError(Value(Text(j.total)), Blank()), IfError(Value(Text(First(filas).Value.total)), Blank()), CountRows(filas)));
+                          Set(varMorLibros, Coalesce(IfError(Value(Text(j.libros)), Blank()), IfError(Value(Text(First(filas).Value.libros)), Blank()), 0));
+                      ClearCollect(
+                          colMorosos,
+                          ForAll(
+                              filas,
+                              {
+                                  RUT: Text(ThisRecord.Value.rut),
+                                  Nombre: Text(ThisRecord.Value.nombre),
+                                  Correo: Text(ThisRecord.Value.correo),
+                                  Tipo: Text(ThisRecord.Value.tipo),
+                                  Biblioteca: Text(ThisRecord.Value.bib),
+                                  Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      );
+                      Set(varMorFecha, Now())
+                      )
+                  )
+              );
+              Select(btnFiltrar_6)
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: =If(varCargandoMor, "CONSULTANDO FOLIO…", "↻  ACTUALIZAR DESDE FOLIO")
+            Width: =400
+            X: =104
+            Y: =722
+      - lblDiag_6:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#B3261E")
+            Font: ="Calibri"
+            Height: =40
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: |-
+              =If(varCargandoMor, "Consultando FOLIO…", IsBlank(varResMor), "Diagnóstico · FOLIO aún no responde (presione Actualizar).", IsEmpty(colMorVista), "Diagnóstico · recibidos " & CountRows(colMorosos) & " morosos, en vista " & CountRows(colMorVista) & " · respuesta (" & Len(varResMor) & " car.): " & Left(varResMor, 260), "")
+            Width: =820
+            X: =520
+            Y: =722
+      - btnFiltrar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              ClearCollect(
+                  colMorVista,
+                  Sort(
+                      Filter(
+                          AddColumns(colMorosos, Nivel, If(Dias < 61, "Nivel 0", Dias < 731, "Nivel 1", Dias < 1825, "Nivel 2", "Nivel 3")),
+                          (IsBlank(Trim(txtBuscarMor_6.Text)) || Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Lower(Trim(txtBuscarMor_6.Text)), "á", "a"), "é", "e"), "í", "i"), "ó", "o"), "ú", "u"), "ü", "u"), "ñ", "n") in Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Substitute(Lower(Nombre), "á", "a"), "é", "e"), "í", "i"), "ó", "o"), "ú", "u"), "ü", "u"), "ñ", "n")
+                              || Upper(Substitute(Substitute(Substitute(Trim(txtBuscarMor_6.Text), ".", ""), "-", ""), " ", "")) in Upper(Substitute(Substitute(RUT, ".", ""), "-", ""))),
+                          (IsBlank(drpNivelMor_6.Selected.Value) || drpNivelMor_6.Selected.Value = "Todos los niveles" || Nivel = drpNivelMor_6.Selected.Value),
+                          (IsBlank(drpBibMor_6.Selected.Value) || drpBibMor_6.Selected.Value = "Todas las bibliotecas" || Biblioteca = drpBibMor_6.Selected.Value)
+                      ),
+                      Dias,
+                      SortOrder.Descending
+                  )
+              );
+              If(CountRows(colMorVista) = 1, Set(varSelRut, First(colMorVista).RUT); Select(btnDetalle_6))
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
+      - btnCargar_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =1
+            HoverFill: =RGBA(0, 0, 0, 0)
+            OnSelect: |-
+              =
+              Set(varCargandoMor, true);
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Notify("Error del flujo ListaMorososFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
+              Set(varCargandoMor, false);
+              If(
+                  IsBlank(varResMor),
+                      Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
+                  With(
+                      {j: IfError(ParseJSON(Text(ParseJSON(varResMor).datos)), ParseJSON(varResMor))},
+                      With(
+                          {filas: IfError(Table(j.lista), Table(j))},
+                          Set(varMorTotal, Coalesce(IfError(Value(Text(j.total)), Blank()), IfError(Value(Text(First(filas).Value.total)), Blank()), CountRows(filas)));
+                          Set(varMorLibros, Coalesce(IfError(Value(Text(j.libros)), Blank()), IfError(Value(Text(First(filas).Value.libros)), Blank()), 0));
+                      ClearCollect(
+                          colMorosos,
+                          ForAll(
+                              filas,
+                              {
+                                  RUT: Text(ThisRecord.Value.rut),
+                                  Nombre: Text(ThisRecord.Value.nombre),
+                                  Correo: Text(ThisRecord.Value.correo),
+                                  Tipo: Text(ThisRecord.Value.tipo),
+                                  Biblioteca: Text(ThisRecord.Value.bib),
+                                  Libros: Coalesce(Value(Text(ThisRecord.Value.n)), 0),
+                                  Dias: Coalesce(Value(Text(ThisRecord.Value.dias)), 0)
+                              }
+                          )
+                      );
+                      Set(varMorFecha, Now())
+                      )
+                  )
+              );
+              Select(btnFiltrar_6)
+            PressedFill: =RGBA(0, 0, 0, 0)
+            TabIndex: =-1
+            Text: =""
+            Width: =1
+            X: =0
+            Y: =0
+      - htmlBrillo_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =112
+            HtmlText: |-
+              ="<img style='display:block' src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%221366%22 height=%22112%22><defs><clipPath id=%22c%22><rect x=%2284%22 y=%2214%22 width=%221264%22 height=%2272%22 rx=%2218%22/></clipPath><linearGradient id=%22g%22 x1=%220%22 x2=%221%22><stop offset=%220%22 stop-color=%22white%22 stop-opacity=%220%22/><stop offset=%220.5%22 stop-color=%22white%22 stop-opacity=%220.22%22/><stop offset=%221%22 stop-color=%22white%22 stop-opacity=%220%22/></linearGradient></defs><g clip-path=%22url(%23c)%22><rect y=%2214%22 width=%22220%22 height=%2272%22 fill=%22url(%23g)%22 transform=%22skewX(-20)%22><animate attributeName=%22x%22 values=%22-300;1700;1700%22 keyTimes=%220;0.5;1%22 dur=%227s%22 repeatCount=%22indefinite%22/></rect></g></svg>'/>"
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+            X: =0
+            Y: =0
+      - btnCerrarMenu_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(17, 17, 17, 0.35)
+            Height: =768
+            HoverFill: =RGBA(17, 17, 17, 0.35)
+            OnSelect: =Set(varMenu, false)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Visible: =varMenu
+            Width: =1366
+            X: =0
+            Y: =0
+      - htmlMenu_6:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =768
+            HtmlText: |-
+              =If(varMenu, "<div style='margin:14px 0 0 14px;width:216px;height:740px;border-radius:18px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.28);font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden;box-sizing:border-box'><div style='height:84px;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;color:#FFFFFF;font-weight:700;font-size:14px;letter-spacing:2px;box-sizing:border-box'>UAI · BIBLIOTECAS</div><div style='height:56px;display:flex;align-items:center;padding-left:20px;color:#BFC3C8;font-size:18px;border-top:1px solid rgba(191,195,200,0.22)'>☰<span style='margin-left:14px;font-size:10px;letter-spacing:2px'>MENÚ</span></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>⌂</span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Inicio</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>▤</span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Descarte</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>↗</span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Préstamo</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>↙</span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Devolución</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;background:linear-gradient(135deg,#35373B,#111111);box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 4px 10px rgba(0,0,0,0.35);color:#FFFFFF;'><span style='font-size:18px;width:20px;text-align:center'>▦</span><span style='margin-left:14px;font-size:12px;font-weight:700;letter-spacing:1px'>Morosos</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:200px;border-radius:12px;display:flex;align-items:center;padding-left:12px;box-sizing:border-box;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>▣</span><span style='margin-left:14px;font-size:12px;font-weight:400;letter-spacing:1px'>Inventario</span></div></div><div style='position:absolute;left:0;right:0;bottom:16px;display:flex;align-items:center;justify-content:flex-start;padding-left:20px;color:#BFC3C8;font-size:18px'>◐<span style=margin-left:14px;font-size:11px;letter-spacing:1px>Modo claro / oscuro</span></div></div>", "<div style='margin:14px 0 0 14px;width:58px;height:740px;border-radius:18px;background:linear-gradient(180deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border:1px solid #3F4247;box-shadow:0 14px 30px rgba(17,17,17,0.28);font-family:Calibri,Carlito,Segoe UI,sans-serif;position:relative;overflow:hidden;box-sizing:border-box'><div style='height:84px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-weight:700;font-size:14px;letter-spacing:2px;box-sizing:border-box'>UAI</div><div style='height:56px;display:flex;align-items:center;padding-left:19px;color:#BFC3C8;font-size:18px;border-top:1px solid rgba(191,195,200,0.22)'>☰</div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>⌂</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>▤</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>↗</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>↙</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#35373B,#111111);box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 4px 10px rgba(0,0,0,0.35);color:#FFFFFF;'><span style='font-size:18px;width:20px;text-align:center'>▦</span></div></div><div style='height:56px;display:flex;align-items:center;padding-left:7px'><div style='height:44px;width:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8A8D91;'><span style='font-size:18px;width:20px;text-align:center'>▣</span></div></div><div style='position:absolute;left:0;right:0;bottom:16px;display:flex;align-items:center;justify-content:center;color:#BFC3C8;font-size:18px'>◐</div></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =If(varMenu, 244, 86)
+            X: =0
+            Y: =0
+      - btnMenu_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, !varMenu)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =98
+      - btnTema_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =48
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: |-
+              =Set(varOscuro, !varOscuro); Set(varT, If(varOscuro, {bg: ColorValue("#0E0E0F"), tx: ColorValue("#F2F2F3"), sub: ColorValue("#C4C7CC"), mut: ColorValue("#9A9DA2"), inp: ColorValue("#2E3034"), inpRO: ColorValue("#26282B"), line: RGBA(191, 195, 200, 0.28), lineStrong: ColorValue("#BFC3C8"), hBg: "#0E0E0F", hFranja: "#FFFFFF", hMarca: "#262628", hGlass: "background:rgba(38,39,43,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 36px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.08)", hBorde: "1px solid rgba(191,195,200,0.22)", hTx: "#F2F2F3", hSub: "#C4C7CC", hMut: "#9A9DA2", hLin: "rgba(191,195,200,0.16)", hPos: "#E6E7E9", hPosTx: "#111111"}, {bg: ColorValue("#FFFFFF"), tx: ColorValue("#111111"), sub: ColorValue("#3F4247"), mut: ColorValue("#8A8D91"), inp: ColorValue("#FFFFFF"), inpRO: ColorValue("#F7F7F8"), line: RGBA(17, 17, 17, 0.14), lineStrong: ColorValue("#111111"), hBg: "#FFFFFF", hFranja: "#000000", hMarca: "#EDEDED", hGlass: "background:rgba(255,255,255,0.62);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 16px 36px rgba(17,17,17,0.12),inset 0 1px 0 rgba(255,255,255,0.95)", hBorde: "1px solid rgba(255,255,255,0.85)", hTx: "#111111", hSub: "#3F4247", hMut: "#8A8D91", hLin: "rgba(17,17,17,0.08)", hPos: "#111111", hPosTx: "#FFFFFF"}))
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =700
+      - btnIrInicio_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Inicio', ScreenTransition.Fade)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =154
+      - btnIrDescarte_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Descarte', ScreenTransition.CoverRight)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =210
+      - btnIrPrestamo_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Préstamo', ScreenTransition.CoverRight)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =266
+      - btnIrDevolucion_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Devolución', ScreenTransition.CoverRight)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =322
+      - btnIrMorosos_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Morosos', ScreenTransition.UnCover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =378
+      - btnIrInventario_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =56
+            HoverFill: =RGBA(191, 195, 200, 0.12)
+            OnSelect: =Set(varMenu, false); Navigate('Inventario', ScreenTransition.Cover)
+            PressedFill: =RGBA(191, 195, 200, 0.25)
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            TabIndex: =-1
+            Text: =""
+            Width: =If(varMenu, 216, 58)
+            X: =14
+            Y: =434
