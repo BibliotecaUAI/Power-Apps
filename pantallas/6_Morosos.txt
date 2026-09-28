@@ -160,11 +160,11 @@ Screens:
             OnSelect: |-
               =
               Set(varCargandoMor, true);
-              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Blank()));
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Notify("Error del flujo ListaMorososFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
               Set(varCargandoMor, false);
               If(
                   IsBlank(varResMor),
-                      Notify("No se pudo consultar FOLIO. Intente de nuevo.", NotificationType.Error),
+                      Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
                   With(
                       {j: ParseJSON(varResMor)},
                       Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));
@@ -238,11 +238,11 @@ Screens:
             OnSelect: |-
               =
               Set(varCargandoMor, true);
-              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Blank()));
+              Set(varResMor, IfError(Text(ListaMorososFOLIO.Run("todos").datos), Notify("Error del flujo ListaMorososFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
               Set(varCargandoMor, false);
               If(
                   IsBlank(varResMor),
-                      Notify("No se pudo consultar FOLIO. Intente de nuevo.", NotificationType.Error),
+                      Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
                   With(
                       {j: ParseJSON(varResMor)},
                       Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));

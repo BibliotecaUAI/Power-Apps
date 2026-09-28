@@ -534,7 +534,7 @@ Screens:
                       If(
                           !IsBlank(r),
                           Set(varBuscandoUsuario, true);
-                          Set(varResUsuario, IfError(Text(BuscarUsuarioFOLIO.Run(r).datos), Blank()));
+                          Set(varResUsuario, IfError(Text(BuscarUsuarioFOLIO.Run(r).datos), Notify("Error del flujo BuscarUsuarioFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
                           Set(varBuscandoUsuario, false);
                           With(
                               {j: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario)), u: LookUp(colUsuarios, Upper(Substitute(Substitute(Substitute(RUT, ".", ""), "-", ""), " ", "")) = r)},
@@ -608,7 +608,7 @@ Screens:
                       cod in colCarrito.Codigo,
                           Notify("Ese libro ya está en la lista.", NotificationType.Warning),
                       Set(varBuscandoLibro, true);
-                      Set(varResLibro, IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), Blank()));
+                      Set(varResLibro, IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), Notify("Error del flujo de libros: " & FirstError.Message, NotificationType.Error); Blank()));
                       Set(varBuscandoLibro, false);
                       With(
                           {j: ParseJSON(If(IsBlank(varResLibro), "{}", varResLibro))},
