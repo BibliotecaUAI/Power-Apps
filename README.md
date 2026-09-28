@@ -9,8 +9,9 @@ No hay que instalar nada ni crear flujos nuevos: todo usa el flujo que ya funcio
 2. Borrar la pantalla `scrDescarteB`.
 3. Copiar todo el archivo → clic derecho en el árbol → **Pegar**.
 4. Guardar.
+5. Agregar la cámara a mano (una vez): ver **`descarte/Paso_Camara.md`**.
 
-Lee códigos con **cámara** (botón CÁMARA), **pistola** o **digitando + Enter**.
+Lee códigos con **cámara** (botón 📷), **pistola** o **digitando + Enter**.
 
 ## 2. App Préstamo de prueba — `prestamo-prueba/`
 
@@ -30,7 +31,7 @@ Borrar el bloque `barCamara` / `barCamara_1` del texto, pegar el resto, e insert
 **Insertar → Medios → Lector de código de barras** con OnScan:
 
 - Préstamo: `Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesar)`
-- Descarte: `Set(varEntrada, Trim(First(Self.Barcodes).Value)); Select(btnProcesarEscaneo)`
+- Descarte: ver `descarte/Paso_Camara.md` (posición, colores y OnScan).
 
 ## Pendiente
 
