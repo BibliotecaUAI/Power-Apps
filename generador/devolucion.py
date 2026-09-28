@@ -14,7 +14,8 @@ ForAll(
     With(
         {cod: Index(colCodDevol, i.Value).Value},
         With(
-            {p: LookUp(colPrestamos, CodigoBarra = cod && Estado = "Activo")},
+            {p: LookUp(colPrestamos, CodigoBarra = cod && Estado = "Activo"),
+             b: ParseJSON(Coalesce(IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), ""), "{}"))},
             With(
                 {atraso: If(IsBlank(p) || IsBlank(p.FechaVencimiento), 0, Max(0, DateDiff(DateValue(p.FechaVencimiento), Today(), TimeUnit.Days)))},
                 Collect(
@@ -23,7 +24,14 @@ ForAll(
                         Orden: i.Value,
                         Codigo: cod,
                         Id: If(IsBlank(p), "", p.IdPrestamo),
-                        Titulo: If(IsBlank(p), "—", p.Titulo),
+                        Titulo: Coalesce(If(IsBlank(p), "", p.Titulo), IfError(Text(b.titulo), ""), "—"),
+                        Autor: IfError(Text(b.autor), ""),
+                        Anio: IfError(Text(b.anio), ""),
+                        TipoMat: Coalesce(If(IsBlank(p), "", p.TipoMaterial), IfError(Text(b.tipo), "")),
+                        Ubic: IfError(Text(b.ubicacion), ""),
+                        BibPrest: If(IsBlank(p), "", p.Biblioteca),
+                        Correo: If(IsBlank(p), "", p.Correo),
+                        Unidad: If(IsBlank(p), "", Coalesce(p.Programa, p.UnidadAcademica)),
                         Usuario: If(IsBlank(p), "—", p.Nombre & " " & p.Apellido),
                         RUT: If(IsBlank(p), "", p.RUT),
                         Prestado: If(IsBlank(p), "", p.FechaPrestamo),
@@ -42,6 +50,7 @@ If(IsEmpty(colDevol), Notify("Escanee o pegue al menos un código.", Notificatio
 REGISTRAR = '''
 Set(varDevolviendo, true);
 Clear(colDevueltos);
+Set(varQuienDevolvio, Concat(Distinct(Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO"), Usuario), Value, ", "));
 ForAll(
     Filter(colDevol, Estado = "A TIEMPO" || Estado = "ATRASADO") As x,
     IfError(
@@ -67,7 +76,7 @@ UpdateIf(colDevol, Id in colDevueltos.IdPrestamo, {Estado: "DEVUELTO"});
 Set(varDevolviendo, false);
 If(
     !IsEmpty(colDevueltos),
-    Set(varUltimaDevol, CountRows(colDevueltos) & " devolución(es) · " & Text(Now(), "hh:mm"));
+    Set(varUltimaDevol, CountRows(colDevueltos) & " devolución(es) de " & varQuienDevolvio & " · " & Text(Now(), "hh:mm"));
     Notify("Devoluciones registradas: " & CountRows(colDevueltos), NotificationType.Success, 3000)
 )'''
 
@@ -84,12 +93,19 @@ n_no = 'CountRows(Filter(colDevol, Estado = "NO ESTABA PRESTADO"))'
 
 estado = ('If(Estado = "A TIEMPO", "' + badge('A TIEMPO') + '", Estado = "DEVUELTO", "' + badge('DEVUELTO') + '", Estado = "ATRASADO", "'
           + badge('MOROSO · " & Atraso & If(Atraso = 1, " DÍA", " DÍAS") & "', True) + '", "' + badge('NO ESTABA PRESTADO', True) + '")')
-fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;" & If(Estado = "ATRASADO", "outline:2px solid #B3261E;outline-offset:-2px;", "") & "\'>'
-        '<td style=\'padding:7px 6px;font-weight:700\'>" & ' + ESC.format(x='Codigo')
-        + ' & "</td><td style=\'padding:7px 6px\'>" & ' + ESC.format(x='Titulo')
-        + ' & "</td><td style=\'padding:7px 6px\'>" & ' + ESC.format(x='Usuario') + ' & If(IsBlank(RUT), "", "<div style=\'font-size:9px;color:#8A8D91\'>RUT " & RUT & "</div>")'
-        + ' & "</td><td style=\'padding:7px 6px\'>" & If(IsBlank(Prestado), "—", Text(DateValue(Prestado), "dd-mm")) & "</td><td style=\'padding:7px 6px\'>" & If(IsBlank(Vence), "—", Text(DateValue(Vence), "dd-mm")) & "</td>'
-        '<td style=\'padding:7px 6px\'>" & ' + estado + ' & "</td></tr>"')
+sub = "<div style='font-size:9px;color:#8A8D91'>"
+fila = ('"<tr style=\'border-bottom:1px solid #DADCDF;vertical-align:top;" & If(Estado = "ATRASADO", "outline:2px solid #B3261E;outline-offset:-2px;", "") & "\'>'
+        '<td style=\'padding:7px 6px;font-weight:700;text-align:left\'>" & ' + ESC.format(x='Codigo')
+        + ' & "</td><td style=\'padding:7px 6px;text-align:left\'><b>" & ' + ESC.format(x='Titulo') + ' & "</b>"'
+        + ' & If(IsBlank(Autor), "", "' + sub + '" & ' + ESC.format(x='Autor') + ' & If(IsBlank(Anio), "", " · " & Anio) & "</div>")'
+        + ' & If(IsBlank(TipoMat) && IsBlank(Ubic), "", "' + sub + '" & ' + ESC.format(x='TipoMat') + ' & If(IsBlank(Ubic), "", " · " & ' + ESC.format(x='Ubic') + ') & "</div>")'
+        + ' & "</td><td style=\'padding:7px 6px;text-align:left\'><b>" & ' + ESC.format(x='Usuario') + ' & "</b>"'
+        + ' & If(IsBlank(RUT), "", "' + sub + 'RUT " & RUT & "</div>")'
+        + ' & If(IsBlank(Unidad), "", "' + sub + '" & ' + ESC.format(x='Unidad') + ' & "</div>")'
+        + ' & If(IsBlank(Correo), "", "<div style=\'font-size:9px;color:#8A8D91;font-style:italic\'>" & Correo & "</div>")'
+        + ' & "</td><td style=\'padding:7px 6px;text-align:center\'>" & If(IsBlank(Prestado), "—", Text(DateValue(Prestado), "dd-mm-yy")) & If(IsBlank(BibPrest), "", "' + sub + '" & ' + ESC.format(x='BibPrest') + ' & "</div>")'
+        + ' & "</td><td style=\'padding:7px 6px;text-align:center\'>" & If(IsBlank(Vence), "—", Text(DateValue(Vence), "dd-mm-yy")) & "</td>'
+        '<td style=\'padding:7px 6px;text-align:center\'>" & ' + estado + ' & "</td></tr>"')
 msg = "<div style='padding:60px 0;text-align:center;font-size:12px;color:#8A8D91'>Escanee o pegue los códigos y presione 1 · REVISAR.</div>"
 PREVIA = (
     '"' + CARD % (474, "1px solid #DADCDF")
@@ -99,9 +115,10 @@ PREVIA = (
     + 'If(' + n_dev + ' > 0, "' + badge('" & ' + n_dev + ' & " DEVUELTOS') + '", "") & "</div></div>'
     + "<div style='font-size:11px;color:#3F4247;margin:2px 0 10px'>Se cruza con los préstamos registrados. Se registra quién lo tenía, cuándo lo pidió y si lo devuelve moroso.</div>\" & "
     + 'If(IsEmpty(colDevol), "' + msg + '", '
-    + '"<div style=\'max-height:380px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;font-size:11px;color:#111111\'>'
-    + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111;text-align:left'>"
-    + "<th style='padding:6px'>CÓDIGO</th><th style='padding:6px'>TÍTULO</th><th style='padding:6px'>USUARIO</th><th style='padding:6px'>PRESTADO</th><th style='padding:6px'>VENCÍA</th><th style='padding:6px'>ESTADO</th></tr>\" & "
+    + '"<div style=\'max-height:380px;overflow-y:auto\'><table style=\'width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;color:#111111\'>'
+    + "<colgroup><col style='width:84px'><col><col style='width:170px'><col style='width:78px'><col style='width:62px'><col style='width:104px'></colgroup>"
+    + "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;border-bottom:1px solid #111111'>"
+    + "<th style='padding:6px;text-align:left'>CÓDIGO</th><th style='padding:6px;text-align:left'>LIBRO</th><th style='padding:6px;text-align:left'>QUIÉN LO DEVUELVE</th><th style='padding:6px;text-align:center'>PRESTADO</th><th style='padding:6px;text-align:center'>VENCÍA</th><th style='padding:6px;text-align:center'>ESTADO</th></tr>\" & "
     + 'Concat(Sort(colDevol, Orden), ' + fila + ') & "</table></div>") & "</div></div>"')
 
 ctrls = [
