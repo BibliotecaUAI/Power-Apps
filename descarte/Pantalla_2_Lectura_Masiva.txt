@@ -1,0 +1,690 @@
+Screens:
+  scrDescarteMasiva:
+    Properties:
+      Fill: =ColorValue("#FFFFFF")
+      OnVisible: =ClearCollect(colFicha, tblFichaDescarte); SetFocus(txtTanda_2)
+    Children:
+      - htmlHeader_2:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =114
+            HtmlText: |-
+              =With(
+                  {r: If(varContador > 0 && !IsBlank(varInicio), Round(varContador / Max(DateDiff(varInicio, Now(), TimeUnit.Minutes), 1) * 60, 0), 0)},
+                  "<div style='height:112px;box-sizing:border-box;padding:0 40px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);font-family:Segoe UI,Arial,sans-serif;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #BFC3C8'>" &
+                  "<div><div style='font-size:10px;letter-spacing:3px;color:#BFC3C8;font-weight:600'>UNIVERSIDAD ADOLFO IBÁÑEZ · BIBLIOTECAS UAI</div>" &
+                  "<div style='font-size:28px;font-weight:700;color:#FFFFFF;margin-top:4px;text-shadow:0 1px 0 rgba(191,195,200,0.35)'>Descarte de Material</div></div>" &
+                  "<div style='display:flex;align-items:center'>" &
+                  "<div style='padding:0 26px;border-right:1px solid #3F4247'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & Coalesce(varContador, 0) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>GUARDADOS EN LA SESIÓN</div></div>" &
+                  "<div style='padding:0 26px;border-right:1px solid #3F4247'><div style='font-size:24px;font-weight:700;color:#FFFFFF'>" & CountRows(colFicha) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>TOTAL EN LA FICHA</div></div>" &
+                  "<div style='padding:0 0 0 26px'><div style='font-size:24px;font-weight:700;color:" & If(Coalesce(varContador, 0) = 0, "#8A8D91", r >= 60, "#8FA3C7", "#E57373") & "'>" & If(Coalesce(varContador, 0) = 0, "–", r >= 60, "▲ " & r, "▼ " & r) & "</div><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:600'>RITMO · LIBROS/HORA (META 60)</div></div>" &
+                  "</div></div>"
+              )
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =1366
+      - btnModo1a1_2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#111111")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#3F4247")
+            OnSelect: =Navigate(scrDescarteB, ScreenTransition.None)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: ="LECTURA 1 A 1"
+            Width: =150
+            X: =80
+            Y: =124
+      - btnModoMasiva_2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#111111")
+            BorderThickness: =1
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: =false
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: ="LECTURA MASIVA"
+            Width: =150
+            X: =229
+            Y: =124
+      - lblModoHint_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: ="Modo 2 · muchos códigos a la vez"
+            Width: =220
+            X: =394
+            Y: =124
+      - lblPasoLote_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Lote"
+            Width: =200
+            X: =80
+            Y: =180
+      - lbl_drpUnidadDescarte_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="BIBLIOTECA"
+            Width: =243
+            X: =80
+            Y: =206
+      - drpUnidadDescarte_2:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =drpUnidadDescarte_1.Selected.Value
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
+            Items.Value: =Value
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =220
+      - lbl_drpInventario_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="RELACIÓN INVENTARIO"
+            Width: =243
+            X: =337
+            Y: =206
+      - drpInventario_2:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =drpInventario_1.Selected.Value
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
+            Items.Value: =Value
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =220
+      - lbl_drpCriterio_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="CRITERIO"
+            Width: =243
+            X: =80
+            Y: =258
+      - drpCriterio_2:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =drpCriterio_1.Selected.Value
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: =["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]
+            Items.Value: =Value
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =80
+            Y: =272
+      - lbl_drpJustificacion_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="JUSTIFICACIÓN"
+            Width: =243
+            X: =337
+            Y: =258
+      - drpJustificacion_2:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            ChevronBackground: =ColorValue("#FFFFFF")
+            ChevronFill: =ColorValue("#3F4247")
+            Color: =ColorValue("#111111")
+            Default: =drpJustificacion_1.Selected.Value
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            HoverFill: =ColorValue("#F7F7F8")
+            Items: |-
+              =ForAll(
+                  Filter(
+                      Table(
+                          {Criterio: "Contenido", Justificacion: "Disponibilidad de ediciones anteriores"},
+                          {Criterio: "Contenido", Justificacion: "Idioma"},
+                          {Criterio: "Contenido", Justificacion: "Pertinencia"},
+                          {Criterio: "Contenido", Justificacion: "Vigencia"},
+                          {Criterio: "Contexto", Justificacion: "Demanda real y demanda potencial"},
+                          {Criterio: "Contexto", Justificacion: "Duplicidad"},
+                          {Criterio: "Contexto", Justificacion: "Colecciones incompletas"},
+                          {Criterio: "Contexto", Justificacion: "Material perdido"},
+                          {Criterio: "Contexto", Justificacion: "Obsolescencia"},
+                          {Criterio: "Estado de Conservación", Justificacion: "Conservación"},
+                          {Criterio: "Estado de Conservación", Justificacion: "Deterioro"},
+                          {Criterio: "Limpieza y depuración", Justificacion: "Morosidad"}
+                      ),
+                      Criterio = drpCriterio_2.Selected.Value
+                  ),
+                  {Value: Justificacion}
+              )
+            Items.Value: =Value
+            PaddingLeft: =8
+            SelectionColor: =ColorValue("#FFFFFF")
+            SelectionFill: =ColorValue("#111111")
+            Size: =9
+            Width: =243
+            X: =337
+            Y: =272
+      - lblPasoCodigos_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =11
+            Text: ="Códigos de la tanda"
+            Width: =250
+            X: =80
+            Y: =324
+      - lblConteo_2:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: =CountRows(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value))) & " CÓDIGOS · MÁX. 200"
+            Width: =240
+            X: =340
+            Y: =328
+      - txtTanda_2:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#1B2A4A")
+            Color: =ColorValue("#1B2A4A")
+            Default: =varTandaTexto
+            Fill: =ColorValue("#FFFFFF")
+            FocusedBorderColor: =ColorValue("#111111")
+            FocusedBorderThickness: =2
+            Font: =Font.'Courier New'
+            Height: =200
+            HintText: ="Escanee o pegue un código por línea…"
+            Mode: =TextMode.MultiLine
+            PaddingLeft: =14
+            PaddingRight: =60
+            PaddingTop: =10
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =11
+            Width: =500
+            X: =80
+            Y: =348
+      - lbl_txtObsTanda_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="OBSERVACIONES (SE APLICA A TODA LA TANDA)"
+            Width: =500
+            X: =80
+            Y: =556
+      - txtObsTanda_2:
+          Control: Classic/TextInput@2.3.2
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            Default: =""
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =30
+            PaddingLeft: =8
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Width: =500
+            X: =80
+            Y: =570
+      - htmlBuscarFondo_2:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =48
+            HtmlText: |-
+              =If(btnBuscarTanda_2.DisplayMode = DisplayMode.Disabled, "<div style='height:48px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:48px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =500
+            X: =80
+            Y: =614
+      - btnBuscarTanda_2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(varBuscandoTanda || varGuardandoTanda, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =48
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =Set(varNTanda, CountRows(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value))));
+              ClearCollect(colCodigos, FirstN(Distinct(Filter(Split(Substitute(txtTanda_2.Text, Char(13), ""), Char(10)), !IsBlank(Trim(Value))), Trim(Value)), 200));
+              If(
+                  IsEmpty(colCodigos),
+                      Notify("Escanee o pegue al menos un código.", NotificationType.Warning),
+                  If(varNTanda > 200, Notify("Se buscan solo los primeros 200 códigos. Guarde y luego siga con el resto.", NotificationType.Warning));
+                  Set(varBuscandoTanda, true);
+                  Set(varT0, Now());
+                  Clear(colTanda);
+                  ClearCollect(colFicha, tblFichaDescarte);
+                  ForAll(
+                      Sequence(CountRows(colCodigos)) As i,
+                      With(
+                          {cod: Index(colCodigos, i.Value).Value},
+                          With(
+                              {r: IfError(Text('Copiade:BuscarLibroFOLIO'.Run(cod).datos), "")},
+                              With(
+                                  {j: ParseJSON(If(IsBlank(r), "{}", r))},
+                                  Collect(
+                                      colTanda,
+                                      {
+                                          Orden: i.Value,
+                                          Codigo: cod,
+                                          Estado: If(cod in colFicha.'Codigo de Barra', "Ya en ficha", IsBlank(r), "Error", Text(j.encontrado) = "SI", "Listo", "No en FOLIO"),
+                                          HRID: Text(j.hrid),
+                                          copia: Text(j.copia),
+                                          Tipo: Text(j.tipo),
+                                          Ubicacion: Text(j.ubicacion),
+                                          Titulo: Text(j.titulo),
+                                          Autor: Text(j.autor),
+                                          Idioma: Text(j.idioma),
+                                          Fecha: Text(j.fecha),
+                                          Anio: Text(j.anio),
+                                          PA: Coalesce(Value(j.exA), 0),
+                                          PF: Coalesce(Value(j.exF), 0),
+                                          Pos: Coalesce(Value(j.exP), 0),
+                                          Vina: Coalesce(Value(j.exV), 0)
+                                      }
+                                  )
+                              )
+                          )
+                      )
+                  );
+                  Set(varSegTanda, DateDiff(varT0, Now(), TimeUnit.Seconds));
+                  Set(varBuscandoTanda, false)
+              )
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =12
+            Text: =If(varBuscandoTanda, "BUSCANDO EN FOLIO…", "1 · BUSCAR EN FOLIO   →")
+            Width: =500
+            X: =80
+            Y: =614
+      - barProgresoFondo_2:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =ColorValue("#DADCDF")
+            Height: =4
+            Visible: =varBuscandoTanda || !IsEmpty(colTanda)
+            Width: =500
+            X: =80
+            Y: =668
+      - barProgreso_2:
+          Control: Rectangle@2.3.0
+          Properties:
+            Fill: =ColorValue("#1B2A4A")
+            Height: =4
+            Visible: =varBuscandoTanda || !IsEmpty(colTanda)
+            Width: =500 * Min(CountRows(colTanda) / Max(CountRows(colCodigos), 1), 1)
+            X: =80
+            Y: =668
+      - lblProgreso_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#3F4247")
+            Font: =Font.'Segoe UI'
+            Height: =16
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: =If(varBuscandoTanda, "Buscando… " & CountRows(colTanda) & " de " & CountRows(colCodigos), IsEmpty(colTanda), "", CountRows(colTanda) & " procesados en " & varSegTanda & " s · " & CountIf(colTanda, Estado = "Listo") & " listos · " & CountIf(colTanda, Estado = "Ya en ficha") & " ya en ficha · " & CountIf(colTanda, Estado = "No en FOLIO") & " no encontrados")
+            Width: =500
+            X: =80
+            Y: =678
+      - htmlPrevia_2:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =472
+            HtmlText: |-
+              =With(
+                  {T: Sort(colTanda, Orden)},
+                  "<div style='margin:10px 12px;height:448px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column'>" &
+                  "<div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div>" &
+                  "<div style='padding:14px 20px 8px;display:flex;justify-content:space-between;align-items:flex-start'>" &
+                  "<div><div style='font-size:15px;font-weight:700;color:#111111'>Vista previa de la tanda</div>" &
+                  "<div style='font-size:11px;color:#3F4247;margin-top:2px'>Revise antes de guardar. Título, autor y existencias vienen de FOLIO.</div></div>" &
+                  "<div style='white-space:nowrap'>" &
+                  If(CountIf(T, Estado = "Listo") > 0, "<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>" & CountIf(T, Estado = "Listo") & " LISTOS</span>", "") &
+                  If(CountIf(T, Estado = "Guardado") > 0, "<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#111111'>" & CountIf(T, Estado = "Guardado") & " GUARDADOS</span>", "") &
+                  If(CountIf(T, Estado = "Ya en ficha") > 0, "<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#8A8D91'>" & CountIf(T, Estado = "Ya en ficha") & " YA EN FICHA</span>", "") &
+                  If(CountIf(T, Estado = "No en FOLIO") > 0, "<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#B3261E'>" & CountIf(T, Estado = "No en FOLIO") & " NO EN FOLIO</span>", "") &
+                  If(CountIf(T, Estado = "Error") > 0, "<span style='display:inline-block;padding:2px 7px;margin-left:4px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#B3261E'>" & CountIf(T, Estado = "Error") & " CON ERROR</span>", "") &
+                  "</div></div>" &
+                  If(
+                      IsEmpty(T),
+                      "<div style='flex:1;display:flex;align-items:center;justify-content:center;font-size:12px;color:#8A8D91;padding:0 40px;text-align:center'>" &
+                      If(varBuscandoTanda, "Buscando en FOLIO…", "Escanee o pegue los códigos a la izquierda y presione 1 · BUSCAR EN FOLIO.") & "</div>",
+                      "<div style='flex:1;overflow-y:auto;padding:0 20px 12px'><table style='width:100%;border-collapse:collapse;font-size:11px;color:#111111'>" &
+                      "<tr style='font-size:8px;letter-spacing:1.5px;color:#8A8D91;font-weight:700;text-align:left;border-bottom:1px solid #111111'>" &
+                      "<th style='padding:6px 6px'>CÓDIGO</th><th style='padding:6px 6px'>TÍTULO</th><th style='padding:6px 6px'>A·F·POS·VIÑA</th><th style='padding:6px 6px'>ESTADO</th></tr>" &
+                      Concat(
+                          T,
+                          "<tr style='border-bottom:1px solid #DADCDF'>" &
+                          "<td style='padding:6px;font-weight:700'>" & Substitute(Substitute(Codigo, "&", "&amp;"), "<", "&lt;") & "</td>" &
+                          "<td style='padding:6px'>" & If(IsBlank(Titulo), "—", Substitute(Substitute(Titulo, "&", "&amp;"), "<", "&lt;")) & "</td>" &
+                          "<td style='padding:6px;white-space:nowrap'>" & If(Estado = "No en FOLIO" || Estado = "Error", "—", PA & "·" & PF & "·" & Pos & "·" & Vina) & "</td>" &
+                          "<td style='padding:6px'><span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;color:#FFFFFF;background:" & Switch(Estado, "Listo", "#1B2A4A", "Ya en ficha", "#8A8D91", "Guardado", "#111111", "#B3261E") & "'>" & Upper(Estado) & "</span></td></tr>"
+                      ) &
+                      "</table></div>"
+                  ) &
+                  "</div>"
+              )
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =710
+            X: =628
+            Y: =156
+      - htmlGuardarFondo_2:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =56
+            HtmlText: |-
+              =If(btnGuardarTanda_2.DisplayMode = DisplayMode.Disabled, "<div style='height:56px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:56px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =516
+            X: =640
+            Y: =640
+      - btnGuardarTanda_2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Color: =ColorValue("#FFFFFF")
+            DisabledColor: =ColorValue("#FFFFFF")
+            DisabledFill: =RGBA(0, 0, 0, 0)
+            DisplayMode: =If(CountIf(colTanda, Estado = "Listo") > 0 && !IsBlank(drpUnidadDescarte_2.Selected.Value) && !IsBlank(drpJustificacion_2.Selected.Value) && !IsBlank(drpInventario_2.Selected.Value) && !varBuscandoTanda && !varGuardandoTanda, DisplayMode.Edit, DisplayMode.Disabled)
+            Fill: =RGBA(0, 0, 0, 0)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =56
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
+            OnSelect: |-
+              =Set(varGuardandoTanda, true);
+              UpdateIf(colTanda, Estado = "Error" && Codigo in colFallidos.Codigo, {Estado: "Listo"});
+              Clear(colGuardados);
+              Clear(colFallidos);
+              With(
+                  {
+                      base: Coalesce(Max(colFicha, Value(Número)), 0),
+                      L: Sort(Filter(colTanda, Estado = "Listo"), Orden)
+                  },
+                  ForAll(
+                      Sequence(CountRows(L)) As i,
+                      With(
+                          {t: Index(L, i.Value)},
+                          IfError(
+                              Collect(
+                                  colGuardados,
+                                  Patch(
+                                      tblFichaDescarte,
+                                      Defaults(tblFichaDescarte),
+                                      {
+                                          Número: Text(base + i.Value),
+                                          'Item ingresado en la base de biblioteca': "SI",
+                                          HRID: t.HRID,
+                                          'Codigo de Barra': t.Codigo,
+                                          'Cruce Archivo activo Fijo (Finanzas)': "No esta en archivo",
+                                          'Valor Neto': "",
+                                          copia: t.copia,
+                                          'Tipo de Material': t.Tipo,
+                                          'Biblioteca-Ubicacion-Colección': t.Ubicacion,
+                                          Título: t.Titulo,
+                                          Autor: t.Autor,
+                                          Idioma: t.Idioma,
+                                          'Vinculado UAI (SI/NO)': "NO",
+                                          'Fecha registro (ingresado en la base)': t.Fecha,
+                                          'Número de POL *': "",
+                                          'Unidad Academica o Centro de Costo *': "Desconocida",
+                                          'Año de edición': t.Anio,
+                                          'Diferenciador de título por ficha descarte': If(IsBlank(t.HRID) || t.HRID in colFicha.HRID || (i.Value > 1 && t.HRID in FirstN(L, i.Value - 1).HRID), 0, 1),
+                                          'Unidad de descarte': drpUnidadDescarte_2.Selected.Value,
+                                          'Pregrado  A - Existencia': t.PA,
+                                          'Pregrado  F - Existencia': t.PF,
+                                          'Posgrado - Existencia': t.Pos,
+                                          'Viña - Existencia': t.Vina,
+                                          'Informar a Finanzas (SI/NO)': "NO",
+                                          'Forma de Adquisición': "Desconocida",
+                                          'Bibliografía de programas académicos (SI/NO)': "Por confirmar",
+                                          'Obra en Volúmenes - Parte de una Colección (SI/NO)': "NO",
+                                          'Criterios de Descarte': drpCriterio_2.Selected.Value,
+                                          'Justificaciones para aplicar Descarte': drpJustificacion_2.Selected.Value,
+                                          'Relación Inventario': drpInventario_2.Selected.Value,
+                                          'Observaciones respecto de la justificación al Descarte': txtObsTanda_2.Text,
+                                          'Información para no Descartar': "",
+                                          'Decisión Final Descarte SI/NO': Blank()
+                                      }
+                                  )
+                              ),
+                              Collect(colFallidos, {Codigo: t.Codigo})
+                          )
+                      )
+                  )
+              );
+              ClearCollect(colFicha, tblFichaDescarte);
+              UpdateIf(colTanda, Codigo in colGuardados.'Codigo de Barra', {Estado: "Guardado"});
+              UpdateIf(colTanda, Codigo in colFallidos.Codigo, {Estado: "Error"});
+              If(CountRows(colGuardados) > 0,
+                  If(IsBlank(varInicio), Set(varInicio, Now()));
+                  Set(varContador, Coalesce(varContador, 0) + CountRows(colGuardados));
+                  Set(varUltimo, Last(colGuardados).Número & " — tanda de " & CountRows(colGuardados) & " libros")
+              );
+              Set(varGuardandoTanda, false);
+              If(
+                  IsEmpty(colFallidos),
+                      Notify("Guardados " & CountRows(colGuardados) & " libros en la ficha.", NotificationType.Success, 3000),
+                  Notify("Guardados " & CountRows(colGuardados) & ". No se pudieron guardar " & CountRows(colFallidos) & " (quedan en rojo; presione guardar de nuevo para reintentar).", NotificationType.Error)
+              )
+            PressedFill: =RGBA(27, 42, 74, 0.55)
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =13
+            Text: =If(varGuardandoTanda, "GUARDANDO…", "2 · GUARDAR " & CountIf(colTanda, Estado = "Listo") & " EN LA FICHA   →")
+            Width: =516
+            X: =640
+            Y: =640
+      - btnVaciar_2:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#BFC3C8")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
+            DisplayMode: =If(varBuscandoTanda || varGuardandoTanda, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =ColorValue("#FFFFFF")
+            Font: =Font.'Segoe UI'
+            Height: =56
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Clear(colTanda);
+              Clear(colCodigos);
+              Clear(colFallidos);
+              Set(varTandaTexto, "");
+              Reset(txtTanda_2);
+              Reset(txtObsTanda_2);
+              SetFocus(txtTanda_2)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =11
+            Text: ="Vaciar tanda"
+            Width: =156
+            X: =1170
+            Y: =640
+      - lblUltimo_2:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#3F4247")
+            Font: =Font.'Segoe UI'
+            Height: =18
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =9
+            Text: |-
+              =If(IsBlank(varUltimo), "Aún no se guarda ningún libro en esta sesión.", "Último guardado: N° " & varUltimo)
+            Width: =686
+            X: =640
+            Y: =704

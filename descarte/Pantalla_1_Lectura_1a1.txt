@@ -25,48 +25,68 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Width: =1366
-      - lineStepper:
-          Control: Rectangle@2.3.0
-          Properties:
-            Fill: =ColorValue("#DADCDF")
-            Height: =520
-            Width: =2
-            X: =46
-            Y: =150
-      - dotPaso1:
-          Control: Circle@2.3.0
-          Properties:
-            Fill: =ColorValue("#111111")
-            Height: =16
-            Width: =16
-            X: =39
-            Y: =142
-      - dotPaso2:
-          Control: Circle@2.3.0
-          Properties:
-            Fill: =ColorValue("#1B2A4A")
-            Height: =16
-            Width: =16
-            X: =39
-            Y: =300
-      - dotPaso3:
-          Control: Circle@2.3.0
-          Properties:
-            Fill: =ColorValue("#111111")
-            Height: =16
-            Width: =16
-            X: =39
-            Y: =410
-      - dotPaso4:
-          Control: Circle@2.3.0
+      - btnModo1a1_1:
+          Control: Classic/Button@2.2.0
           Properties:
             BorderColor: =ColorValue("#111111")
-            BorderThickness: =2
+            BorderThickness: =1
+            Color: =ColorValue("#FFFFFF")
+            Fill: =ColorValue("#111111")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: =false
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: ="LECTURA 1 A 1"
+            Width: =150
+            X: =80
+            Y: =124
+      - btnModoMasiva_1:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorValue("#111111")
+            BorderThickness: =1
+            Color: =ColorValue("#111111")
             Fill: =ColorValue("#FFFFFF")
-            Height: =16
-            Width: =16
-            X: =39
-            Y: =662
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#3F4247")
+            OnSelect: =Navigate(scrDescarteMasiva, ScreenTransition.None)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =9
+            Text: ="LECTURA MASIVA"
+            Width: =150
+            X: =229
+            Y: =124
+      - lblModoHint_1:
+          Control: Label@2.5.1
+          Properties:
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =30
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =8
+            Text: ="Modo 1 · libro por libro"
+            Width: =220
+            X: =394
+            Y: =124
       - lblPasoLote:
           Control: Label@2.5.1
           Properties:
@@ -82,7 +102,7 @@ Screens:
             Text: ="Lote"
             Width: =200
             X: =80
-            Y: =140
+            Y: =180
       - lbl_drpUnidadDescarte_1:
           Control: Label@2.5.1
           Properties:
@@ -95,10 +115,10 @@ Screens:
             PaddingRight: =0
             PaddingTop: =0
             Size: =7
-            Text: ="UNIDAD DE DESCARTE"
+            Text: ="BIBLIOTECA"
             Width: =243
             X: =80
-            Y: =166
+            Y: =206
       - drpUnidadDescarte_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -119,7 +139,7 @@ Screens:
             Size: =9
             Width: =243
             X: =80
-            Y: =180
+            Y: =220
       - lbl_drpInventario_1:
           Control: Label@2.5.1
           Properties:
@@ -135,7 +155,7 @@ Screens:
             Text: ="RELACIÓN INVENTARIO"
             Width: =243
             X: =337
-            Y: =166
+            Y: =206
       - drpInventario_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -156,7 +176,7 @@ Screens:
             Size: =9
             Width: =243
             X: =337
-            Y: =180
+            Y: =220
       - lbl_drpCriterio_1:
           Control: Label@2.5.1
           Properties:
@@ -172,7 +192,7 @@ Screens:
             Text: ="CRITERIO"
             Width: =243
             X: =80
-            Y: =218
+            Y: =258
       - drpCriterio_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -193,7 +213,7 @@ Screens:
             Size: =9
             Width: =243
             X: =80
-            Y: =232
+            Y: =272
       - lbl_drpJustificacion_1:
           Control: Label@2.5.1
           Properties:
@@ -209,7 +229,7 @@ Screens:
             Text: ="JUSTIFICACIÓN"
             Width: =243
             X: =337
-            Y: =218
+            Y: =258
       - drpJustificacion_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -250,7 +270,7 @@ Screens:
             Size: =9
             Width: =243
             X: =337
-            Y: =232
+            Y: =272
       - lblPasoEscanear:
           Control: Label@2.5.1
           Properties:
@@ -266,7 +286,24 @@ Screens:
             Text: ="Escanear"
             Width: =200
             X: =80
-            Y: =298
+            Y: =338
+      - lblFuentes_1:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            Color: =ColorValue("#8A8D91")
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Height: =14
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =7
+            Text: ="LECTOR · CÁMARA · TECLADO"
+            Width: =200
+            X: =380
+            Y: =342
       - txtEscaneo_1:
           Control: Classic/TextInput@2.3.2
           Properties:
@@ -286,36 +323,50 @@ Screens:
                   Select(btnProcesarEscaneo)
               )
             PaddingLeft: =14
+            PaddingRight: =56
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
             RadiusTopLeft: =0
             RadiusTopRight: =0
             Size: =14
-            Width: =290
+            Width: =360
             X: =80
-            Y: =322
+            Y: =362
+      - htmlRafagaFondo_1:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Height: =52
+            HtmlText: |-
+              =If(btnRafaga_1.DisplayMode = DisplayMode.Disabled, "<div style='height:52px;background:linear-gradient(115deg,#BFC3C8 0%,#DADCDF 50%,#BFC3C8 100%)'></div>", "<div style='height:52px;background:linear-gradient(115deg,#0B0B0C 0%,#111111 38%,#35373B 50%,#111111 62%,#0B0B0C 100%);border-top:1px solid #8A8D91;box-shadow:0 6px 14px rgba(17,17,17,0.25)'></div>")
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Width: =128
+            X: =452
+            Y: =362
       - btnRafaga_1:
           Control: Classic/Button@2.2.0
           Properties:
             BorderThickness: =0
             Color: =ColorValue("#FFFFFF")
-            Fill: =If(varRafaga, ColorValue("#1B2A4A"), ColorValue("#111111"))
+            Fill: =RGBA(0, 0, 0, 0)
             Font: =Font.'Segoe UI'
             FontWeight: =FontWeight.Bold
             Height: =52
             HoverColor: =ColorValue("#FFFFFF")
-            HoverFill: =ColorValue("#3F4247")
+            HoverFill: =RGBA(191, 195, 200, 0.18)
             OnSelect: =Set(varRafaga, !varRafaga); SetFocus(txtEscaneo_1)
-            PressedFill: =ColorValue("#3F4247")
+            PressedFill: =RGBA(27, 42, 74, 0.55)
             RadiusBottomLeft: =0
             RadiusBottomRight: =0
             RadiusTopLeft: =0
             RadiusTopRight: =0
             Size: =9
-            Text: =If(varRafaga, "ESCÁNER · ON", "ESCÁNER · OFF")
+            Text: =If(varRafaga, "●  ESCÁNER · ON", "○  ESCÁNER · OFF")
             Width: =128
             X: =452
-            Y: =322
+            Y: =362
       - lblEstado_1:
           Control: Label@2.5.1
           Properties:
@@ -332,7 +383,7 @@ Screens:
               =If(varBuscando, "◌  BUSCANDO EN FOLIO…", IsBlank(varCodigo), "○  ESPERANDO ESCANEO (CÁMARA, PISTOLA O DIGITADO)", varDuplicado, "●  YA ESTÁ EN LA FICHA: " & varCodigo, varEncontrado, "●  ENCONTRADO EN FOLIO: " & varCodigo, "●  NO ESTÁ EN FOLIO: COMPLETE LA FICHA TÉCNICA")
             Width: =500
             X: =80
-            Y: =380
+            Y: =420
       - lblPasoDecision:
           Control: Label@2.5.1
           Properties:
@@ -348,7 +399,7 @@ Screens:
             Text: ="Decisión"
             Width: =200
             X: =80
-            Y: =408
+            Y: =448
       - lbl_drpFormaAdq_1:
           Control: Label@2.5.1
           Properties:
@@ -364,7 +415,7 @@ Screens:
             Text: ="FORMA DE ADQUISICIÓN"
             Width: =243
             X: =80
-            Y: =434
+            Y: =474
       - drpFormaAdq_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -386,7 +437,7 @@ Screens:
             Size: =9
             Width: =243
             X: =80
-            Y: =448
+            Y: =488
       - lbl_drpFinanzas_1:
           Control: Label@2.5.1
           Properties:
@@ -402,7 +453,7 @@ Screens:
             Text: ="INFORMAR A FINANZAS"
             Width: =243
             X: =337
-            Y: =434
+            Y: =474
       - drpFinanzas_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -424,7 +475,7 @@ Screens:
             Size: =9
             Width: =243
             X: =337
-            Y: =448
+            Y: =488
       - lbl_drpBibliografia_1:
           Control: Label@2.5.1
           Properties:
@@ -440,7 +491,7 @@ Screens:
             Text: ="BIBLIOGRAFÍA DE PROGRAMAS"
             Width: =243
             X: =80
-            Y: =486
+            Y: =526
       - drpBibliografia_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -462,7 +513,7 @@ Screens:
             Size: =9
             Width: =243
             X: =80
-            Y: =500
+            Y: =540
       - lbl_drpVolumenes_1:
           Control: Label@2.5.1
           Properties:
@@ -478,7 +529,7 @@ Screens:
             Text: ="OBRA EN VOLÚMENES"
             Width: =243
             X: =337
-            Y: =486
+            Y: =526
       - drpVolumenes_1:
           Control: Classic/DropDown@2.3.1
           Properties:
@@ -500,7 +551,7 @@ Screens:
             Size: =9
             Width: =243
             X: =337
-            Y: =500
+            Y: =540
       - lbl_txtObsJustif_1:
           Control: Label@2.5.1
           Properties:
@@ -516,7 +567,7 @@ Screens:
             Text: ="OBSERVACIONES SOBRE LA JUSTIFICACIÓN"
             Width: =500
             X: =80
-            Y: =540
+            Y: =580
       - txtObsJustif_1:
           Control: Classic/TextInput@2.3.2
           Properties:
@@ -535,7 +586,7 @@ Screens:
             Size: =9
             Width: =500
             X: =80
-            Y: =554
+            Y: =594
       - lbl_txtNoDescartar_1:
           Control: Label@2.5.1
           Properties:
@@ -551,7 +602,7 @@ Screens:
             Text: ="INFORMACIÓN PARA NO DESCARTAR"
             Width: =500
             X: =80
-            Y: =594
+            Y: =634
       - txtNoDescartar_1:
           Control: Classic/TextInput@2.3.2
           Properties:
@@ -570,7 +621,7 @@ Screens:
             Size: =9
             Width: =500
             X: =80
-            Y: =608
+            Y: =648
       - lblPasoLibro:
           Control: Label@2.5.1
           Properties:
