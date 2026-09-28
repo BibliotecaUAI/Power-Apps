@@ -198,7 +198,7 @@ def inicio():
         ('◎', 'Morosos', 'Usuarios morosos reales de FOLIO, por nivel y biblioteca',
          'If(IsEmpty(colMorosos), "Ver lista actualizada", Text(varMorTotal, "#,##0") & " morosos en FOLIO")', 'scrPanel'),
         ('▣', 'Inventario', 'Escanear el estante y cruzarlo con FOLIO; informe por correo',
-         'If(IsEmpty(colInv), "Comenzar inventario", CountRows(colInv) & " escaneados en esta sesión")', 'scrInventario'),
+         '"Escanear y enviar informe"', 'scrInventario'),
     ]
     pos = [(96, 170, 404, 150), (514, 170, 404, 150), (932, 170, 416, 150), (96, 334, 620, 150), (728, 334, 620, 150)]
     ctrls = [header('0', 'Inicio'),
