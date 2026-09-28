@@ -299,7 +299,7 @@ Screens:
               =If(
                   IsBlank(varUsuario),
                   "<div style='margin:6px;height:150px;box-sizing:border-box;background:#FFFFFF;border:1px solid #DADCDF;box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='font-size:9px;letter-spacing:1.5px;color:#8A8D91;font-weight:700'>○  ESPERANDO USUARIO</div><div style='font-size:18px;font-weight:700;color:#8A8D91;margin-top:14px'>Escanee el QR de la cédula o digite el RUT.</div></div></div>",
-                  "<div style='margin:6px;height:150px;box-sizing:border-box;background:#FFFFFF;border:" & If(varMoroso, "2px solid #B3261E", "1px solid #DADCDF") & ";box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='font-size:9px;letter-spacing:1.5px;color:#1B2A4A;font-weight:700'>●  USUARIO ENCONTRADO</div><div style='font-size:22px;font-weight:700;color:#111111;margin-top:6px'>" & varUsuario.Nombre & " " & varUsuario.Apellido & "</div><div style='font-size:12px;color:#3F4247;margin-top:4px'>RUT " & varUsuario.RUT & " · " & varUsuario.TipoUsuario & " · " & varUsuario.UnidadAcademica & " · " & varUsuario.Programa & "</div><div style='margin-top:12px;display:flex;gap:28px;font-size:11px;color:#3F4247;align-items:center'><div><b style='font-size:18px;color:#111111'>" & CountRows(Filter(colPrestamos, RUT = varUsuario.RUT && Estado = "Activo")) & "</b> préstamos activos</div><div><b style='font-size:18px;color:#111111'>" & CountRows(Filter(colPrestamos, RUT = varUsuario.RUT && Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today())) & "</b> vencidos</div><div style='margin-left:auto'>" & If(varMoroso, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>MOROSO</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>AL DÍA</span>") & "</div></div></div></div>"
+                  "<div style='margin:6px;height:150px;box-sizing:border-box;background:#FFFFFF;border:" & If(varMoroso, "2px solid #B3261E", "1px solid #DADCDF") & ";box-shadow:0 12px 28px rgba(17,17,17,0.10),0 2px 6px rgba(138,141,145,0.25);font-family:Segoe UI,Arial,sans-serif;position:relative;overflow:hidden'><div style='height:3px;background:linear-gradient(90deg,#8A8D91,#FFFFFF,#BFC3C8,#FFFFFF,#8A8D91)'></div><div style='padding:14px 22px'><div style='font-size:9px;letter-spacing:1.5px;color:#1B2A4A;font-weight:700'>●  USUARIO ENCONTRADO EN " & varUsuario.Origen & "</div><div style='font-size:22px;font-weight:700;color:#111111;margin-top:6px'>" & varUsuario.Nombre & " " & varUsuario.Apellido & "</div><div style='font-size:12px;color:#3F4247;margin-top:4px'>RUT " & varUsuario.RUT & " · " & varUsuario.TipoUsuario & " · " & varUsuario.UnidadAcademica & " · " & varUsuario.Programa & "</div><div style='margin-top:12px;display:flex;gap:28px;font-size:11px;color:#3F4247;align-items:center'><div><b style='font-size:18px;color:#111111'>" & CountRows(Filter(colPrestamos, RUT = varUsuario.RUT && Estado = "Activo")) & "</b> préstamos activos</div><div><b style='font-size:18px;color:#111111'>" & CountRows(Filter(colPrestamos, RUT = varUsuario.RUT && Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today())) & "</b> vencidos</div><div style='margin-left:auto'>" & If(varMoroso, "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#111111;background:linear-gradient(115deg,#8A8D91,#FFFFFF 50%,#BFC3C8);border:1px solid #8A8D91'>MOROSO</span>", "<span style='display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px;color:#FFFFFF;background:#1B2A4A'>AL DÍA</span>") & "</div></div></div></div>"
               )
             PaddingBottom: =0
             PaddingLeft: =0
@@ -531,11 +531,45 @@ Screens:
                       {r: Upper(Substitute(Substitute(Substitute(If("RUN=" in t, First(Split(Last(Split(t, "RUN=")).Value, "&")).Value, t), ".", ""), "-", ""), " ", ""))},
                       If(
                           !IsBlank(r),
-                          Set(varUsuario, LookUp(colUsuarios, Upper(Substitute(Substitute(Substitute(RUT, ".", ""), "-", ""), " ", "")) = r));
+                          Set(varBuscandoUsuario, true);
+                          Set(varResUsuario, IfError(Text(BuscarUsuarioFOLIO.Run(r).datos), Blank()));
+                          Set(varBuscandoUsuario, false);
+                          With(
+                              {j: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario)), u: LookUp(colUsuarios, Upper(Substitute(Substitute(Substitute(RUT, ".", ""), "-", ""), " ", "")) = r)},
+                              Set(
+                                  varUsuario,
+                                  If(
+                                      Text(j.encontrado) = "SI",
+                                          {
+                                              RUT: With({x: If(IsBlank(Text(j.rut)), r, Text(j.rut))}, Left(x, Len(x) - 1) & "-" & Right(x, 1)),
+                                              Nombre: Text(j.nombre),
+                                              Apellido: Text(j.apellido),
+                                              NombreSugerido: Coalesce(Text(j.nombreSugerido), Text(j.nombre)),
+                                              TipoUsuario: Text(j.tipoUsuario),
+                                              UnidadAcademica: Text(j.unidadAcademica),
+                                              Programa: Text(j.programa),
+                                              Correo: Text(j.correo),
+                                              Origen: "FOLIO"
+                                          },
+                                      !IsBlank(u),
+                                          {
+                                              RUT: u.RUT,
+                                              Nombre: u.Nombre,
+                                              Apellido: u.Apellido,
+                                              NombreSugerido: u.NombreSugerido,
+                                              TipoUsuario: u.TipoUsuario,
+                                              UnidadAcademica: u.UnidadAcademica,
+                                              Programa: u.Programa,
+                                              Correo: u.Correo,
+                                              Origen: "EXCEL"
+                                          }
+                                  )
+                              )
+                          );
                           If(
                               IsBlank(varUsuario),
                                   Set(varMoroso, false);
-                                  Notify("El RUT " & r & " no está en la hoja Usuarios.", NotificationType.Warning);
+                                  Notify("El RUT " & r & " no se encontró en FOLIO ni en la hoja Usuarios.", NotificationType.Warning);
                                   Reset(txtUsuario_4);
                                   SetFocus(txtUsuario_4),
                               Set(varMoroso, CountRows(Filter(colPrestamos, RUT = varUsuario.RUT && Estado = "Activo" && !IsBlank(FechaVencimiento) && DateValue(FechaVencimiento) < Today())) > 0);

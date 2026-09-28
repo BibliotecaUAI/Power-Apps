@@ -13,7 +13,8 @@ nombre `BuscarUsuarioFOLIO`. Luego cambiar solo 3 cosas:
 ```
 DEFINE
     VAR r = UPPER(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE("RUT_AQUI", ".", ""), "-", ""), " ", ""))
-    VAR u = FILTER(f_users, f_users[rut] = r)
+    VAR c = LEFT(r, LEN(r) - 1)
+    VAR u = FILTER(f_users, f_users[rut] = r || f_users[rutCuerpo] = c || f_users[rutCuerpo] = r)
     VAR q = LEFT(CHAR(34), 1)
     VAR j = IF(
         COUNTROWS(u) = 0,
@@ -26,6 +27,7 @@ DEFINE
         & "," & q & "correo" & q & ":" & q & MAXX(u, f_users[correo]) & q
         & "," & q & "tipoUsuario" & q & ":" & q & MAXX(u, f_users[tipoUsuario]) & q
         & "," & q & "unidadAcademica" & q & ":" & q & MAXX(u, f_users[unidadAcademica]) & q
+        & "," & q & "programa" & q & ":" & q & MAXX(u, f_users[programa]) & q
         & "," & q & "activo" & q & ":" & q & MAXX(u, f_users[activo]) & q
         & "}"
     )

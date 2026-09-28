@@ -43,6 +43,20 @@ except Exception:
     deptos = {}
 
 
+def cuerpo(v):
+    # solo números (7 a 9 dígitos): puede ser el RUT sin dígito verificador
+    t = re.sub(r"[^0-9]", "", str(v or ""))
+    return t if 7 <= len(t) <= 9 and str(v or "").strip().isdigit() else ""
+
+
+def programa(u):
+    cf = u.get("customFields") or {}
+    for k, v in cf.items():
+        if any(x in k.lower() for x in ("progr", "carrera", "career")):
+            return str(v)
+    return ""
+
+
 def rut_norm(v):
     # "12.345.678-k" -> "12345678K"; devuelve "" si no parece RUT
     t = re.sub(r"[^0-9kK]", "", str(v or "")).upper()
@@ -56,6 +70,7 @@ for u in traer("/users", "users"):
     filas.append({
         "id": u.get("id", ""),
         "rut": rut,
+        "rutCuerpo": rut[:-1] if rut else (cuerpo(u.get("barcode")) or cuerpo(u.get("externalSystemId")) or cuerpo(u.get("username"))),
         "barcode": u.get("barcode", ""),
         "externalSystemId": u.get("externalSystemId", ""),
         "username": u.get("username", ""),
@@ -65,6 +80,7 @@ for u in traer("/users", "users"):
         "correo": p.get("email", ""),
         "tipoUsuario": grupos.get(u.get("patronGroup", ""), ""),
         "unidadAcademica": ", ".join(deptos.get(d, "") for d in (u.get("departments") or [])),
+        "programa": programa(u),
         "activo": "SI" if u.get("active") else "NO",
         "vence": u.get("expirationDate", ""),
     })
