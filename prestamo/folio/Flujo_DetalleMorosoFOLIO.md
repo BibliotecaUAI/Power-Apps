@@ -3,7 +3,7 @@
 Copia de **BuscarUsuarioFOLIO**: **Guardar como** → `DetalleMorosoFOLIO`.
 
 1. **ConsultaPBI:** borrar y pegar la consulta de `DAX_detalle_moroso_una_linea.txt`.
-   Reemplazar las letras `RUT_AQUI` (dejando las comillas) por el contenido dinámico **codigo**.
+   Reemplazar las letras `RUT_AQUI` (dejando las comillas) por el contenido dinámico **rut** (el dato que recibe el flujo desde la app).
 2. **Respond:** igual que en los otros flujos (no se toca).
 3. **Guardar** → probar con un RUT moroso → en la app: **Power Automate → Agregar flujo → DetalleMorosoFOLIO**.
 
