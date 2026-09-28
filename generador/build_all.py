@@ -1,0 +1,45 @@
+import subprocess, os, sys
+sys.path.insert(0, '.')
+subprocess.run(['python3', 'build.py'], check=True)
+from nav import rail, inicio, en_construccion
+R = '/home/user/Power-Apps'
+os.makedirs(R + '/pantallas', exist_ok=True)
+def descarte(src, dst, sfx, onv_old):
+    t = open(src).read()
+    assert "padding:0 40px;background" in t
+    t = t.replace("padding:0 40px;background", "padding:0 40px 0 104px;background")
+    t = t.replace(onv_old, onv_old + '; Set(varMenu, false)')
+    t = t.rstrip('\n') + '\n' + rail(sfx, 'Descarte') + '\n'
+    open(dst, 'w').write(t); os.remove(src)
+descarte(R + '/descarte/Pantalla_1_Lectura_1a1.txt', R + '/pantallas/2_Descarte_1a1.txt', '1',
+         'OnVisible: =ClearCollect(colFicha, tblFichaDescarte); Set(varEntrada, Blank()); SetFocus(txtEscaneo_1)')
+descarte(R + '/descarte/Pantalla_2_Lectura_Masiva.txt', R + '/pantallas/3_Descarte_Masiva.txt', '2',
+         'OnVisible: =ClearCollect(colFicha, tblFichaDescarte); SetFocus(txtTanda_2)')
+open(R + '/pantallas/1_Inicio.txt', 'w').write(inicio())
+open(R + '/pantallas/7_Inventario.txt', 'w').write(en_construccion('scrInventario', '7', 'Inventario', 'Aquí irá la toma de inventario de la colección.'))
+
+subprocess.run(['python3', 'prestamo.py'], check=True)
+subprocess.run(['python3', 'devolucion.py'], check=True)
+
+subprocess.run(['python3', 'morosos.py'], check=True)
+
+# Nombres finales de las pantallas
+import glob, re
+NOMBRES = {'scrInicio': 'Inicio', 'scrDescarteB': 'Descarte', 'scrDescarteMasiva': 'Descarte masiva',
+           'scrPrestamo': 'Préstamo', 'scrDevolucion': 'Devolución', 'scrPanel': 'Morosos', 'scrInventario': 'Inventario'}
+ARCH = {'1_Inicio.txt': '1_Inicio.txt', '2_Descarte_1a1.txt': '2_Descarte.txt', '3_Descarte_Masiva.txt': '3_Descarte_masiva.txt',
+        '4_Prestamo.txt': '4_Prestamo.txt', '5_Devolucion.txt': '5_Devolucion.txt', '6_Panel.txt': '6_Morosos.txt', '7_Inventario.txt': '7_Inventario.txt'}
+for viejo, nuevo in ARCH.items():
+    p = R + '/pantallas/' + viejo
+    t = open(p).read()
+    for a, z in NOMBRES.items():
+        t = t.replace('Navigate(' + a + ',', "Navigate('" + z + "',")
+        t = re.sub(r'^  ' + a + ':$', '  ' + ("'" + z + "'" if ' ' in z else z) + ':', t, flags=re.M)
+    os.remove(p)
+    open(R + '/pantallas/' + nuevo, 'w').write(t)
+
+# Diseño v2 (tema claro/oscuro, vidrio, marcadores)
+import tema
+for arch, sfx in [('1_Inicio.txt', '0'), ('2_Descarte.txt', '1'), ('3_Descarte_masiva.txt', '2'), ('4_Prestamo.txt', '4'),
+                  ('5_Devolucion.txt', '5'), ('6_Morosos.txt', '6'), ('7_Inventario.txt', '7')]:
+    tema.aplicar(R + '/pantallas/' + arch, sfx)
