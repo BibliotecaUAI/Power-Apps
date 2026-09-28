@@ -19,7 +19,7 @@ With(
             Set(varResUsuario, IfError(Text(BuscarUsuarioFOLIO.Run(r).datos), Notify("Error del flujo BuscarUsuarioFOLIO: " & FirstError.Message, NotificationType.Error); Blank()));
             Set(varBuscandoUsuario, false);
             With(
-                {j: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario)), u: LookUp(colUsuarios, ''' + NORM.format(x='RUT') + ''' = r)},
+                {j: With({o: ParseJSON(If(IsBlank(varResUsuario), "{}", varResUsuario))}, If(IsBlank(Text(o.datos)), o, ParseJSON(Text(o.datos)))), u: LookUp(colUsuarios, ''' + NORM.format(x='RUT') + ''' = r)},
                 Set(
                     varUsuario,
                     If(

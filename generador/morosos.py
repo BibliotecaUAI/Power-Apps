@@ -12,7 +12,7 @@ If(
     IsBlank(varResMor),
         Notify("El flujo ListaMorososFOLIO respondió vacío: revise la caja Respond (ver instrucciones).", NotificationType.Warning),
     With(
-        {j: ParseJSON(varResMor)},
+        {j: With({o: ParseJSON(If(IsBlank(varResMor), "{}", varResMor))}, If(IsBlank(Text(o.datos)), o, ParseJSON(Text(o.datos))))},
         Set(varMorTotal, Coalesce(Value(Text(j.total)), 0));
         Set(varMorLibros, Coalesce(Value(Text(j.libros)), 0));
         ClearCollect(
