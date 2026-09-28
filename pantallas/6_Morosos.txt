@@ -177,7 +177,7 @@ Screens:
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
             Size: =10
-            Width: =540
+            Width: =440
             X: =666
             Y: =348
       - btnVerDet_6:
@@ -202,8 +202,33 @@ Screens:
             RadiusTopRight: =12
             Size: =10
             Text: =If(varCargandoDet, "…", "Ver detalle")
-            Width: =102
-            X: =1214
+            Width: =100
+            X: =1114
+            Y: =348
+      - btnLimpiarDet_6:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =varT.line
+            BorderThickness: =1
+            Color: =varT.tx
+            DisplayMode: =If(varCargandoDet, DisplayMode.Disabled, DisplayMode.Edit)
+            Fill: =varT.inp
+            Font: ="Calibri"
+            FontWeight: =FontWeight.Normal
+            Height: =30
+            HoverColor: =ColorValue("#FFFFFF")
+            HoverFill: =ColorValue("#111111")
+            OnSelect: |-
+              =Set(varSelRut, Blank()); Set(varDet, Blank()); Clear(colDet); Reset(drpSelMor_6); Reset(txtBuscarMor_6); Select(btnFiltrar_6)
+            PressedFill: =ColorValue("#3F4247")
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Size: =10
+            Text: ="✕  Limpiar"
+            Width: =94
+            X: =1222
             Y: =348
       - lblDestino_6:
           Control: Label@2.5.1
