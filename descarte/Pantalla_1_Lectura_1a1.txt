@@ -117,7 +117,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -154,7 +153,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -191,7 +189,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -248,7 +245,6 @@ Screens:
                   ),
                   {Value: Justificacion}
               )
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -415,7 +411,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Compra", "Canje", "Donación", "Desconocida"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -453,7 +448,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["SI", "NO"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -491,7 +485,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["SI", "NO", "Por confirmar"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -529,7 +522,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["SI", "NO", "Se desconoce"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -1360,7 +1352,6 @@ Screens:
             Height: =28
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Esta en archivo", "No esta en archivo"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -1398,7 +1389,6 @@ Screens:
             Height: =28
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["SI", "NO"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -1436,7 +1426,6 @@ Screens:
             Height: =28
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Facultad de Artes Liberales", "Facultad de Derecho", "Facultad de Ingeniería y Ciencias", "Escuela de Negocios", "Escuela de Periodismo", "Escuela de Psicología", "Escuela de Diseño", "Escuela de Gobierno", "CEHIP", "Dirección de Docencia", "Dirección de Investigación", "Biblioteca", "Desconocida"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")

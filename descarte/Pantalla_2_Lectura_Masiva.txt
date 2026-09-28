@@ -118,7 +118,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Biblioteca Viña", "Biblioteca Posgrado", "Biblioteca Pregrado A", "Biblioteca Pregrado F"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -156,7 +155,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Inventario 2017", "Inventario 2021", "Inventario 2023", "Inventario 2024", "Sin Inventariar"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -194,7 +192,6 @@ Screens:
             Height: =30
             HoverFill: =ColorValue("#F7F7F8")
             Items: =["Contenido", "Contexto", "Estado de Conservación", "Limpieza y depuración"]
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
@@ -252,7 +249,6 @@ Screens:
                   ),
                   {Value: Justificacion}
               )
-            Items.Value: =Value
             PaddingLeft: =8
             SelectionColor: =ColorValue("#FFFFFF")
             SelectionFill: =ColorValue("#111111")
