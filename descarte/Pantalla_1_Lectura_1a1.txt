@@ -29,7 +29,8 @@ Screens:
           Control: HtmlViewer@2.1.0
           Properties:
             Height: =30
-            HtmlText: ="<div style='height:30px;display:flex;align-items:center;font-family:Segoe UI,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px'><span style='color:#111111'>LECTURA 1 A 1</span><div style='margin:0 12px;width:46px;height:24px;border-radius:12px;box-sizing:border-box;position:relative;background:#DADCDF;border:1px solid #BFC3C8'><div style='position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.35)'></div></div><span style='color:#8A8D91'>LECTURA MASIVA</span></div>"
+            HtmlText: |-
+              ="<div style='height:30px;display:flex;align-items:center;font-family:Segoe UI,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px'><span style='color:#111111'>LECTURA 1 A 1</span><div style='margin:0 12px;width:46px;height:24px;border-radius:12px;box-sizing:border-box;position:relative;background:#DADCDF;border:1px solid #BFC3C8'><div style='position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.35)'></div></div><span style='color:#8A8D91'>LECTURA MASIVA</span></div>"
             PaddingBottom: =0
             PaddingLeft: =0
             PaddingRight: =0
