@@ -1,0 +1,82 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boceto RREE UAI</title>
+<style>
+:root{--n:#111111;--p:#3F4247;--g:#8A8D91;--s:#BFC3C8;--l:#DADCDF;--bg:#EFEFF0;--w:#FFFFFF;--neg:#B3261E;--pos:#1B2A4A}
+*{box-sizing:border-box}body{margin:0;background:#d9dadc;font:13px/1.35 "Segoe UI",Arial,sans-serif;color:var(--n)}
+.pg{max-width:1280px;aspect-ratio:16/9;margin:24px auto;background:var(--bg);padding:18px 24px;display:grid;grid-template-rows:auto auto 1fr;gap:12px;overflow:hidden}
+.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--l);padding-bottom:8px}
+.hd h1{font-size:20px;margin:0;letter-spacing:.3px}.hd small{color:var(--g)}
+.nav{display:flex;gap:4px}.nav b{padding:5px 12px;font-weight:600;font-size:12px}.nav .on{background:var(--n);color:var(--w)}
+.upd{color:var(--g);font-size:11px}.upd:before{content:"●";color:var(--pos);margin-right:4px;animation:pl 2s infinite}
+@keyframes pl{50%{opacity:.3}}
+.kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.k{padding:8px 12px;border-left:1px solid var(--l)}.k:first-child{border:0}
+.k h4{margin:0;font-size:12px}.k .v{font-size:28px;font-weight:300}.k .s{font-size:11px;color:var(--p)}
+.up{color:var(--pos)}.dn{color:var(--neg)}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:1.4fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.v2{display:flex;flex-direction:column;min-height:0}.v2 h3{font-size:12px;margin:0 0 6px;color:var(--p);text-transform:uppercase;letter-spacing:.6px}
+.bars div{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:11px}.bars span{width:110px;color:var(--p)}
+.bars i{height:12px;background:linear-gradient(90deg,var(--p),var(--s))}
+table{width:100%;border-collapse:collapse;font-size:11px}th{text-align:left;border-bottom:1px solid var(--n);padding:4px}td{border-bottom:1px solid var(--l);padding:4px}
+.pill{padding:1px 8px;border-radius:9px;font-size:10px;color:var(--w)}.pp{background:var(--pos)}.pn{background:var(--neg);animation:pl 2s infinite}.pg0{background:var(--g)}
+.note{font-size:10px;color:var(--g);font-style:italic}
+</style></head><body>
+<p class="note" style="text-align:center">Boceto de diseño · cifras "#.###" = marcadores; en Power BI cada valor es una medida DAX sobre tus matrices RREE (sin modificarlas).</p>
+
+<!-- PÁGINA 1 -->
+<section class="pg"><div class="hd"><div><h1>Recursos Electrónicos · Resumen Ejecutivo</h1><small>Biblioteca UAI · Rectoría / Vicerrectoría / Dirección</small></div>
+<div class="nav"><b class="on">Resumen</b><b>Uso y costo</b><b>Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
+<div class="kpi">
+<div class="k"><h4>Inversión anual RREE</h4><div class="v">$#.###</div><div class="s">vs año anterior <b class="dn">▼ -0%</b></div></div>
+<div class="k"><h4>Descargas / consultas</h4><div class="v">#.###</div><div class="s up">▲ +0% YTD</div></div>
+<div class="k"><h4>Costo por uso</h4><div class="v">$#.###</div><div class="s up">▲ mejora +0%</div></div>
+<div class="k"><h4>Recursos activos</h4><div class="v">##</div><div class="s">de ## evaluados</div></div>
+<div class="k"><h4>Recursos bajo umbral</h4><div class="v">##</div><div class="s dn">▼ revisar renovación</div></div></div>
+<div class="grid g2">
+<div class="v2"><h3>Evolución mensual de uso (año actual vs anterior)</h3>
+<svg viewBox="0 0 600 220" width="100%"><g stroke="#DADCDF"><line x1="0" y1="200" x2="600" y2="200"/><line x1="0" y1="110" x2="600" y2="110"/></g>
+<polyline fill="none" stroke="#BFC3C8" stroke-width="3" points="20,150 70,130 120,140 170,110 220,120 270,100 320,115 370,95 420,105 470,90 520,100 570,85"/>
+<polyline fill="none" stroke="#111" stroke-width="3" points="20,140 70,115 120,120 170,90 220,95 270,75 320,85 370,70 420,80"/>
+<g fill="#111"><circle cx="20" cy="140" r="4"/><circle cx="170" cy="90" r="4"/><circle cx="270" cy="75" r="4"/><circle cx="420" cy="80" r="4"/></g></svg></div>
+<div class="v2"><h3>Matriz de decisión: costo vs uso</h3>
+<svg viewBox="0 0 400 220" width="100%"><line x1="200" y1="0" x2="200" y2="210" stroke="#DADCDF"/><line x1="0" y1="105" x2="400" y2="105" stroke="#DADCDF"/>
+<g font-size="10" fill="#8A8D91"><text x="210" y="14">Alto costo · alto uso = mantener</text><text x="210" y="200" fill="#B3261E">Alto costo · bajo uso = renegociar</text><text x="6" y="14">Bajo costo · alto uso = eficiente</text><text x="6" y="200">Bajo costo · bajo uso = difundir</text></g>
+<g fill="#1B2A4A"><circle cx="260" cy="50" r="7"/><circle cx="90" cy="60" r="5"/><circle cx="130" cy="40" r="6"/></g><g fill="#B3261E"><circle cx="320" cy="170" r="8"/><circle cx="250" cy="150" r="6"/></g><circle cx="70" cy="160" r="5" fill="#8A8D91"/></svg>
+<span class="note">Dispersión nativa: X = costo, Y = uso, tamaño = costo por uso. Rojo solo si CPU supera umbral.</span></div></div></section>
+
+<!-- PÁGINA 2 -->
+<section class="pg"><div class="hd"><div><h1>Uso y Costo por Recurso</h1><small>Detalle exportable a Excel</small></div>
+<div class="nav"><b>Resumen</b><b class="on">Uso y costo</b><b>Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
+<div class="note">Segmentadores: Año · Proveedor · Tipo de recurso · Área/Facultad</div>
+<div class="grid g2"><div class="v2"><h3>Matriz por recurso (tus columnas, sin cambios)</h3>
+<table><tr><th>Recurso</th><th>Proveedor</th><th>Costo</th><th>Usos</th><th>Costo/uso</th><th>Var. uso</th><th>Estado</th></tr>
+<tr><td>Recurso A</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td class="up">▲ +0%</td><td><span class="pill pp">Mantener</span></td></tr>
+<tr><td>Recurso B</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td class="dn">▼ -0%</td><td><span class="pill pn">Renegociar</span></td></tr>
+<tr><td>Recurso C</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td>0%</td><td><span class="pill pg0">Observar</span></td></tr>
+<tr><td>…</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table></div>
+<div class="v2"><h3>Top recursos por uso</h3><div class="bars">
+<div><span>Recurso A</span><i style="width:90%"></i></div><div><span>Recurso B</span><i style="width:72%"></i></div><div><span>Recurso C</span><i style="width:58%"></i></div><div><span>Recurso D</span><i style="width:41%"></i></div><div><span>Recurso E</span><i style="width:27%"></i></div></div>
+<h3 style="margin-top:14px">Uso por área / facultad</h3><div class="bars"><div><span>Área 1</span><i style="width:80%"></i></div><div><span>Área 2</span><i style="width:55%"></i></div><div><span>Área 3</span><i style="width:35%"></i></div></div></div></div></section>
+
+<!-- PÁGINA 3 -->
+<section class="pg"><div class="hd"><div><h1>Evidencias para Acreditación CNA</h1><small>Criterios 8 · 13 · 14 (Acreditación institucional, subsistema universitario)</small></div>
+<div class="nav"><b>Resumen</b><b>Uso y costo</b><b class="on">Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
+<div class="note">Cada bloque: indicador → evidencia (tabla exportable) → semáforo de tendencia 3 años.</div>
+<div class="grid g3">
+<div class="v2"><h3>C8 · Gestión de recursos</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Inversión 3 años</h4><div class="v">$#.###</div><div class="s up">▲ sostenida</div></div><div class="k"><h4>Costo por uso</h4><div class="v">$###</div><div class="s up">▲ eficiencia</div></div></div>
+<table><tr><th>Año</th><th>Inversión</th><th>Usos</th><th>CPU</th></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr></table></div>
+<div class="v2"><h3>C13 · Política y gestión de investigación</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Bases de investigación</h4><div class="v">##</div><div class="s">activas</div></div><div class="k"><h4>% inversión a investigación</h4><div class="v">0%</div><div class="s up">▲ +0%</div></div></div>
+<table><tr><th>Recurso de investigación</th><th>Usos</th><th>Semáforo</th></tr><tr><td>Base 1</td><td>#</td><td><span class="pill pp">▲</span></td></tr><tr><td>Base 2</td><td>#</td><td><span class="pill pn">▼</span></td></tr></table></div>
+<div class="v2"><h3>C14 · Resultados de investigación</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Descargas de artículos</h4><div class="v">#.###</div><div class="s up">▲ +0%</div></div><div class="k"><h4>Usos por académico</h4><div class="v">##</div><div class="s">según matriz</div></div></div>
+<div class="bars"><h3>Tendencia 3 años</h3><div><span>20XX</span><i style="width:55%"></i></div><div><span>20XX</span><i style="width:70%"></i></div><div><span>20XX</span><i style="width:88%"></i></div></div></div></div></section>
+
+<!-- PÁGINA 4 -->
+<section class="pg"><div class="hd"><div><h1>Recursos Discontinuados · Lo que Perdimos</h1><small>Último período suscrito vs situación actual</small></div>
+<div class="nav"><b>Resumen</b><b>Uso y costo</b><b>Acreditación CNA</b><b class="on">Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
+<div class="kpi"><div class="k"><h4>Recursos cancelados</h4><div class="v">##</div><div class="s">desde 20XX</div></div><div class="k"><h4>Ahorro anual</h4><div class="v">$#.###</div><div class="s up">▲ liberado</div></div><div class="k"><h4>Uso perdido</h4><div class="v">#.###</div><div class="s dn">▼ consultas/año</div></div><div class="k"><h4>Rechazos de acceso</h4><div class="v">###</div><div class="s dn">▼ demanda no cubierta</div></div><div class="k"><h4>Candidatos a reactivar</h4><div class="v">#</div><div class="s">uso previo alto</div></div></div>
+<div class="grid g2"><div class="v2"><h3>Matriz de recursos no vigentes</h3><table><tr><th>Recurso</th><th>Último año</th><th>Costo último año</th><th>Uso último año</th><th>CPU</th><th>Rechazos post-cancelación</th><th>Lectura</th></tr>
+<tr><td>Recurso X</td><td>20XX</td><td>$#</td><td>#</td><td>$#</td><td>#</td><td><span class="pill pn">Reevaluar</span></td></tr>
+<tr><td>Recurso Y</td><td>20XX</td><td>$#</td><td>#</td><td>$#</td><td>#</td><td><span class="pill pp">Bien cancelado</span></td></tr></table></div>
+<div class="v2"><h3>Uso histórico antes de la cancelación</h3><div class="bars"><div><span>Recurso X</span><i style="width:75%"></i></div><div><span>Recurso Y</span><i style="width:20%"></i></div><div><span>Recurso Z</span><i style="width:45%"></i></div></div>
+<p class="note">Solo se muestran rechazos si tus matrices los registran (p. ej. COUNTER "No_License"). Si no existen, este KPI se omite.</p></div></div></section>
+</body></html>
