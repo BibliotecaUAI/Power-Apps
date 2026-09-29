@@ -20,63 +20,48 @@
 table{width:100%;border-collapse:collapse;font-size:11px}th{text-align:left;border-bottom:1px solid var(--n);padding:4px}td{border-bottom:1px solid var(--l);padding:4px}
 .pill{padding:1px 8px;border-radius:9px;font-size:10px;color:var(--w)}.pp{background:var(--pos)}.pn{background:var(--neg);animation:pl 2s infinite}.pg0{background:var(--g)}
 .note{font-size:10px;color:var(--g);font-style:italic}
+
+.sub{display:flex;gap:14px;font-size:11px;color:var(--g)}.sub b{font-weight:600}.sub .on{color:var(--n);border-bottom:2px solid var(--n)}
+.tag{font-size:10px;color:var(--g);letter-spacing:.8px;text-transform:uppercase}
+.idx{max-width:1280px;margin:24px auto;background:var(--w);padding:18px 24px}.idx h2{margin:0 0 8px;font-size:16px}.idx ol{columns:2;font-size:12px;margin:0}
 </style></head><body>
-<p class="note" style="text-align:center">Boceto de diseño · cifras "#.###" = marcadores; en Power BI cada valor es una medida DAX sobre tus matrices RREE (sin modificarlas).</p>
-
-<!-- PÁGINA 1 -->
-<section class="pg"><div class="hd"><div><h1>Recursos Electrónicos · Resumen Ejecutivo</h1><small>Biblioteca UAI · Rectoría / Vicerrectoría / Dirección</small></div>
-<div class="nav"><b class="on">Resumen</b><b>Uso y costo</b><b>Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
-<div class="kpi">
-<div class="k"><h4>Inversión anual RREE</h4><div class="v">$#.###</div><div class="s">vs año anterior <b class="dn">▼ -0%</b></div></div>
-<div class="k"><h4>Descargas / consultas</h4><div class="v">#.###</div><div class="s up">▲ +0% YTD</div></div>
-<div class="k"><h4>Costo por uso</h4><div class="v">$#.###</div><div class="s up">▲ mejora +0%</div></div>
-<div class="k"><h4>Recursos activos</h4><div class="v">##</div><div class="s">de ## evaluados</div></div>
-<div class="k"><h4>Recursos bajo umbral</h4><div class="v">##</div><div class="s dn">▼ revisar renovación</div></div></div>
-<div class="grid g2">
-<div class="v2"><h3>Evolución mensual de uso (año actual vs anterior)</h3>
-<svg viewBox="0 0 600 220" width="100%"><g stroke="#DADCDF"><line x1="0" y1="200" x2="600" y2="200"/><line x1="0" y1="110" x2="600" y2="110"/></g>
-<polyline fill="none" stroke="#BFC3C8" stroke-width="3" points="20,150 70,130 120,140 170,110 220,120 270,100 320,115 370,95 420,105 470,90 520,100 570,85"/>
-<polyline fill="none" stroke="#111" stroke-width="3" points="20,140 70,115 120,120 170,90 220,95 270,75 320,85 370,70 420,80"/>
-<g fill="#111"><circle cx="20" cy="140" r="4"/><circle cx="170" cy="90" r="4"/><circle cx="270" cy="75" r="4"/><circle cx="420" cy="80" r="4"/></g></svg></div>
-<div class="v2"><h3>Matriz de decisión: costo vs uso</h3>
-<svg viewBox="0 0 400 220" width="100%"><line x1="200" y1="0" x2="200" y2="210" stroke="#DADCDF"/><line x1="0" y1="105" x2="400" y2="105" stroke="#DADCDF"/>
-<g font-size="10" fill="#8A8D91"><text x="210" y="14">Alto costo · alto uso = mantener</text><text x="210" y="200" fill="#B3261E">Alto costo · bajo uso = renegociar</text><text x="6" y="14">Bajo costo · alto uso = eficiente</text><text x="6" y="200">Bajo costo · bajo uso = difundir</text></g>
-<g fill="#1B2A4A"><circle cx="260" cy="50" r="7"/><circle cx="90" cy="60" r="5"/><circle cx="130" cy="40" r="6"/></g><g fill="#B3261E"><circle cx="320" cy="170" r="8"/><circle cx="250" cy="150" r="6"/></g><circle cx="70" cy="160" r="5" fill="#8A8D91"/></svg>
-<span class="note">Dispersión nativa: X = costo, Y = uso, tamaño = costo por uso. Rojo solo si CPU supera umbral.</span></div></div></section>
-
-<!-- PÁGINA 2 -->
-<section class="pg"><div class="hd"><div><h1>Uso y Costo por Recurso</h1><small>Detalle exportable a Excel</small></div>
-<div class="nav"><b>Resumen</b><b class="on">Uso y costo</b><b>Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
-<div class="note">Segmentadores: Año · Proveedor · Tipo de recurso · Área/Facultad</div>
-<div class="grid g2"><div class="v2"><h3>Matriz por recurso (tus columnas, sin cambios)</h3>
-<table><tr><th>Recurso</th><th>Proveedor</th><th>Costo</th><th>Usos</th><th>Costo/uso</th><th>Var. uso</th><th>Estado</th></tr>
-<tr><td>Recurso A</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td class="up">▲ +0%</td><td><span class="pill pp">Mantener</span></td></tr>
-<tr><td>Recurso B</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td class="dn">▼ -0%</td><td><span class="pill pn">Renegociar</span></td></tr>
-<tr><td>Recurso C</td><td>—</td><td>$#.###</td><td>#.###</td><td>$###</td><td>0%</td><td><span class="pill pg0">Observar</span></td></tr>
-<tr><td>…</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table></div>
-<div class="v2"><h3>Top recursos por uso</h3><div class="bars">
-<div><span>Recurso A</span><i style="width:90%"></i></div><div><span>Recurso B</span><i style="width:72%"></i></div><div><span>Recurso C</span><i style="width:58%"></i></div><div><span>Recurso D</span><i style="width:41%"></i></div><div><span>Recurso E</span><i style="width:27%"></i></div></div>
-<h3 style="margin-top:14px">Uso por área / facultad</h3><div class="bars"><div><span>Área 1</span><i style="width:80%"></i></div><div><span>Área 2</span><i style="width:55%"></i></div><div><span>Área 3</span><i style="width:35%"></i></div></div></div></div></section>
-
-<!-- PÁGINA 3 -->
-<section class="pg"><div class="hd"><div><h1>Evidencias para Acreditación CNA</h1><small>Criterios 8 · 13 · 14 (Acreditación institucional, subsistema universitario)</small></div>
-<div class="nav"><b>Resumen</b><b>Uso y costo</b><b class="on">Acreditación CNA</b><b>Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
-<div class="note">Cada bloque: indicador → evidencia (tabla exportable) → semáforo de tendencia 3 años.</div>
-<div class="grid g3">
-<div class="v2"><h3>C8 · Gestión de recursos</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Inversión 3 años</h4><div class="v">$#.###</div><div class="s up">▲ sostenida</div></div><div class="k"><h4>Costo por uso</h4><div class="v">$###</div><div class="s up">▲ eficiencia</div></div></div>
-<table><tr><th>Año</th><th>Inversión</th><th>Usos</th><th>CPU</th></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr><tr><td>20XX</td><td>#</td><td>#</td><td>#</td></tr></table></div>
-<div class="v2"><h3>C13 · Política y gestión de investigación</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Bases de investigación</h4><div class="v">##</div><div class="s">activas</div></div><div class="k"><h4>% inversión a investigación</h4><div class="v">0%</div><div class="s up">▲ +0%</div></div></div>
-<table><tr><th>Recurso de investigación</th><th>Usos</th><th>Semáforo</th></tr><tr><td>Base 1</td><td>#</td><td><span class="pill pp">▲</span></td></tr><tr><td>Base 2</td><td>#</td><td><span class="pill pn">▼</span></td></tr></table></div>
-<div class="v2"><h3>C14 · Resultados de investigación</h3><div class="kpi" style="grid-template-columns:1fr 1fr"><div class="k"><h4>Descargas de artículos</h4><div class="v">#.###</div><div class="s up">▲ +0%</div></div><div class="k"><h4>Usos por académico</h4><div class="v">##</div><div class="s">según matriz</div></div></div>
-<div class="bars"><h3>Tendencia 3 años</h3><div><span>20XX</span><i style="width:55%"></i></div><div><span>20XX</span><i style="width:70%"></i></div><div><span>20XX</span><i style="width:88%"></i></div></div></div></div></section>
-
-<!-- PÁGINA 4 -->
-<section class="pg"><div class="hd"><div><h1>Recursos Discontinuados · Lo que Perdimos</h1><small>Último período suscrito vs situación actual</small></div>
-<div class="nav"><b>Resumen</b><b>Uso y costo</b><b>Acreditación CNA</b><b class="on">Recursos discontinuados</b></div><span class="upd">Datos al dd-mm-aaaa</span></div>
-<div class="kpi"><div class="k"><h4>Recursos cancelados</h4><div class="v">##</div><div class="s">desde 20XX</div></div><div class="k"><h4>Ahorro anual</h4><div class="v">$#.###</div><div class="s up">▲ liberado</div></div><div class="k"><h4>Uso perdido</h4><div class="v">#.###</div><div class="s dn">▼ consultas/año</div></div><div class="k"><h4>Rechazos de acceso</h4><div class="v">###</div><div class="s dn">▼ demanda no cubierta</div></div><div class="k"><h4>Candidatos a reactivar</h4><div class="v">#</div><div class="s">uso previo alto</div></div></div>
-<div class="grid g2"><div class="v2"><h3>Matriz de recursos no vigentes</h3><table><tr><th>Recurso</th><th>Último año</th><th>Costo último año</th><th>Uso último año</th><th>CPU</th><th>Rechazos post-cancelación</th><th>Lectura</th></tr>
-<tr><td>Recurso X</td><td>20XX</td><td>$#</td><td>#</td><td>$#</td><td>#</td><td><span class="pill pn">Reevaluar</span></td></tr>
-<tr><td>Recurso Y</td><td>20XX</td><td>$#</td><td>#</td><td>$#</td><td>#</td><td><span class="pill pp">Bien cancelado</span></td></tr></table></div>
-<div class="v2"><h3>Uso histórico antes de la cancelación</h3><div class="bars"><div><span>Recurso X</span><i style="width:75%"></i></div><div><span>Recurso Y</span><i style="width:20%"></i></div><div><span>Recurso Z</span><i style="width:45%"></i></div></div>
-<p class="note">Solo se muestran rechazos si tus matrices los registran (p. ej. COUNTER "No_License"). Si no existen, este KPI se omite.</p></div></div></section>
-</body></html>
+<p class="note" style="text-align:center">Boceto de estructura · "#.###" = marcador. En Power BI cada valor es una medida DAX sobre tus matrices RREE (sin modificarlas). Ejes a ajustar a las páginas de tu informe actual.</p>
+<div class="idx"><h2>Índice del informe</h2><ol id="ix"></ol></div>
+<div id="app"></div>
+<script>
+const E=["Resumen","Inversión","Uso","Colección","Renovación","Acreditación CNA","Discontinuados"];
+const P=[
+["Resumen","General","Resumen Ejecutivo RREE",["Inversión anual|$#.###|▼ -0% vs año ant.|dn","Usos totales|#.###|▲ +0% YTD|up","Costo por uso|$###|▲ mejora|up","Recursos activos|##|de ## evaluados|","Bajo umbral|##|▼ revisar|dn"],["line|Uso mensual: año actual vs anterior","scatter|Costo vs uso: mapa de decisión"]],
+["Inversión","General","Inversión · Visión General",["Inversión total|$#.###|▼ -0%|dn","Proveedores|##||","% en investigación|0%|▲ +0%|up","Variación de precios|+0%|▼ alza|dn","Moneda USD/CLP|$###||"],["line|Inversión anual (5 años)","bars|Inversión por proveedor"]],
+["Inversión","Detalle proveedor","Inversión · Detalle por Proveedor",[],["table|Proveedor · Contrato · Moneda · Monto · Var. · Vencimiento","bars|Participación en el gasto"]],
+["Inversión","Detalle recurso","Inversión · Detalle por Recurso",[],["table|Recurso · Proveedor · Costo · Usos · Costo/uso · Var.","bars|Top 10 costo por uso"]],
+["Uso","General","Uso · Visión General",["Usos totales|#.###|▲ +0%|up","Búsquedas|#.###|▲ +0%|up","Descargas|#.###|▼ -0%|dn","Usuarios únicos|#.###||","Uso por estudiante|##||"],["line|Uso mensual por métrica","bars|Top recursos por uso"]],
+["Uso","Detalle recurso","Uso · Detalle por Recurso y Mes",[],["matrix|Recurso × Mes (usos)","line|Estacionalidad del recurso seleccionado"]],
+["Uso","Detalle área","Uso · Detalle por Área / Facultad",[],["bars|Uso por área","table|Área · Recurso · Usos · Var. · Uso por usuario"]],
+["Colección","General","Colección · Visión General",["Títulos disponibles|#.###||","Revistas|#.###||","E-books|#.###||","Bases de datos|##||","Acceso perpetuo|0%||"],["bars|Títulos por tipo de recurso","bars|Títulos por disciplina"]],
+["Colección","Detalle","Colección · Detalle por Tipo y Disciplina",[],["matrix|Tipo × Disciplina (títulos)","table|Recurso · Tipo · Títulos · Cobertura · Acceso"]],
+["Renovación","General","Renovación · Visión General",["Por renovar (12 m)|##||","Monto en decisión|$#.###||","Mantener|##||up","Renegociar|##||dn","Observar|##||"],["scatter|Matriz costo vs uso (cuadrantes)","bars|Calendario de vencimientos"]],
+["Renovación","Detalle","Renovación · Recursos Bajo Umbral",[],["table|Recurso · Vence · Costo · CPU · Umbral · Tendencia 3 años · Recomendación","line|Tendencia de uso del recurso seleccionado"]],
+["Acreditación CNA","General","Acreditación CNA · Visión General",["C8 Gestión de recursos|▲|inversión sostenida|up","C13 Gestión investigación|▲|bases activas|up","C14 Resultados investigación|▼|descargas|dn","Años evidenciados|3||","Evidencias exportables|##||"],["table|Criterio · Indicador · 20XX · 20XX · 20XX · Semáforo","bars|Tendencia consolidada 3 años"]],
+["Acreditación CNA","C8","CNA · Criterio 8 · Gestión de Recursos",["Inversión 3 años|$#.###|▲ sostenida|up","Costo por uso|$###|▲ eficiencia|up","Inversión por estudiante|$###||"],["line|Inversión, usos y costo por uso (3 años)","table|Año · Inversión · Usos · CPU · Por estudiante"]],
+["Acreditación CNA","C13","CNA · Criterio 13 · Política y Gestión de Investigación",["Bases de investigación|##||","% inversión a investigación|0%|▲ +0%|up","Acuerdos/convenios|##||"],["bars|Inversión en recursos de investigación por año","table|Recurso · Disciplina · Usos · Semáforo"]],
+["Acreditación CNA","C14","CNA · Criterio 14 · Resultados de Investigación",["Descargas de artículos|#.###|▲ +0%|up","Uso por académico|##||","Disciplinas cubiertas|##||"],["line|Descargas de artículos (3 años)","table|Disciplina · Descargas · Var. · Semáforo"]],
+["Discontinuados","General","Discontinuados · Lo que Perdimos",["Recursos cancelados|##|desde 20XX|","Ahorro anual|$#.###|▲ liberado|up","Uso perdido|#.###|▼ consultas/año|dn","Rechazos de acceso|###|▼ demanda sin cubrir|dn","Candidatos a reactivar|#||"],["bars|Uso del último año suscrito","table|Recurso · Último año · Costo · Uso · CPU · Lectura"]],
+["Discontinuados","Detalle","Discontinuados · Historia por Recurso",[],["line|Uso histórico hasta la cancelación","table|Recurso · Año · Costo · Usos · Rechazos post-cancelación"]]
+];
+const L='<svg viewBox="0 0 600 200" width="100%"><line x1="0" y1="190" x2="600" y2="190" stroke="#DADCDF"/><polyline fill="none" stroke="#BFC3C8" stroke-width="3" points="20,140 90,120 160,130 230,100 300,110 370,90 440,100 510,80 580,85"/><polyline fill="none" stroke="#111" stroke-width="3" points="20,130 90,105 160,110 230,80 300,85 370,65"/><g fill="#111"><circle cx="20" cy="130" r="4"/><circle cx="230" cy="80" r="4"/><circle cx="370" cy="65" r="4"/></g></svg>';
+const S='<svg viewBox="0 0 400 200" width="100%"><line x1="200" y1="0" x2="200" y2="200" stroke="#DADCDF"/><line x1="0" y1="100" x2="400" y2="100" stroke="#DADCDF"/><g font-size="10" fill="#8A8D91"><text x="208" y="12">Mantener</text><text x="208" y="195" fill="#B3261E">Renegociar</text><text x="6" y="12">Eficiente</text><text x="6" y="195">Difundir</text></g><g fill="#1B2A4A"><circle cx="260" cy="45" r="7"/><circle cx="90" cy="55" r="5"/></g><g fill="#B3261E"><circle cx="320" cy="160" r="8"/></g><circle cx="70" cy="150" r="5" fill="#8A8D91"/></svg>';
+const B=()=>'<div class="bars">'+[88,70,55,40,26].map((w,i)=>`<div><span>Elemento ${i+1}</span><i style="width:${w}%"></i></div>`).join('')+'</div>';
+const T=h=>{const c=h.split(' · ');return '<table><tr>'+c.map(x=>`<th>${x}</th>`).join('')+'</tr>'+[1,2,3].map(r=>'<tr>'+c.map((x,i)=>`<td>${i?'#':'Fila '+r}</td>`).join('')+'</tr>').join('')+'</table>'};
+const M=()=>'<table><tr><th></th>'+['Ene','Feb','Mar','Abr','May','…','Total'].map(x=>`<th>${x}</th>`).join('')+'</tr>'+[1,2,3,4].map(r=>`<tr><td>Fila ${r}</td>`+'<td>#</td>'.repeat(7)+'</tr>').join('')+'</table>';
+const V=b=>{const[t,h]=b.split('|');return `<div class="v2"><h3>${h}</h3>${t=='line'?L:t=='scatter'?S:t=='bars'?B():t=='matrix'?M():T(h)}</div>`};
+let ix='',out='';
+P.forEach((p,n)=>{const[e,s,ti,k,b]=p;const subs=P.filter(q=>q[0]==e).map(q=>q[1]);
+ix+=`<li>${ti}</li>`;
+out+=`<section class="pg"><div class="hd"><div><span class="tag">${e} · ${s} · pág. ${n+1}</span><h1>${ti}</h1>
+${subs.length>1?'<div class="sub">'+subs.map(x=>`<b class="${x==s?'on':''}">${x}</b>`).join('')+'</div>':''}</div>
+<div class="nav">${E.map(x=>`<b class="${x==e?'on':''}">${x}</b>`).join('')}</div><span class="upd">Datos al dd-mm-aaaa</span></div>
+${k.length?'<div class="kpi">'+k.map(x=>{const[a,v,su,c]=x.split('|');return `<div class="k"><h4>${a}</h4><div class="v">${v}</div><div class="s ${c||''}">${su}</div></div>`}).join('')+'</div>':'<div class="note">Segmentadores: Año · Proveedor · Tipo · Área · Recurso — detalle exportable a Excel</div>'}
+<div class="grid g2">${b.map(V).join('')}</div></section>`});
+document.getElementById('ix').innerHTML=ix;document.getElementById('app').innerHTML=out;
+</script></body></html>
