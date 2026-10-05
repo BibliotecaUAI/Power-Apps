@@ -37,3 +37,8 @@ Borrar el bloque `barCamara` / `barCamara_1` del texto, pegar el resto, e insert
 - El nombre del usuario no se busca (el Power BI no tiene tabla de usuarios). Si existe
   una, se agrega al flujo.
 - Power BI muestra los préstamos nuevos después de la actualización del conjunto de datos.
+
+## Cruce de existencias · Ficha de Descarte PP 2026 (`cruce-existencias/`)
+
+- `Consulta_DAX_Cruce_Existencias.txt`: consulta DAX con los 1.947 códigos de la ficha; cuenta los ejemplares por biblioteca (Pregrado A, Pregrado F, Postgrado, Viña) del mismo número y del título completo.
+- `Flujo_FolioCruceExistencias.txt`: flujo de un solo uso que ejecuta la consulta y deja el resultado como CSV en SharePoint, para completar las columnas T–W.
