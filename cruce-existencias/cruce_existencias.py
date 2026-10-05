@@ -2,10 +2,9 @@
 
 Uso:  python cruce_existencias.py  Ficha.xlsx  Cruce_Existencias_PP_2026.csv  Salida.xlsx
 
-Regla (la misma con que se llenaron las 1.780 filas ya completas de la ficha):
-el código de barra lleva al título (HRID) y a su número/volumen; en cada biblioteca
-se marca 1 si ahí existe al menos un ejemplar de ese mismo número, y 0 si no.
-Es SÍ/NO, no cantidad: 3 códigos del Vol.9 No.1 en Viña siguen siendo Viña = 1.
+Regla: el código de barra lleva al título (HRID) y a su número/volumen; en cada biblioteca
+se cuentan los códigos distintos de ese mismo número (0 = no hay, 1 = una copia, 3 = tres copias).
+Las filas con más de una copia en alguna biblioteca quedan marcadas en "Revisar".
 """
 import re
 import sys
@@ -54,7 +53,7 @@ def main(ficha, csv, salida):
     ej["vol"] = ej["copia"].map(norm_volumen)
     ej["col"] = ej["biblioteca"].map(biblioteca)
     conteo = (ej.dropna(subset=["col"]).groupby(["hrid", "vol", "col"])["cod"].nunique()
-              .unstack("col").reindex(columns=COLS_EX).fillna(0).astype(int).clip(upper=1))
+              .unstack("col").reindex(columns=COLS_EX).fillna(0).astype(int))
     por_cod = ej.drop_duplicates("cod").set_index("cod")
     por_cod_sin_ceros = ej.assign(k=ej["cod"].str.lstrip("0")).drop_duplicates("k").set_index("k")
 
@@ -74,10 +73,12 @@ def main(ficha, csv, salida):
                       "Año": it["anio"], "Tipo de Material": it["tipo"],
                       "Biblioteca-Ubicación": f'{it["biblioteca"]} {it["ubicacion"]}'.strip()})
             f.update({col: int(ex[col]) for col in COLS_EX})
+            if max(f[col] for col in COLS_EX) > 1:
+                f["Revisar"] = "Más de una copia de este número"
         filas.append(f)
 
     orden = ["Fila Excel", "Codigo de Barra", "Estado", "HRID", "Título", "Copia / Volumen", "Año",
-             "Tipo de Material", "Biblioteca-Ubicación"] + COLS_EX
+             "Tipo de Material", "Biblioteca-Ubicación"] + COLS_EX + ["Revisar"]
     res = pd.DataFrame(filas).reindex(columns=orden)
     with pd.ExcelWriter(salida, engine="openpyxl") as w:
         res.to_excel(w, sheet_name="Faltaban existencias", index=False)
@@ -88,7 +89,8 @@ def main(ficha, csv, salida):
             for col in ws.columns:
                 ws.column_dimensions[col[0].column_letter].width = min(
                     55, max(10, *(len(str(c.value or "")) + 2 for c in col[:300])))
-    print(f"{len(res)} filas · OK: {(res['Estado'] == 'OK').sum()} · no encontradas: {(res['Estado'] != 'OK').sum()}")
+    print(f"{len(res)} filas · OK: {(res['Estado'] == 'OK').sum()} · no encontradas: {(res['Estado'] != 'OK').sum()}"
+          f" · con más de una copia: {res['Revisar'].notna().sum()}")
 
 
 if __name__ == "__main__":

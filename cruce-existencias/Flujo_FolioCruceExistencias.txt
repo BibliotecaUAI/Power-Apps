@@ -36,10 +36,11 @@ concat(decodeUriComponent('%EF%BB%BF'),'hrid;codigo;copia;anio;tipo;biblioteca;u
    Cuando termine en verde, avise a Claude: él lee el CSV desde SharePoint y
    devuelve la ficha con las columnas T–W completas.
 
-CÓMO SE MARCA LA EXISTENCIA (lo hace Claude con el CSV; mismo criterio de las filas ya completas)
+CÓMO SE CUENTA LA EXISTENCIA (lo hace Claude con el CSV)
 - El código de barra lleva al título (HRID) y a su número/volumen.
-- En cada biblioteca: 1 si existe al menos un ejemplar de ese mismo número, 0 si no.
-  Es SÍ/NO, no cantidad (3 códigos del Vol.9 No.1 en Viña → Viña = 1).
+- En cada biblioteca se cuentan los códigos distintos de ese mismo número:
+  0 = no hay · 1 = una copia · 3 = tres copias.
+- Las filas con más de una copia en alguna biblioteca quedan marcadas en "Revisar".
 - Bibliotecas: Edif. A → Pregrado A (col. T) · Edif. F → Pregrado F (col. U) ·
   Postgrado → Posgrado (col. V) · Viña → Viña (col. W).
 - Los códigos que no aparezcan en el CSV no están en FOLIO
