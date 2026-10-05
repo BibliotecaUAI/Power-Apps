@@ -40,6 +40,7 @@ Borrar el bloque `barCamara` / `barCamara_1` del texto, pegar el resto, e insert
 
 ## Cruce de existencias · Ficha de Descarte PP 2026 (`cruce-existencias/`)
 
-- `Consulta_DAX_Cruce_Existencias.txt`: consulta DAX con los 209 códigos de la ficha que no tienen existencias; trae todos los ejemplares de esos títulos en FOLIO.
+- `Consulta_DAX_Cruce_Existencias.txt`: consulta DAX con los 1.947 códigos de la ficha; trae todos los ejemplares de esos títulos en FOLIO con los datos para la ficha.
 - `Flujo_FolioCruceExistencias.txt`: flujo de un solo uso que ejecuta la consulta y deja el resultado como CSV en SharePoint.
-- `cruce_existencias.py`: llena las existencias como la ficha 2026 (1 en la biblioteca del propio ejemplar; en las otras, la cantidad de copias del mismo número) y genera el listado de las filas que faltaban.
+- `rellenar_ficha.py`: rellena las filas sin datos y verifica las demás contra FOLIO; deja en verde lo rellenado y anota las diferencias en una hoja aparte.
+- `Tabla_Calculada_Cruce_FOLIO.txt`: la misma consulta como tabla calculada, para sacar los datos desde Power BI Desktop cuando el modelo no está publicado.

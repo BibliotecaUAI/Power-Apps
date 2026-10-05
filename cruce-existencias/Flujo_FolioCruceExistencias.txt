@@ -1,8 +1,8 @@
 ==========================================================
  FLUJO  FolioCruceExistencias   (Power Automate · conectores estándar)
- Busca en FOLIO (conjunto de datos Biblioteca V082022) los 209 códigos de la
- "Ficha de Descarte PP - 2026" que no tienen existencias, y deja en SharePoint un CSV
- con TODOS los ejemplares de esos títulos, en cualquier biblioteca.
+ Busca en FOLIO (conjunto de datos Biblioteca V082022) los 1.947 códigos de la
+ "Ficha de Descarte PP - 2026" y deja en SharePoint un CSV con TODOS los ejemplares
+ de esos títulos (en cualquier biblioteca) y sus datos para la ficha.
  Se ejecuta UNA vez, a mano. Mismo esquema que el flujo FolioMarbetes.
 ==========================================================
 
@@ -19,12 +19,14 @@
    Desde:  outputs('ConsultaPBI')?['body/firstTableRows']
    Pulse el ícono "Cambiar a modo de texto" (T) y pegue en Asignar:
 
-concat(item()?['[hrid]'],';',item()?['[codigo]'],';',item()?['[copia]'],';',item()?['[anio]'],';',item()?['[tipo]'],';',item()?['[biblioteca]'],';',item()?['[ubicacion]'],';',replace(string(item()?['[titulo]']),';',','))
+concat(item()?['[hrid]'],'|',item()?['[codigo]'],'|',item()?['[copia]'],'|',item()?['[anio]'],'|',item()?['[tipo]'],'|',item()?['[biblioteca]'],'|',item()?['[ubicacion]'],'|',item()?['[fecha]'],'|',replace(string(item()?['[unidad]']),'|','/'),'|',replace(string(item()?['[titulo]']),'|','/'),'|',replace(string(item()?['[autor]']),'|','/'),'|',item()?['[idioma]'])
 
 4. + Nuevo paso → Operación de datos → "Redactar"   (renombrar: CSV)
    Entradas (Expresión):
 
-concat(decodeUriComponent('%EF%BB%BF'),'hrid;codigo;copia;anio;tipo;biblioteca;ubicacion;titulo',decodeUriComponent('%0D%0A'),join(body('Filas'),decodeUriComponent('%0D%0A')))
+concat(decodeUriComponent('%EF%BB%BF'),'hrid|codigo|copia|anio|tipo|biblioteca|ubicacion|fecha|unidad|titulo|autor|idioma',decodeUriComponent('%0D%0A'),join(body('Filas'),decodeUriComponent('%0D%0A')))
+
+   (Se usa "|" como separador porque los títulos y autores traen comas y punto y coma.)
 
 5. + Nuevo paso → SharePoint → "Crear archivo"
    Dirección del sitio: Análisis y Reportes BUAI
@@ -34,14 +36,15 @@ concat(decodeUriComponent('%EF%BB%BF'),'hrid;codigo;copia;anio;tipo;biblioteca;u
 
 6. Guardar → Probar → Manualmente → Ejecutar.
    Cuando termine en verde, avise a Claude: él lee el CSV desde SharePoint y
-   devuelve la ficha con las columnas T–W completas.
+   devuelve la ficha rellenada + la hoja "Diferencias".
 
-CÓMO SE LLENAN LAS EXISTENCIAS (lo hace Claude con el CSV; como en la ficha 2026)
-- Cada fila es un ejemplar (un código de barra).
-- En la biblioteca donde está ese ejemplar va 1 (el propio ejemplar).
-- En las otras bibliotecas va la cantidad de copias de ese mismo número (HRID + volumen), sin tope.
-  Ej.: 3 códigos del Vol.9 No.1 en Viña → 3 filas con Viña = 1 (la suma da 3).
-- Bibliotecas: Edif. A → Pregrado A (col. T) · Edif. F → Pregrado F (col. U) ·
-  Postgrado → Posgrado (col. V) · Viña → Viña (col. W).
-- Los códigos que no aparezcan en el CSV no están en FOLIO
-  (o se crearon después de la última actualización del modelo).
+QUÉ HACE CLAUDE CON EL CSV
+- Filas sin datos (1792 en adelante): rellena todas las columnas que vienen de FOLIO.
+- Filas con datos (3 a 1791): rellena existencias vacías y anota en "Diferencias"
+  todo lo que no coincida con FOLIO (no cambia valores ya escritos).
+- Existencias: 1 en la biblioteca del propio ejemplar; en las otras, la cantidad
+  de copias de ese mismo número (HRID + volumen), sin tope.
+- Columnas manuales (no se tocan): Valor Neto, N° POL, Diferenciador, Informar a Finanzas,
+  Forma de Adquisición, Bibliografía, Obra en Volúmenes, Criterios, Justificaciones,
+  Relación Inventario, Observaciones, Información para no Descartar, Decisión Final,
+  ELIMINADO, Cantidad Item.
