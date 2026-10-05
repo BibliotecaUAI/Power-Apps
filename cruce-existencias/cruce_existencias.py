@@ -61,7 +61,7 @@ def main(ficha, csv, salida):
     # Primera fila de la ficha para cada número (HRID + volumen): ahí va la cantidad
     df["k"] = df["HRID"].map(norm_codigo) + "|" + df["Copia"].map(norm_volumen)
     primera = df[df["HRID"].notna()].groupby("k")["Fila Excel"].min()
-    ya_usado = set()
+    ya_usado = {}  # número → fila del listado que ya lleva la cantidad
 
     filas = []
     for _, r in pend.iterrows():
@@ -80,12 +80,13 @@ def main(ficha, csv, salida):
                       "Biblioteca-Ubicación": f'{it["biblioteca"]} {it["ubicacion"]}'.strip()})
             f.update({col: int(ex[col]) for col in COLS_EX})
             k = f'{it["hrid"]}|{it["vol"]}'
-            if k in ya_usado or primera.get(k, r["Fila Excel"]) < r["Fila Excel"]:
+            fila_cant = ya_usado.get(k, min(primera.get(k, r["Fila Excel"]), r["Fila Excel"]))
+            if fila_cant != r["Fila Excel"]:
                 f.update({col: 0 for col in COLS_EX})
-                f["Revisar"] = f"Copia del mismo número: la cantidad va en la fila {primera.get(k, '')}".rstrip()
+                f["Revisar"] = f"Copia del mismo número: la cantidad va en la fila {fila_cant}"
             elif max(f[col] for col in COLS_EX) > 1:
                 f["Revisar"] = "Más de una copia de este número"
-            ya_usado.add(k)
+            ya_usado.setdefault(k, r["Fila Excel"])
         filas.append(f)
 
     orden = ["Fila Excel", "Codigo de Barra", "Estado", "HRID", "Título", "Copia / Volumen", "Año",
