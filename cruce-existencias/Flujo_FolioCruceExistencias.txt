@@ -1,8 +1,8 @@
 ==========================================================
  FLUJO  FolioCruceExistencias   (Power Automate · conectores estándar)
- Cruza los 1.947 códigos de barra de la "Ficha de Descarte PP - 2026"
- con FOLIO (conjunto de datos Biblioteca V082022) y deja un CSV en SharePoint
- con las existencias por biblioteca (columnas T a W de la ficha).
+ Busca en FOLIO (conjunto de datos Biblioteca V082022) los 209 códigos de la
+ "Ficha de Descarte PP - 2026" que no tienen existencias, y deja en SharePoint un CSV
+ con TODOS los ejemplares de esos títulos, en cualquier biblioteca.
  Se ejecuta UNA vez, a mano. Mismo esquema que el flujo FolioMarbetes.
 ==========================================================
 
@@ -19,12 +19,12 @@
    Desde:  outputs('ConsultaPBI')?['body/firstTableRows']
    Pulse el ícono "Cambiar a modo de texto" (T) y pegue en Asignar:
 
-concat(item()?['[cf]'],';',item()?['[bc]'],';',item()?['[hrid]'],';',item()?['[copia]'],';',item()?['[bib]'],';',item()?['[exA]'],';',item()?['[exF]'],';',item()?['[exP]'],';',item()?['[exV]'],';',item()?['[tA]'],';',item()?['[tF]'],';',item()?['[tP]'],';',item()?['[tV]'])
+concat(item()?['[hrid]'],';',item()?['[codigo]'],';',item()?['[copia]'],';',item()?['[anio]'],';',item()?['[tipo]'],';',item()?['[biblioteca]'],';',item()?['[ubicacion]'],';',replace(string(item()?['[titulo]']),';',','))
 
 4. + Nuevo paso → Operación de datos → "Redactar"   (renombrar: CSV)
    Entradas (Expresión):
 
-concat(decodeUriComponent('%EF%BB%BF'),'cf;bc;hrid;copia;bib;exA;exF;exP;exV;tA;tF;tP;tV',decodeUriComponent('%0D%0A'),join(body('Filas'),decodeUriComponent('%0D%0A')))
+concat(decodeUriComponent('%EF%BB%BF'),'hrid;codigo;copia;anio;tipo;biblioteca;ubicacion;titulo',decodeUriComponent('%0D%0A'),join(body('Filas'),decodeUriComponent('%0D%0A')))
 
 5. + Nuevo paso → SharePoint → "Crear archivo"
    Dirección del sitio: Análisis y Reportes BUAI
@@ -36,11 +36,11 @@ concat(decodeUriComponent('%EF%BB%BF'),'cf;bc;hrid;copia;bib;exA;exF;exP;exV;tA;
    Cuando termine en verde, avise a Claude: él lee el CSV desde SharePoint y
    devuelve la ficha con las columnas T–W completas.
 
-QUÉ SIGNIFICA CADA COLUMNA DEL CSV
-- cf      código tal como está en la ficha · bc = código encontrado en FOLIO
-- exA..exV  ejemplares del MISMO número/volumen (mismo título y misma "Copia")
-            en Pregrado A (Edif. A) · Pregrado F (Edif. F) · Postgrado · Viña
-            → son los valores que van en las columnas T, U, V y W.
-- tA..tV  ejemplares del título completo (todos los números) por biblioteca, como referencia.
-- Los códigos de la ficha que no aparecen en el CSV no se encontraron en FOLIO
+CÓMO SE CUENTA LA EXISTENCIA (lo hace Claude con el CSV)
+- No se cuenta por código de barra: se cuenta por HRID (título) + volumen/número + año.
+- Varios códigos distintos con el mismo HRID y el mismo volumen en una biblioteca
+  = varios ejemplares en esa biblioteca (ej.: 3 códigos en Viña → Viña = 3).
+- Bibliotecas: Edif. A → Pregrado A (col. T) · Edif. F → Pregrado F (col. U) ·
+  Postgrado → Posgrado (col. V) · Viña → Viña (col. W).
+- Los códigos que no aparezcan en el CSV no están en FOLIO
   (o se crearon después de la última actualización del modelo).
