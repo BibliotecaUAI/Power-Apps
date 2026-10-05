@@ -2,9 +2,10 @@
 
 Uso:  python cruce_existencias.py  Ficha.xlsx  Cruce_Existencias_PP_2026.csv  Salida.xlsx
 
-Regla: el código de barra lleva al título (HRID) y a su número/volumen; en cada biblioteca
-se cuentan los códigos distintos de ese mismo número (0 = no hay, 1 = una copia, 3 = tres copias).
-Las filas con más de una copia en alguna biblioteca quedan marcadas en "Revisar".
+Regla (hoja "Descripción Ficha", Existencia en otras Bibliotecas): el código de barra lleva al
+título (HRID) y a su número/volumen; en cada biblioteca se cuentan los códigos distintos de ese
+mismo número. Si varias filas de la ficha son copias del mismo número, la cantidad va solo en la
+primera y las demás quedan en 0, para no duplicar (igual que el "Diferenciador de título").
 """
 import re
 import sys
@@ -57,6 +58,11 @@ def main(ficha, csv, salida):
     por_cod = ej.drop_duplicates("cod").set_index("cod")
     por_cod_sin_ceros = ej.assign(k=ej["cod"].str.lstrip("0")).drop_duplicates("k").set_index("k")
 
+    # Primera fila de la ficha para cada número (HRID + volumen): ahí va la cantidad
+    df["k"] = df["HRID"].map(norm_codigo) + "|" + df["Copia"].map(norm_volumen)
+    primera = df[df["HRID"].notna()].groupby("k")["Fila Excel"].min()
+    ya_usado = set()
+
     filas = []
     for _, r in pend.iterrows():
         c = r["cod"]
@@ -73,8 +79,13 @@ def main(ficha, csv, salida):
                       "Año": it["anio"], "Tipo de Material": it["tipo"],
                       "Biblioteca-Ubicación": f'{it["biblioteca"]} {it["ubicacion"]}'.strip()})
             f.update({col: int(ex[col]) for col in COLS_EX})
-            if max(f[col] for col in COLS_EX) > 1:
+            k = f'{it["hrid"]}|{it["vol"]}'
+            if k in ya_usado or primera.get(k, r["Fila Excel"]) < r["Fila Excel"]:
+                f.update({col: 0 for col in COLS_EX})
+                f["Revisar"] = f"Copia del mismo número: la cantidad va en la fila {primera.get(k, '')}".rstrip()
+            elif max(f[col] for col in COLS_EX) > 1:
                 f["Revisar"] = "Más de una copia de este número"
+            ya_usado.add(k)
         filas.append(f)
 
     orden = ["Fila Excel", "Codigo de Barra", "Estado", "HRID", "Título", "Copia / Volumen", "Año",
