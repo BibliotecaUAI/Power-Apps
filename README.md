@@ -42,4 +42,4 @@ Borrar el bloque `barCamara` / `barCamara_1` del texto, pegar el resto, e insert
 
 - `Consulta_DAX_Cruce_Existencias.txt`: consulta DAX con los 209 códigos de la ficha que no tienen existencias; trae todos los ejemplares de esos títulos en FOLIO.
 - `Flujo_FolioCruceExistencias.txt`: flujo de un solo uso que ejecuta la consulta y deja el resultado como CSV en SharePoint.
-- `cruce_existencias.py`: igual que la revisión manual en FOLIO: el código lleva al título (HRID) y se cuentan los códigos distintos de ese título por biblioteca y genera el listado de las filas que faltaban, con las columnas T a W.
+- `cruce_existencias.py`: marca 1/0 por biblioteca si existe el mismo número del título (HRID + volumen), con el mismo criterio de las filas ya completas de la ficha, y genera el listado de las filas que faltaban.
