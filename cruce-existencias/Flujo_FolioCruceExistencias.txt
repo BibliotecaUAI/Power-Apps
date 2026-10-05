@@ -36,10 +36,10 @@ concat(decodeUriComponent('%EF%BB%BF'),'hrid;codigo;copia;anio;tipo;biblioteca;u
    Cuando termine en verde, avise a Claude: él lee el CSV desde SharePoint y
    devuelve la ficha con las columnas T–W completas.
 
-CÓMO SE CUENTA LA EXISTENCIA (lo hace Claude con el CSV)
-- No se cuenta por código de barra: se cuenta por HRID (título) + volumen/número + año.
-- Varios códigos distintos con el mismo HRID y el mismo volumen en una biblioteca
-  = varios ejemplares en esa biblioteca (ej.: 3 códigos en Viña → Viña = 3).
+CÓMO SE CUENTA LA EXISTENCIA (lo hace Claude con el CSV; igual que la revisión manual en FOLIO)
+- El código de barra de la ficha lleva al título (HRID).
+- Se cuentan los códigos distintos que tiene ese título, separados por biblioteca
+  (ej.: 3 códigos distintos en Viña → Viña = 3).
 - Bibliotecas: Edif. A → Pregrado A (col. T) · Edif. F → Pregrado F (col. U) ·
   Postgrado → Posgrado (col. V) · Viña → Viña (col. W).
 - Los códigos que no aparezcan en el CSV no están en FOLIO

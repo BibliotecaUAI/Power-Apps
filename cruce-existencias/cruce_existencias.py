@@ -1,9 +1,11 @@
 """Completa las existencias (columnas T a W) de las filas de la Ficha de Descarte que no las tienen.
 
-Uso:  python cruce_existencias.py  Ficha.xlsx  Cruce_Existencias_PP_2026.csv  Salida.xlsx
+Uso:  python cruce_existencias.py  Ficha.xlsx  Cruce_Existencias_PP_2026.csv  Salida.xlsx  [--por-numero]
 
-Regla: la existencia se cuenta por HRID (título) + volumen/número + año, no por código de barra.
-Varios códigos distintos con el mismo HRID y volumen en una biblioteca = varios ejemplares ahí.
+Regla (igual que se hace a mano en FOLIO): el código de barra lleva al título (HRID);
+se cuentan los códigos distintos que tiene ese título, separados por biblioteca.
+3 códigos distintos del título en Viña = Viña 3.
+Con --por-numero solo se cuentan los códigos del mismo volumen/número.
 """
 import re
 import sys
@@ -40,7 +42,7 @@ def biblioteca(texto):
     return None
 
 
-def main(ficha, csv, salida):
+def main(ficha, csv, salida, por_numero=False):
     df = pd.read_excel(ficha, sheet_name=HOJA)
     df["Fila Excel"] = df.index + 2
     df = df.dropna(how="all", subset=df.columns[:35])
@@ -51,7 +53,8 @@ def main(ficha, csv, salida):
     ej["cod"] = ej["codigo"].str.strip()
     ej["vol"] = ej["copia"].map(norm_volumen)
     ej["col"] = ej["biblioteca"].map(biblioteca)
-    conteo = (ej.dropna(subset=["col"]).groupby(["hrid", "vol", "anio", "col"]).size()
+    clave_cols = ["hrid", "vol"] if por_numero else ["hrid"]
+    conteo = (ej.dropna(subset=["col"]).groupby(clave_cols + ["col"])["cod"].nunique()
               .unstack("col").reindex(columns=COLS_EX).fillna(0).astype(int))
     por_cod = ej.drop_duplicates("cod").set_index("cod")
     por_cod_sin_ceros = ej.assign(k=ej["cod"].str.lstrip("0")).drop_duplicates("k").set_index("k")
@@ -66,7 +69,7 @@ def main(ficha, csv, salida):
             f.update({"Estado": "No encontrado en FOLIO", "HRID": r["HRID"], "Título": r["Título"],
                       "Copia / Volumen": r["Copia"]})
         else:
-            clave = (it["hrid"], it["vol"], it["anio"])
+            clave = (it["hrid"], it["vol"]) if por_numero else it["hrid"]
             ex = conteo.loc[clave] if clave in conteo.index else pd.Series(0, index=COLS_EX)
             f.update({"Estado": "OK", "HRID": it["hrid"], "Título": it["titulo"], "Copia / Volumen": it["copia"],
                       "Año": it["anio"], "Tipo de Material": it["tipo"],
@@ -90,4 +93,4 @@ def main(ficha, csv, salida):
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:4])
+    main(*sys.argv[1:4], por_numero="--por-numero" in sys.argv)
