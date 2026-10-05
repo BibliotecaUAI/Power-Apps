@@ -2,10 +2,10 @@
 
 Uso:  python cruce_existencias.py  Ficha.xlsx  Cruce_Existencias_PP_2026.csv  Salida.xlsx
 
-Regla (hoja "Descripción Ficha", Existencia en otras Bibliotecas): el código de barra lleva al
-título (HRID) y a su número/volumen; en cada biblioteca se cuentan los códigos distintos de ese
-mismo número. Si varias filas de la ficha son copias del mismo número, la cantidad va solo en la
-primera y las demás quedan en 0, para no duplicar (igual que el "Diferenciador de título").
+Regla (como se llenó la ficha 2026): cada fila es un ejemplar (un código de barra).
+- En la biblioteca donde está ese ejemplar va 1 (el propio ejemplar).
+- En las otras bibliotecas va la cantidad de copias de ese mismo número (HRID + volumen), sin tope.
+Así, 3 códigos del Vol.9 No.1 en Viña quedan como 3 filas con Viña = 1, y la suma de la columna da 3.
 """
 import re
 import sys
@@ -58,11 +58,6 @@ def main(ficha, csv, salida):
     por_cod = ej.drop_duplicates("cod").set_index("cod")
     por_cod_sin_ceros = ej.assign(k=ej["cod"].str.lstrip("0")).drop_duplicates("k").set_index("k")
 
-    # Primera fila de la ficha para cada número (HRID + volumen): ahí va la cantidad
-    df["k"] = df["HRID"].map(norm_codigo) + "|" + df["Copia"].map(norm_volumen)
-    primera = df[df["HRID"].notna()].groupby("k")["Fila Excel"].min()
-    ya_usado = {}  # número → fila del listado que ya lleva la cantidad
-
     filas = []
     for _, r in pend.iterrows():
         c = r["cod"]
@@ -78,15 +73,11 @@ def main(ficha, csv, salida):
             f.update({"Estado": "OK", "HRID": it["hrid"], "Título": it["titulo"], "Copia / Volumen": it["copia"],
                       "Año": it["anio"], "Tipo de Material": it["tipo"],
                       "Biblioteca-Ubicación": f'{it["biblioteca"]} {it["ubicacion"]}'.strip()})
-            f.update({col: int(ex[col]) for col in COLS_EX})
-            k = f'{it["hrid"]}|{it["vol"]}'
-            fila_cant = ya_usado.get(k, min(primera.get(k, r["Fila Excel"]), r["Fila Excel"]))
-            if fila_cant != r["Fila Excel"]:
-                f.update({col: 0 for col in COLS_EX})
-                f["Revisar"] = f"Copia del mismo número: la cantidad va en la fila {fila_cant}"
-            elif max(f[col] for col in COLS_EX) > 1:
-                f["Revisar"] = "Más de una copia de este número"
-            ya_usado.setdefault(k, r["Fila Excel"])
+            propia = biblioteca(it["biblioteca"])
+            f.update({col: (1 if col == propia else int(ex[col])) for col in COLS_EX})
+            otras = [col.split(" - ")[0] for col in COLS_EX if col != propia and f[col] > 0]
+            if otras:
+                f["Revisar"] = "También hay copias de este número en: " + ", ".join(otras)
         filas.append(f)
 
     orden = ["Fila Excel", "Codigo de Barra", "Estado", "HRID", "Título", "Copia / Volumen", "Año",
