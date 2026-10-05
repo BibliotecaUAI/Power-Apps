@@ -1,0 +1,53 @@
+PROMPT · COMPLETAR FICHA DE DESCARTE PP 2026 CON FOLIO
+(copiar todo y pegarlo en una sesión NUEVA de Claude Code abierta en LOCAL,
+ carpeta C:\Users\pablo.salas.marin\Desktop\Proyecto IA)
+
+Hola. Necesito que completes la "Ficha de Descarte PP - 2026" con datos de FOLIO.
+Trabaja en español, pasos cortos, y pídeme permiso antes de modificar archivos.
+
+ARCHIVOS
+- Ficha ya rellenada en parte (punto de partida): Ficha_de_Descarte_PP_2026_rellenada.xlsx
+  (está en el repo GitHub BibliotecaUAI/Power-Apps, rama psm/busy-einstein-9dj17g,
+  carpeta cruce-existencias/; también te la puedo copiar a esta carpeta).
+- Hoja "Pendientes" de ese archivo = lo que falta.
+- En esa misma carpeta del repo: Tabla_Calculada_Cruce_FOLIO.txt (DAX con los 1.947 códigos)
+  y rellenar_ficha.py (rellena + verifica + hoja "Diferencias").
+- Modelo Power BI: Biblioteca V082022 (PBIP en esta carpeta). Tablas: f_items (barcode,
+  copyNumber, f_instances_script.hrid, f_mtypes_script.name, f_locations_script.biblioteca,
+  f_locations_script.ubicación, CreationDate, f_intancesPublication.dateOfPublication,
+  f_holdings_script.instanceId, f_itemNotes.notes) y f_instances (id, title, contributors, languages).
+
+QUÉ FALTA
+1. 148 filas de la serie 36729-… (Boletín de Jurisprudencia Constitucional, HRID 3672903):
+   faltan Copia/volumen (col G), Fecha registro (N) y Año de edición (Q). Están en naranjo.
+2. 9 filas de Revista Chilena de Literatura (filas 330–338, HRID 3671503): faltan las
+   existencias T a W.
+3. Verificar contra FOLIO las ~1.500 filas restantes (3 a 1791) que no se pudieron revisar.
+
+CÓMO OBTENER LOS DATOS
+- Opción A: abrir el modelo en Power BI Desktop → Inicio → Nueva tabla → pegar
+  Tabla_Calculada_Cruce_FOLIO.txt → Vista de tabla → clic derecho en Cruce_FOLIO →
+  Copiar tabla → pegar en Datos_FOLIO.xlsx (A1).
+- Opción B: si puedes consultar el modelo directamente desde esta sesión, hazlo con
+  la misma DAX (archivo Consulta_DAX_Cruce_Existencias.txt).
+- NO uses el usuario/clave de FOLIO que está en el script Python del modelo.
+Luego: python rellenar_ficha.py Ficha_de_Descarte_PP_2026_rellenada.xlsx Datos_FOLIO.xlsx Ficha_final.xlsx
+
+REGLAS
+- Columnas que vienen de FOLIO: Item ingresado (SI), HRID, Código, Copia, Tipo de material,
+  Biblioteca-Ubicación-Colección ("Biblioteca Viña del Mar Hemeroteca", sin guion),
+  Título, Autor ("0" si no tiene), Idioma, Vinculado UAI (NO), Fecha registro,
+  Unidad Académica, Año de edición, Unidad de descarte, y existencias T a W.
+- Columnas MANUALES (no tocar nunca): Valor Neto, N° de POL, Diferenciador de título,
+  Informar a Finanzas, Forma de Adquisición, Bibliografía de programas, Obra en Volúmenes,
+  Criterios, Justificaciones, Relación Inventario, Observaciones, Información para no
+  Descartar, Decisión Final, ELIMINADO, Cantidad Item.
+- Existencias (T Pregrado A · U Pregrado F · V Posgrado · W Viña), como la ficha 2026:
+  cada fila es un ejemplar; 1 en la biblioteca del propio ejemplar; en las otras, la
+  CANTIDAD de copias de ese mismo número (mismo HRID + mismo volumen), sin tope.
+  Bibliotecas en FOLIO: "Edif. A", "Edif. F", "Postgrado", "Viña".
+- No cambies valores que ya estén escritos: anota las diferencias en la hoja "Diferencias".
+- Marca en color las celdas que rellenes.
+
+ENTREGA
+Ficha_final.xlsx con todo rellenado + hoja "Diferencias" + resumen corto de lo hecho.

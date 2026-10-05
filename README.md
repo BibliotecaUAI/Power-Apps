@@ -43,4 +43,6 @@ Borrar el bloque `barCamara` / `barCamara_1` del texto, pegar el resto, e insert
 - `Consulta_DAX_Cruce_Existencias.txt`: consulta DAX con los 1.947 códigos de la ficha; trae todos los ejemplares de esos títulos en FOLIO con los datos para la ficha.
 - `Flujo_FolioCruceExistencias.txt`: flujo de un solo uso que ejecuta la consulta y deja el resultado como CSV en SharePoint.
 - `rellenar_ficha.py`: rellena las filas sin datos y verifica las demás contra FOLIO; deja en verde lo rellenado y anota las diferencias en una hoja aparte.
+- `rellenar_desde_app.py` y `Ficha_de_Descarte_PP_2026_rellenada.xlsx`: ficha rellenada con los datos de FOLIO que ya guardó la app de Descarte; hojas «Diferencias» y «Pendientes».
+- `PROMPT_sesion_local.txt`: instrucciones para terminar lo pendiente en una sesión local.
 - `Tabla_Calculada_Cruce_FOLIO.txt`: la misma consulta como tabla calculada, para sacar los datos desde Power BI Desktop cuando el modelo no está publicado.
